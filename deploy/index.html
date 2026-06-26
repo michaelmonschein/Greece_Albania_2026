@@ -214,7 +214,7 @@ ul { list-style: none; }
 
 /* ══ PHASE HERO ══ */
 #phase-hero {
-  width: 100%; overflow: hidden;
+  width: 100%; overflow: visible;
   position: relative; min-height: 300px;
 }
 
@@ -591,6 +591,63 @@ ul { list-style: none; }
 .tlabel      { font-size: .83rem; font-weight: 700; }
 .titem.done .tlabel { text-decoration: line-through; color: var(--muted); }
 .tnote       { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+/* ══ PHOTO HERO BACKGROUNDS (nur für .hero-trip-scene, nicht Karten) ══ */
+.hero-trip-scene.scene-beach {
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Corfu_Agios_Gordis_R04.jpg/1280px-Corfu_Agios_Gordis_R04.jpg') center/cover no-repeat;
+}
+.hero-trip-scene.scene-ksamil {
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Ksamil_Beach.jpg') center/cover no-repeat;
+}
+.hero-trip-scene.scene-city {
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Old_Corfu_town_aerial_01.jpg/1280px-Old_Corfu_town_aerial_01.jpg') center/cover no-repeat;
+}
+.hero-trip-scene.scene-travel {
+  background: linear-gradient(160deg, #2c3e6b 0%, #1a2c45 40%, #4a5568 100%);
+}
+
+/* ══ WATERCOLOR EDGE TRANSITION ══ */
+.wc-edge {
+  position: absolute;
+  bottom: -2px;
+  left: 0; right: 0;
+  height: 120px;
+  pointer-events: none;
+  z-index: 10;
+}
+.wc-edge svg { width: 100%; height: 100%; display: block; }
+
+/* ══ iOS / TOUCH OPTIMIERUNGEN ══ */
+/* iOS Safe Area */
+#app-hdr {
+  padding-top: max(11px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+/* Größere Touch-Targets für iPhone */
+.tbtn { min-height: 44px; min-width: 44px; }
+.hdr-btn { min-height: 44px; padding: 10px 18px; }
+.mclose { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+/* Bessere Scrollperformance auf iOS */
+#timeline-scroll, #content-area, .msheet { -webkit-overflow-scrolling: touch; }
+/* Verhindern dass iOS Text zu groß skaliert */
+body { -webkit-text-size-adjust: 100%; }
+/* iPhone Retina: höhere Auflösung Icons */
+@media (-webkit-min-device-pixel-ratio: 2) {
+  .sp-av svg { image-rendering: -webkit-optimize-contrast; }
+}
+/* Verbesserte Mobile Font-Sizes */
+@media (max-width: 480px) {
+  .hdr-logo span:first-child { font-size: 1.1rem; }
+  .hero-day-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+  .dcard-title { font-size: 1.1rem; }
+}
 </style>
 </head>
 <body>
@@ -636,115 +693,199 @@ ul { list-style: none; }
   <div class="sp-avatars" id="sp-avatars">
     <!-- Michael -->
     <div class="sp-av" id="sp-av-0">
-      <svg viewBox="0 0 90 110" width="72" height="88">
-        <!-- Körper / Shirt (blau) -->
-        <path d="M10,75 L5,108 L85,108 L80,75 Q65,84 45,84 Q25,84 10,75Z" fill="#1a7abf"/>
-        <!-- Hals -->
-        <rect x="37" y="64" width="16" height="14" fill="#f0b48a"/>
-        <!-- Kopf -->
-        <ellipse cx="45" cy="43" rx="27" ry="26" fill="#f0b48a"/>
-        <!-- Kurzes Haar / sehr kurzer Haarschatten -->
-        <ellipse cx="45" cy="22" rx="27" ry="10" fill="#6a4030" opacity=".55"/>
-        <!-- Sonnenbrille (verspiegelt, blau) -->
-        <rect x="17" y="35" width="21" height="12" rx="6" fill="#1a5fa8" opacity=".95"/>
-        <rect x="52" y="35" width="21" height="12" rx="6" fill="#1a5fa8" opacity=".95"/>
-        <rect x="37" y="39" width="16" height="4" fill="#0d3a6b"/>
-        <ellipse cx="27" cy="41" rx="8" ry="4.5" fill="rgba(90,180,255,.35)"/>
-        <ellipse cx="62" cy="41" rx="8" ry="4.5" fill="rgba(90,180,255,.35)"/>
-        <!-- Lächeln -->
-        <path d="M30,56 Q45,67 60,56" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- Wangen -->
-        <circle cx="29" cy="54" r="5" fill="#ffb0a0" opacity=".35"/>
-        <circle cx="61" cy="54" r="5" fill="#ffb0a0" opacity=".35"/>
+      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="m-skin" cx="45%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#f5c5a0"/>
+            <stop offset="60%" stop-color="#e8a87c"/>
+            <stop offset="100%" stop-color="#c97a45"/>
+          </radialGradient>
+          <radialGradient id="m-hair" cx="50%" cy="30%" r="60%">
+            <stop offset="0%" stop-color="#8a6a4a"/>
+            <stop offset="100%" stop-color="#3d2810"/>
+          </radialGradient>
+          <linearGradient id="m-lens" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5bb8f5" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#1a7abf" stop-opacity="0.95"/>
+          </linearGradient>
+          <filter id="m-shadow">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0a3d6b" flood-opacity="0.25"/>
+          </filter>
+        </defs>
+        <ellipse cx="45" cy="50" rx="28" ry="32" fill="url(#m-skin)" filter="url(#m-shadow)"/>
+        <path d="M20,36 Q22,18 45,16 Q68,18 70,36 Q65,24 45,22 Q25,24 20,36 Z" fill="url(#m-hair)"/>
+        <ellipse cx="17" cy="50" rx="5" ry="7" fill="#d9956a"/>
+        <ellipse cx="73" cy="50" rx="5" ry="7" fill="#d9956a"/>
+        <rect x="24" y="40" width="42" height="14" rx="7" fill="#1a2c45" opacity="0.95"/>
+        <rect x="26" y="42" width="16" height="10" rx="5" fill="url(#m-lens)" opacity="0.85"/>
+        <rect x="48" y="42" width="16" height="10" rx="5" fill="url(#m-lens)" opacity="0.85"/>
+        <rect x="41" y="44" width="8" height="3" rx="1.5" fill="#0a3d6b"/>
+        <path d="M29,44 Q32,43 36,44" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M51,44 Q54,43 58,44" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M42,54 Q40,60 44,63 Q48,64 50,61 Q52,58 50,54" fill="none" stroke="#c07040" stroke-width="1.2"/>
+        <path d="M37,70 Q45,76 53,70" stroke="#c07040" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M37,70 Q45,73 53,70" stroke="#e8856a" stroke-width="1.5" fill="none"/>
+        <ellipse cx="45" cy="78" rx="18" ry="6" fill="rgba(180,100,50,0.12)"/>
+        <ellipse cx="38" cy="38" rx="8" ry="6" fill="rgba(255,255,255,0.18)"/>
       </svg>
       <span class="sp-av-name">Michael</span>
     </div>
 
     <!-- Nina -->
     <div class="sp-av" id="sp-av-1">
-      <svg viewBox="0 0 90 110" width="72" height="88">
-        <!-- Körper / helles Oberteil -->
-        <path d="M12,73 L7,108 L83,108 L78,73 Q64,82 45,82 Q26,82 12,73Z" fill="#e8e4e0"/>
-        <!-- Hals -->
-        <rect x="38" y="62" width="14" height="13" fill="#f0b48a"/>
-        <!-- Kopf -->
-        <ellipse cx="45" cy="42" rx="25" ry="24" fill="#f0b48a"/>
-        <!-- Schwarzes Haar (schulterlang, Seiten) -->
-        <rect x="17" y="28" width="10" height="52" rx="5" fill="#0f0505"/>
-        <rect x="63" y="28" width="10" height="52" rx="5" fill="#0f0505"/>
-        <!-- Haar oben -->
-        <path d="M19,38 Q21,14 45,13 Q69,14 71,38 Q63,21 45,21 Q27,21 19,38" fill="#0f0505"/>
-        <!-- Rote eckige Brille -->
-        <rect x="18" y="34" width="21" height="13" rx="3" fill="none" stroke="#cc1a1a" stroke-width="3"/>
-        <rect x="51" y="34" width="21" height="13" rx="3" fill="none" stroke="#cc1a1a" stroke-width="3"/>
-        <line x1="39" y1="40" x2="51" y2="40" stroke="#cc1a1a" stroke-width="2.2"/>
-        <rect x="18" y="34" width="21" height="13" rx="3" fill="#ffe8e8" opacity=".2"/>
-        <rect x="51" y="34" width="21" height="13" rx="3" fill="#ffe8e8" opacity=".2"/>
-        <!-- Silberne Uhr-Andeutung -->
-        <rect x="14" y="70" width="8" height="4" rx="1.5" fill="#c0c0c0" opacity=".8"/>
-        <!-- Lächeln -->
-        <path d="M30,52 Q45,63 60,52" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <circle cx="29" cy="51" r="5" fill="#ffb0a0" opacity=".4"/>
-        <circle cx="61" cy="51" r="5" fill="#ffb0a0" opacity=".4"/>
+      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="n-skin" cx="45%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#f8d0b0"/>
+            <stop offset="60%" stop-color="#f0b88a"/>
+            <stop offset="100%" stop-color="#d4855a"/>
+          </radialGradient>
+          <radialGradient id="n-hair" cx="50%" cy="20%" r="65%">
+            <stop offset="0%" stop-color="#3a2828"/>
+            <stop offset="50%" stop-color="#1a1010"/>
+            <stop offset="100%" stop-color="#0d0808"/>
+          </radialGradient>
+          <radialGradient id="n-iris" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#6a5a4a"/>
+            <stop offset="100%" stop-color="#3a2820"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="45" cy="52" rx="26" ry="30" fill="url(#n-skin)"/>
+        <path d="M19,45 Q18,22 45,18 Q72,22 71,45 Q68,28 45,24 Q22,28 19,45 Z" fill="url(#n-hair)"/>
+        <path d="M19,45 Q16,50 17,62 Q19,55 22,52 Q20,48 19,45 Z" fill="#1a1010"/>
+        <path d="M71,45 Q74,50 73,62 Q71,55 68,52 Q70,48 71,45 Z" fill="#1a1010"/>
+        <ellipse cx="18" cy="52" rx="4" ry="6" fill="#d4906a"/>
+        <circle cx="18" cy="58" r="2.5" fill="none" stroke="#c0c0c0" stroke-width="1.5"/>
+        <ellipse cx="72" cy="52" rx="4" ry="6" fill="#d4906a"/>
+        <rect x="24" y="44" width="17" height="11" rx="2" fill="none" stroke="#c4200a" stroke-width="2.5"/>
+        <rect x="49" y="44" width="17" height="11" rx="2" fill="none" stroke="#c4200a" stroke-width="2.5"/>
+        <line x1="41" y1="49" x2="49" y2="49" stroke="#c4200a" stroke-width="2"/>
+        <rect x="25.5" y="45.5" width="14" height="8" rx="1.5" fill="rgba(180,220,255,0.2)"/>
+        <rect x="50.5" y="45.5" width="14" height="8" rx="1.5" fill="rgba(180,220,255,0.2)"/>
+        <ellipse cx="33" cy="50" rx="5" ry="3.5" fill="white"/>
+        <circle cx="33" cy="50" r="2.5" fill="url(#n-iris)"/>
+        <circle cx="33" cy="50" r="1.2" fill="#1a0808"/>
+        <circle cx="34" cy="48.5" r="1" fill="white" opacity="0.9"/>
+        <ellipse cx="57" cy="50" rx="5" ry="3.5" fill="white"/>
+        <circle cx="57" cy="50" r="2.5" fill="url(#n-iris)"/>
+        <circle cx="57" cy="50" r="1.2" fill="#1a0808"/>
+        <circle cx="58" cy="48.5" r="1" fill="white" opacity="0.9"/>
+        <path d="M28,47 Q33,44 38,47" stroke="#1a0808" stroke-width="1" fill="none"/>
+        <path d="M52,47 Q57,44 62,47" stroke="#1a0808" stroke-width="1" fill="none"/>
+        <path d="M42,57 Q40,62 44,65 Q48,65 50,62 Q50,59 48,57" fill="none" stroke="#c07050" stroke-width="1.2"/>
+        <path d="M36,72 Q45,77 54,72" stroke="#d4605a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M38,72 Q45,74 52,72" stroke="#e8856a" stroke-width="1" fill="none"/>
+        <ellipse cx="38" cy="40" rx="7" ry="5" fill="rgba(255,255,255,0.2)"/>
+        <rect x="15" y="65" width="6" height="4" rx="1" fill="none" stroke="#c0c0c0" stroke-width="1"/>
       </svg>
       <span class="sp-av-name">Nina</span>
     </div>
 
     <!-- Maxi -->
     <div class="sp-av" id="sp-av-2">
-      <svg viewBox="0 0 90 110" width="72" height="88">
-        <!-- Körper / schwarzes T-Shirt -->
-        <path d="M11,74 L6,108 L84,108 L79,74 Q65,83 45,83 Q25,83 11,74Z" fill="#1a1a1a"/>
-        <!-- Hals -->
-        <rect x="37" y="63" width="16" height="12" fill="#f0b48a"/>
-        <!-- Kopf (runder, jünger) -->
-        <circle cx="45" cy="43" r="27" fill="#f0b48a"/>
-        <!-- Lockiges dunkles Haar -->
-        <path d="M18,42 Q19,14 45,13 Q71,14 72,42 Q66,22 45,22 Q24,22 18,42" fill="#100808"/>
-        <circle cx="22" cy="38" r="8" fill="#100808"/>
-        <circle cx="68" cy="38" r="8" fill="#100808"/>
-        <circle cx="33" cy="15" r="7" fill="#100808"/>
-        <circle cx="57" cy="15" r="7" fill="#100808"/>
-        <circle cx="45" cy="13" r="6" fill="#100808"/>
-        <!-- Große Augen (junge Gesicht) -->
-        <circle cx="35" cy="42" r="5" fill="#1a0800"/>
-        <circle cx="55" cy="42" r="5" fill="#1a0800"/>
-        <circle cx="36.5" cy="40.5" r="2" fill="#fff"/>
-        <circle cx="56.5" cy="40.5" r="2" fill="#fff"/>
-        <!-- Breites Grinsen -->
-        <path d="M28,56 Q45,70 62,56" stroke="#c47a50" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <circle cx="27" cy="54" r="6" fill="#ffb0a0" opacity=".4"/>
-        <circle cx="63" cy="54" r="6" fill="#ffb0a0" opacity=".4"/>
+      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="mx-skin" cx="45%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#f8c890"/>
+            <stop offset="60%" stop-color="#e8a870"/>
+            <stop offset="100%" stop-color="#c87840"/>
+          </radialGradient>
+          <radialGradient id="mx-iris" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#6a7a5a"/>
+            <stop offset="100%" stop-color="#283820"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="45" cy="52" rx="26" ry="29" fill="url(#mx-skin)"/>
+        <path d="M20,44 Q22,20 45,18 Q68,20 70,44 Q65,26 45,22 Q25,26 20,44 Z" fill="#2a1808"/>
+        <path d="M22,42 Q18,34 24,30 Q26,38 22,42 Z" fill="#3a2010"/>
+        <path d="M68,42 Q72,34 66,30 Q64,38 68,42 Z" fill="#3a2010"/>
+        <path d="M30,26 Q28,18 36,20 Q34,26 30,26 Z" fill="#2a1808"/>
+        <path d="M60,26 Q62,18 54,20 Q56,26 60,26 Z" fill="#2a1808"/>
+        <path d="M40,22 Q38,14 46,16 Q44,22 40,22 Z" fill="#2a1808"/>
+        <path d="M28,28 Q30,24 34,26" stroke="#6a4020" stroke-width="1.5" fill="none"/>
+        <path d="M56,26 Q60,22 64,26" stroke="#6a4020" stroke-width="1.5" fill="none"/>
+        <ellipse cx="18" cy="52" rx="5" ry="7" fill="#d49060"/>
+        <ellipse cx="72" cy="52" rx="5" ry="7" fill="#d49060"/>
+        <ellipse cx="33" cy="49" rx="6.5" ry="5" fill="white"/>
+        <circle cx="33" cy="50" r="3.5" fill="url(#mx-iris)"/>
+        <circle cx="33" cy="50" r="1.8" fill="#161008"/>
+        <circle cx="34.5" cy="48" r="1.2" fill="white" opacity="0.95"/>
+        <ellipse cx="57" cy="49" rx="6.5" ry="5" fill="white"/>
+        <circle cx="57" cy="50" r="3.5" fill="url(#mx-iris)"/>
+        <circle cx="57" cy="50" r="1.8" fill="#161008"/>
+        <circle cx="58.5" cy="48" r="1.2" fill="white" opacity="0.95"/>
+        <path d="M27,44 Q33,41 39,44" stroke="#2a1808" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M51,44 Q57,41 63,44" stroke="#2a1808" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M41,57 Q38,63 44,65 Q48,65 52,63 Q54,57 51,57" fill="none" stroke="#b87040" stroke-width="1.5"/>
+        <path d="M31,70 Q45,80 59,70 Q55,75 45,77 Q35,75 31,70 Z" fill="white"/>
+        <path d="M31,70 Q45,80 59,70" stroke="#c07040" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <line x1="38" y1="70" x2="38" y2="76" stroke="#e0c0a0" stroke-width="0.8"/>
+        <line x1="45" y1="70" x2="45" y2="77" stroke="#e0c0a0" stroke-width="0.8"/>
+        <line x1="52" y1="70" x2="52" y2="76" stroke="#e0c0a0" stroke-width="0.8"/>
+        <circle cx="31" cy="66" r="3" fill="rgba(200,120,80,0.2)"/>
+        <circle cx="59" cy="66" r="3" fill="rgba(200,120,80,0.2)"/>
+        <ellipse cx="37" cy="40" rx="8" ry="5" fill="rgba(255,255,255,0.22)"/>
       </svg>
       <span class="sp-av-name">Maxi</span>
     </div>
 
     <!-- Leah -->
     <div class="sp-av" id="sp-av-3">
-      <svg viewBox="0 0 90 110" width="72" height="88">
-        <!-- Körper / lila/farbiges Oberteil -->
-        <path d="M12,72 L7,108 L83,108 L78,72 Q64,81 45,81 Q26,81 12,72Z" fill="#7b2d8b"/>
-        <!-- Hals -->
-        <rect x="38" y="61" width="14" height="13" fill="#f0b48a"/>
-        <!-- Kopf -->
-        <ellipse cx="45" cy="42" rx="25" ry="24" fill="#f0b48a"/>
-        <!-- Langes glattes dunkles Haar -->
-        <rect x="16" y="24" width="12" height="68" rx="6" fill="#150808"/>
-        <rect x="62" y="24" width="12" height="68" rx="6" fill="#150808"/>
-        <path d="M19,38 Q20,14 45,13 Q70,14 71,38 Q64,21 45,21 Q26,21 19,38" fill="#150808"/>
-        <!-- Sonnenbrille auf dem Kopf -->
-        <rect x="22" y="17" width="18" height="9" rx="4" fill="#1a1a1a" opacity=".85"/>
-        <rect x="50" y="17" width="18" height="9" rx="4" fill="#1a1a1a" opacity=".85"/>
-        <rect x="39" y="20" width="12" height="3" fill="#333"/>
-        <!-- Augen -->
-        <ellipse cx="35" cy="40" rx="4.5" ry="3.5" fill="#150800"/>
-        <ellipse cx="55" cy="40" rx="4.5" ry="3.5" fill="#150800"/>
-        <ellipse cx="36.5" cy="38.5" rx="1.8" ry="1.2" fill="#fff"/>
-        <ellipse cx="56.5" cy="38.5" rx="1.8" ry="1.2" fill="#fff"/>
-        <!-- Lächeln -->
-        <path d="M31,52 Q45,63 59,52" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <circle cx="30" cy="51" r="5" fill="#ffb0a0" opacity=".35"/>
-        <circle cx="60" cy="51" r="5" fill="#ffb0a0" opacity=".35"/>
+      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="l-skin" cx="45%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#fad8b8"/>
+            <stop offset="60%" stop-color="#f0b890"/>
+            <stop offset="100%" stop-color="#d88858"/>
+          </radialGradient>
+          <radialGradient id="l-hair" cx="50%" cy="15%" r="70%">
+            <stop offset="0%" stop-color="#4a3020"/>
+            <stop offset="50%" stop-color="#2a1810"/>
+            <stop offset="100%" stop-color="#180e08"/>
+          </radialGradient>
+          <radialGradient id="l-iris" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#7a6050"/>
+            <stop offset="100%" stop-color="#3a2010"/>
+          </radialGradient>
+        </defs>
+        <path d="M20,48 Q16,55 15,75 Q18,65 22,60 Q20,54 20,48 Z" fill="url(#l-hair)"/>
+        <path d="M70,48 Q74,55 75,75 Q72,65 68,60 Q70,54 70,48 Z" fill="url(#l-hair)"/>
+        <path d="M20,48 Q22,22 45,20 Q68,22 70,48 Q65,30 45,26 Q25,30 20,48 Z" fill="url(#l-hair)"/>
+        <path d="M25,30 Q30,24 36,26" stroke="#6a4820" stroke-width="1.5" fill="none"/>
+        <path d="M54,26 Q60,22 66,28" stroke="#6a4820" stroke-width="1.5" fill="none"/>
+        <rect x="26" y="20" width="38" height="8" rx="4" fill="#2a1808" opacity="0.9"/>
+        <rect x="27.5" y="21" width="14" height="6" rx="3" fill="rgba(100,180,220,0.4)"/>
+        <rect x="48.5" y="21" width="14" height="6" rx="3" fill="rgba(100,180,220,0.4)"/>
+        <line x1="41.5" y1="24" x2="48.5" y2="24" stroke="#2a1808" stroke-width="2"/>
+        <path d="M29,22 Q34,21 38,22" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none"/>
+        <ellipse cx="45" cy="54" rx="25" ry="28" fill="url(#l-skin)"/>
+        <ellipse cx="19" cy="54" rx="4" ry="6" fill="#e09870"/>
+        <ellipse cx="71" cy="54" rx="4" ry="6" fill="#e09870"/>
+        <path d="M27,50 Q33,46 39,50 Q33,54 27,50 Z" fill="white"/>
+        <circle cx="33" cy="50" r="2.8" fill="url(#l-iris)"/>
+        <circle cx="33" cy="50" r="1.4" fill="#1a0808"/>
+        <circle cx="34" cy="48.5" r="1" fill="white" opacity="0.9"/>
+        <path d="M51,50 Q57,46 63,50 Q57,54 51,50 Z" fill="white"/>
+        <circle cx="57" cy="50" r="2.8" fill="url(#l-iris)"/>
+        <circle cx="57" cy="50" r="1.4" fill="#1a0808"/>
+        <circle cx="58" cy="48.5" r="1" fill="white" opacity="0.9"/>
+        <path d="M27,50 Q33,46 39,50" stroke="#1a0808" stroke-width="1.5" fill="none"/>
+        <path d="M51,50 Q57,46 63,50" stroke="#1a0808" stroke-width="1.5" fill="none"/>
+        <line x1="29" y1="49" x2="27" y2="46" stroke="#1a0808" stroke-width="1"/>
+        <line x1="33" y1="47" x2="33" y2="44" stroke="#1a0808" stroke-width="1"/>
+        <line x1="37" y1="49" x2="39" y2="46" stroke="#1a0808" stroke-width="1"/>
+        <line x1="53" y1="49" x2="51" y2="46" stroke="#1a0808" stroke-width="1"/>
+        <line x1="57" y1="47" x2="57" y2="44" stroke="#1a0808" stroke-width="1"/>
+        <line x1="61" y1="49" x2="63" y2="46" stroke="#1a0808" stroke-width="1"/>
+        <path d="M26,46 Q33,43 40,46" stroke="#2a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M50,46 Q57,43 64,46" stroke="#2a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M42,58 Q40,63 44,65 Q48,64 50,62 Q50,59 48,58" fill="none" stroke="#c08060" stroke-width="1.2"/>
+        <path d="M36,72 Q45,78 54,72" stroke="#c87060" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M38,72 Q45,75 52,72" stroke="#e89080" stroke-width="1.2" fill="none"/>
+        <path d="M39,72 Q45,71 51,72" stroke="rgba(255,200,180,0.6)" stroke-width="1" fill="none"/>
+        <ellipse cx="30" cy="62" rx="7" ry="4" fill="rgba(220,120,100,0.15)"/>
+        <ellipse cx="60" cy="62" rx="7" ry="4" fill="rgba(220,120,100,0.15)"/>
+        <ellipse cx="39" cy="43" rx="7" ry="4" fill="rgba(255,255,255,0.22)"/>
       </svg>
       <span class="sp-av-name">Leah</span>
     </div>
@@ -1458,6 +1599,27 @@ function renderPhaseHero() {
         <div class="hero-trip-title">${d.title}</div>
         <div class="hero-trip-sub">${d.date} · ${d.wd} · ${d.sub}</div>
       </div>
+    </div>
+    <div class="wc-edge">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,80
+          C30,65 55,90 90,72 C115,58 140,85 175,70
+          C200,58 225,82 255,68 C278,57 302,78 330,62
+          C358,46 380,75 412,58 C440,43 462,72 492,55
+          C520,40 548,68 578,52 C605,38 628,62 658,48
+          C685,35 710,60 742,44 C770,30 796,55 828,40
+          C858,26 882,52 912,36 C940,22 965,46 996,30
+          C1024,16 1050,38 1080,22 C1108,8 1135,30 1160,18
+          L1200,10 L1200,120 L0,120 Z" fill="white"/>
+        <path d="M0,95
+          C40,85 75,100 110,88 C145,76 175,95 210,84
+          C245,72 278,90 314,80 C350,70 382,88 418,76
+          C454,64 488,85 524,73 C560,60 592,82 628,68
+          C664,55 698,75 734,62 C770,48 804,70 840,56
+          C876,42 910,65 946,50 C982,36 1016,58 1052,44
+          C1088,30 1122,52 1160,38
+          L1200,30 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.65)"/>
+      </svg>
     </div>`;
 }
 
