@@ -624,36 +624,29 @@ ul { list-style: none; }
 .wc-edge svg { width: 100%; height: 100%; display: block; }
 
 /* ══ iOS / TOUCH OPTIMIERUNGEN ══ */
-/* ── FOTO-AVATARE ── */
-.av-photo {
+/* ── 3D AVATAR PORTRAITS ── */
+.av-wrap {
   width: 90px; height: 90px;
-  border-radius: 50%;
-  background-image: url('family.jpg');
-  background-size: 540px auto;
-  background-repeat: no-repeat;
-  border: 3px solid rgba(255,255,255,0.88);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.25);
+  border-radius: 50%; overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.9);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.45), 0 0 0 2px rgba(255,255,255,0.2);
   flex-shrink: 0;
 }
-/* Gesichtspositionen: bg-size 540px bei 900px Original = 60% Zoom */
-.av-photo-michael { background-position: -273px -267px; }
-.av-photo-nina    { background-position: -72px  -567px; }
-.av-photo-maxi    { background-position: -183px -429px; }
-.av-photo-leah    { background-position: -297px -75px;  }
+.av-wrap-sm {
+  width: 30px; height: 30px;
+  border-width: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.av-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Header Mini-Avatare mit echtem Foto */
+/* Header Mini-Avatare */
 .hdr-av {
-  width: 28px; height: 28px; border-radius: 50%; overflow: hidden;
-  border: 2px solid rgba(255,255,255,.4);
-  background-image: url('family.jpg');
-  background-size: 168px auto;
-  background-repeat: no-repeat;
+  width: 30px; height: 30px; border-radius: 50%; overflow: hidden;
+  border: 2px solid rgba(255,255,255,.45);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   flex-shrink: 0;
 }
-.hdr-av-michael { background-position: -85px -83px; }
-.hdr-av-nina    { background-position: -22px -177px; }
-.hdr-av-maxi    { background-position: -57px -134px; }
-.hdr-av-leah    { background-position: -93px -23px;  }
+.hdr-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* iOS Safe Area */
 #app-hdr {
@@ -724,26 +717,25 @@ body { -webkit-text-size-adjust: 100%; }
   <div class="sp-avatars" id="sp-avatars">
     <!-- Michael -->
     <div class="sp-av" id="sp-av-0">
-      <div class="av-photo av-photo-michael"></div>
+      <div class="av-wrap"><img src="av-michael.png" alt="Michael" class="av-img"></div>
       <span class="sp-av-name">Michael</span>
     </div>
 
     <!-- Nina -->
     <div class="sp-av" id="sp-av-1">
-      <div class="av-photo av-photo-nina"></div>
+      <div class="av-wrap"><img src="av-nina.png" alt="Nina" class="av-img"></div>
       <span class="sp-av-name">Nina</span>
     </div>
 
     <!-- Maxi -->
     <div class="sp-av" id="sp-av-2">
-      <div class="av-photo av-photo-maxi"></div>
+      <div class="av-wrap"><img src="av-maxi.png" alt="Maxi" class="av-img"></div>
       <span class="sp-av-name">Maxi</span>
     </div>
 
-
     <!-- Leah -->
     <div class="sp-av" id="sp-av-3">
-      <div class="av-photo av-photo-leah"></div>
+      <div class="av-wrap"><img src="av-leah.png" alt="Leah" class="av-img"></div>
       <span class="sp-av-name">Leah</span>
     </div>
   </div>
@@ -1379,10 +1371,10 @@ function renderHeader() {
   document.getElementById('app-hdr').innerHTML = `
     <div class="hdr-logo">🌊 Korfu &amp; <span>Ksamil</span></div>
     <div class="hdr-avs">
-      <div class="hdr-av hdr-av-michael" title="Michael"></div>
-      <div class="hdr-av hdr-av-nina"    title="Nina"></div>
-      <div class="hdr-av hdr-av-maxi"    title="Maxi"></div>
-      <div class="hdr-av hdr-av-leah"    title="Leah"></div>
+      <div class="hdr-av" title="Michael"><img src="av-michael.png" alt="Michael"></div>
+      <div class="hdr-av" title="Nina"><img src="av-nina.png" alt="Nina"></div>
+      <div class="hdr-av" title="Maxi"><img src="av-maxi.png" alt="Maxi"></div>
+      <div class="hdr-av" title="Leah"><img src="av-leah.png" alt="Leah"></div>
     </div>
     <div class="hdr-btns">
       <button class="hbtn" onclick="openModal('route')">🗺 Route</button>
