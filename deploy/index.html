@@ -785,8 +785,15 @@ function renderDay(d, idx) {
 
   h += `<div class="dbody">`;
 
-  // Freischalt-Badge beim heutigen Tag (animiert eingeblendet)
-  if (isToday) h += `<div class="unlock-badge">✨ Heute freigeschaltet</div>`;
+  // Freischalt-Badge beim heutigen Tag — nur beim ERSTEN Aufruf des Tages (localStorage-Flag)
+  if (isToday) {
+    const key = 'korfu26_unlocked_' + d.id;
+    const firstVisit = !localStorage.getItem(key);
+    if (firstVisit) {
+      localStorage.setItem(key, '1');
+      h += `<div class="unlock-badge">✨ ${d.title} freigeschaltet!</div>`;
+    }
+  }
 
   // Gesperrte Tage: nur 🔒 + Datum zeigen, kein Inhalt dahinter
   if (isLocked) {
