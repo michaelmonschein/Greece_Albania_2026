@@ -1182,7 +1182,6 @@ function switchTab(id) {
 
   // Aktiven Tab und activeDay aktualisieren
   activeTab = id;
-  const dayIdx = DAYS.findIndex(d => d.id === id);
   if (dayIdx >= 0) activeDay = dayIdx; // nur bei echtem Tages-Tab
 
   // Active-Klasse auf allen Buttons neu setzen
