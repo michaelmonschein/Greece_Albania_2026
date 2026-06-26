@@ -2,881 +2,897 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌊 Korfu & Ksamil 2026 — Familie Monschein</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Korfu & Ksamil 2026 · Familie Monschein</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 <style>
-/* ── DESIGN SYSTEM ── */
+/* ══════════════════════════════════════
+   DESIGN SYSTEM — Custom Properties
+══════════════════════════════════════ */
 :root {
-  /* Farben */
-  --sea:      #1a7abf;
-  --sea2:     #5bb8f5;
-  --sea3:     #c4eeff;
-  --sea-deep: #0a3d6b;
-  --terra:    #c4622d;
-  --terra2:   #e8855a;
-  --olive:    #5c7a3e;
-  --olive2:   #8ab55a;
-  --sand:     #f8f4ee;
-  --sand2:    #f2e4c4;
-  --lemon:    #ffe566;
-  --lemon2:   #ffc200;
-  --chalk:    #fdfcfa;
-  --dark:     #1a2c45;
-  --muted:    #5a7a9a;
-  --muted2:   #8aa4bc;
-
-  /* Etappen-Farben */
-  --e1: #1a7abf;
-  --e2: #c4622d;
-  --e3: #5c7a3e;
-  --tv: #4a5568;
-
-  /* UI */
-  --r:  14px;
-  --r2: 22px;
-  --sh: 0 4px 28px rgba(26,122,191,.12);
-  --sh2: 0 8px 48px rgba(26,44,69,.18);
-
-  /* Animationen */
-  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
-  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --tiefsee:    #0d3b5e;
+  --aegaeis:    #1a6b9a;
+  --horizont:   #5ba3c9;
+  --creme:      #f7f2eb;
+  --warm-white: #fefcf8;
+  --tinte:      #1a2332;
+  --blaugrau:   #5a7a8a;
+  --border:     #e8e0d5;
+  --e1:         #1a6b9a;
+  --e2:         #2a9d8f;
+  --e3:         #5c7a3e;
+  --tv:         #8a9aaa;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Nunito', system-ui, sans-serif;
+  --header-h:   52px;
+  --nav-h:      calc(64px + env(safe-area-inset-bottom));
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* ── RESET ── */
+/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--chalk);
-  color: var(--dark);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-button { cursor: pointer; font-family: inherit; border: none; background: none; }
+html, body { height: 100%; overflow: hidden; background: var(--creme); }
+body { font-family: var(--font-body); color: var(--tinte); }
 img { display: block; max-width: 100%; }
-ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
 
-/* ── PREVIEW BANNER ── */
-#preview-banner {
-  display: none;
-  background: var(--dark);
-  color: rgba(255,255,255,.85);
-  font-size: .7rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 6px 16px;
-  letter-spacing: .5px;
-  position: sticky;
-  top: 0;
-  z-index: 9998;
+/* ── App Shell ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
-#preview-banner.show { display: block; }
 
-/* ── APP WRAPPER ── */
-#app { opacity: 0; transition: opacity .6s var(--ease-out); min-height: 100vh; }
-#app.vis { opacity: 1; }
-
-/* ══ SPLASH ══ */
-#splash {
-  position: fixed; inset: 0; z-index: 9999;
-  /* Hell oben (Familie integrate sich nahtlos via multiply), tief-blau unten (Meer) */
-  background: linear-gradient(175deg,
-    #f0f8ff 0%,
-    #c4e8ff 35%,
-    #5bb8f5 65%,
-    #1a7abf 85%,
-    #0a3d6b 100%
-  );
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  overflow: hidden; transition: opacity .9s var(--ease-out);
-}
-#splash.out { opacity: 0; pointer-events: none; }
-
-/* Familienfoto Wrapper — Positionierung ohne transform-Konflikt mit fadeUp */
-.sp-family-wrap {
-  position: absolute;
-  /* Im hellen Bereich des Gradients (oben = Hellblau/Creme) */
-  top: clamp(16vh, 20%, 24vh);
-  left: 50%; transform: translateX(-50%);
-  width: min(92vw, 580px);
-  z-index: 9;
+/* ── Header ── */
+#app-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: transparent;
   pointer-events: none;
-  opacity: 0;
-  animation: fadeUp .9s var(--ease-spring) .5s forwards;
-  /* Unten auslaufen lassen — Figuren "tauchen aus dem Meer auf" */
-  mask-image: linear-gradient(to bottom, black 0%, black 48%, transparent 78%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 48%, transparent 78%);
 }
-.sp-family-group {
-  width: 100%; display: block;
-  /* Weißer Hintergrund des Bildes verschwindet auf hellen Flächen via multiply */
-  mix-blend-mode: multiply;
+#app-header.solid {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  pointer-events: all;
 }
-
-/* Sonne */
-.sp-sun {
-  position: absolute; top: 8vh; left: 50%; transform: translateX(-50%);
-  width: clamp(55px,10vw,90px); height: clamp(55px,10vw,90px);
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #fff9c4, #ffe566 35%, #ffc200 65%, rgba(255,150,0,0) 100%);
-  box-shadow: 0 0 0 clamp(10px,1.8vw,20px) rgba(255,220,50,.18), 0 0 0 clamp(20px,3.5vw,40px) rgba(255,200,0,.09);
-  animation: sunPulse 4s ease-in-out infinite;
-  z-index: 8;
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--tiefsee);
+  pointer-events: all;
+  letter-spacing: -0.01em;
 }
-@keyframes sunPulse {
-  50% { box-shadow: 0 0 0 clamp(18px,3vw,36px) rgba(255,220,50,.25), 0 0 0 clamp(36px,6vw,72px) rgba(255,200,0,.12); }
-}
-
-/* Inseln */
-.sp-island {
-  position: absolute; border-radius: 50% 50% 0 0;
-  background: linear-gradient(180deg, #6a9a4a, #4a7a2e);
-}
-.sp-island-l { width: 90px; height: 42px; bottom: 22%; left: 12%; }
-.sp-island-r { width: 60px; height: 28px; bottom: 22%; right: 18%; }
-.sp-island-sm { width: 38px; height: 18px; bottom: calc(22% + 20px); right: 30%; }
-
-/* Meer */
-.sp-sea {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 22%;
-  background: linear-gradient(180deg, #1a7abf 0%, #0a3d6b 100%);
-}
-.sp-wave {
-  position: absolute; left: -5%; right: -5%; border-radius: 50%;
-  background: rgba(255,255,255,.22);
-}
-.sp-wave-1 { height: 28px; bottom: calc(22% + 14px); animation: waveFloat 5s ease-in-out infinite; }
-.sp-wave-2 { height: 20px; bottom: calc(22% + 28px); animation: waveFloat 6.5s ease-in-out infinite reverse; }
-@keyframes waveFloat {
-  0%,100% { transform: scaleX(1) translateY(0); }
-  50%      { transform: scaleX(1.04) translateY(-5px); }
-}
-
-/* Segelboot */
-.sp-boat {
-  position: absolute; bottom: calc(22% + 6px); left: 55%;
-  opacity: 0; animation: boatAppear 1s var(--ease-spring) 2.8s forwards;
-}
-.sp-boat svg { width: 42px; height: 42px; }
-@keyframes boatAppear { to { opacity: 1; } }
-
-/* Titel — klein und elegant oben, auf hellem Gradient */
-.sp-title {
-  position: absolute; top: 5vh; left: 50%; transform: translateX(-50%);
-  z-index: 10; text-align: center; width: 90%;
-  opacity: 0; animation: fadeUp .7s var(--ease-spring) .2s forwards;
-}
-.sp-title h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.6rem, 4.5vw, 2.4rem); font-weight: 900;
-  color: var(--sea-deep); text-shadow: 0 1px 8px rgba(255,255,255,.6);
-  letter-spacing: -.5px;
-}
-.sp-title p {
-  font-size: clamp(.68rem,1.8vw,.85rem); color: var(--sea);
-  letter-spacing: 2.5px; text-transform: uppercase; margin-top: 5px;
-  font-weight: 700;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Avatar-Reihe */
-.sp-avatars {
-  display: flex; gap: clamp(10px,3vw,28px);
-  position: relative; z-index: 10; margin-top: 18px;
-}
-.sp-av {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  opacity: 0; transform: translateY(24px) scale(.9);
-}
-.sp-av.show {
-  animation: avPop .55s var(--ease-spring) forwards;
-}
-@keyframes avPop {
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.sp-av-name {
-  font-weight: 800; font-size: .75rem; color: #fff;
-  letter-spacing: 1px; text-shadow: 0 1px 8px rgba(0,0,0,.3);
-}
-
-/* Skip-Button */
-#skip-btn {
-  position: absolute; top: 14px; right: 14px; z-index: 10001;
-  background: rgba(255,255,255,.18); color: #fff;
-  border: 1.5px solid rgba(255,255,255,.4); border-radius: 20px;
-  padding: 5px 14px; font-size: .75rem; font-weight: 800;
-  backdrop-filter: blur(6px); transition: background .2s;
-}
-#skip-btn:hover { background: rgba(255,255,255,.32); }
-
-/* ══ HEADER ══ */
-#app-hdr {
-  background: linear-gradient(135deg, var(--sea-deep) 0%, #0d2a50 100%);
-  padding: 11px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 20px rgba(10,40,80,.3);
-}
-.hdr-logo {
-  font-family: 'Playfair Display', serif;
-  color: #fff; font-size: clamp(.9rem, 2.2vw, 1.25rem); font-weight: 700;
-}
-.hdr-logo span { color: var(--lemon); }
-.hdr-avs { display: flex; gap: 4px; align-items: center; }
-.hdr-av  { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,.3); }
-.hdr-btns { display: flex; gap: 6px; }
-.hbtn {
-  background: rgba(255,255,255,.13); color: #fff;
-  border: 1.5px solid rgba(255,255,255,.28); border-radius: 9px;
-  padding: 6px 11px; font-size: .72rem; font-weight: 800;
-  display: flex; align-items: center; gap: 4px;
-  transition: all .18s;
-}
-.hbtn:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
-
-/* ══ PHASE HERO ══ */
-#phase-hero {
-  width: 100%; overflow: visible;
-  position: relative; min-height: 300px;
-}
-
-/* Pre-Trip Hero — Epic Photo Style (wie Epic.com Referenz) */
-.hero-pre {
-  position: relative;
-  min-height: clamp(58vh, 72vh, 82vh);
-  overflow: hidden;
+.header-actions {
   display: flex;
-  align-items: center;
-  padding: clamp(50px,8vh,80px) clamp(24px,8vw,80px) clamp(110px,18vh,160px);
+  gap: 12px;
+  pointer-events: all;
 }
-/* Vollbild Korfu-Luftfoto als Hintergrund */
-.hero-pre-bg {
-  position: absolute; inset: 0;
-  background:
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Corfu_Agios_Gordis_R04.jpg/1280px-Corfu_Agios_Gordis_R04.jpg')
-    center/cover no-repeat;
-  transform: scale(1.03); /* leichte Vergößerung verhindert weiße Ränder */
-  transition: transform 8s ease-out;
+.header-btn {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  color: var(--tiefsee);
+  transition: background 0.2s;
 }
-/* Gradient-Overlay: links dunkel (Text lesbar), rechts offen (Foto sichtbar) */
-.hero-pre-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(105deg,
-    rgba(10,30,60,.95) 0%,
-    rgba(10,30,60,.80) 30%,
-    rgba(10,30,60,.40) 60%,
-    rgba(10,30,60,.05) 85%,
-    transparent 100%
-  );
-}
-/* Text-Container — links ausgerichtet wie Epic-Referenz */
-.hero-pre-inner {
-  position: relative; z-index: 2;
-  max-width: 460px;
-}
-/* Kleine Zeile darüber: "Noch" */
-.hero-pre-label {
-  font-family: 'Space Mono', monospace;
-  font-size: .6rem; letter-spacing: 3.5px; text-transform: uppercase;
-  color: rgba(255,255,255,.6); font-weight: 400; margin-bottom: 4px;
-}
-/* Große Countdown-Zahl */
-.hero-pre-num {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(5rem, 16vw, 9.5rem); font-weight: 900;
-  color: #fff; line-height: 0.88; letter-spacing: -5px;
-  animation: numPulse 3s ease-in-out infinite;
-}
-@keyframes numPulse {
-  50% { transform: scale(1.015); }
-}
-/* "Tage bis Korfu" */
-.hero-pre-unit {
-  font-size: clamp(.88rem, 2.5vw, 1.2rem); font-weight: 700;
-  color: rgba(255,255,255,.78); letter-spacing: 2.5px; text-transform: uppercase;
-  margin-top: 10px;
-}
-/* Glasmorphism-Karte "Erste Station" */
-.hero-pre-next {
-  margin-top: 28px; padding: 13px 18px;
-  background: rgba(255,255,255,.1); border-radius: var(--r);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.22);
-  display: inline-block;
-}
-.hero-pre-next-label {
-  font-size: .57rem; letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--lemon); font-weight: 800; margin-bottom: 5px;
-}
-.hero-pre-next-title { font-size: .9rem; font-weight: 800; color: #fff; }
+.header-btn:hover { background: var(--warm-white); }
+.header-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Trip Hero */
-.hero-trip {
-  position: relative; overflow: hidden; min-height: 320px;
-  display: flex; align-items: flex-end; padding: 24px 20px;
+/* ── Day Viewport ── */
+#day-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  touch-action: pan-y;
 }
-.hero-trip-scene { position: absolute; inset: 0; }
-.hero-trip-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(10,30,60,.88) 0%, rgba(10,30,60,.15) 55%, transparent 100%);
+.cards-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.35s var(--ease-smooth);
+  will-change: transform;
 }
-.hero-trip-content { position: relative; z-index: 2; width: 100%; }
-.hero-trip-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--lemon); color: var(--dark);
-  font-size: .6rem; font-weight: 900; letter-spacing: 1.5px;
-  text-transform: uppercase; border-radius: 20px; padding: 4px 11px;
-  margin-bottom: 10px;
-}
-.hero-trip-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.4rem, 5vw, 2.5rem); font-weight: 900;
-  color: #fff; line-height: 1.1; margin-bottom: 8px;
-}
-.hero-trip-sub { font-size: .82rem; color: rgba(255,255,255,.7); font-weight: 600; }
-
-/* Post Hero */
-.hero-post {
-  background: linear-gradient(135deg, var(--sea-deep), var(--dark));
-  padding: 40px 20px; text-align: center; color: #fff;
-}
-.hero-post h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.4rem,4vw,2.2rem); font-weight: 900; margin-bottom: 8px;
-}
-.hero-post p { color: rgba(255,255,255,.65); font-size: .9rem; }
-
-/* Scene: Strand (Agios Gordios + Ypsos default) */
-.scene-beach {
-  background: linear-gradient(180deg, #c4e8ff 0%, #5bb8f5 45%, #1a7abf 70%, #0a3d6b 100%);
-}
-/* Scene: Ksamil (tuetkis) */
-.scene-ksamil {
-  background: linear-gradient(180deg, #d4f8f5 0%, #4dd8cc 40%, #1aaba0 65%, #0a5550 100%);
-}
-/* Scene: Korfu-Stadt (Sonnenuntergang) */
-.scene-city {
-  background: linear-gradient(180deg, #f5c890 0%, #e8885a 40%, #c4622d 65%, #5a2010 100%);
-}
-/* Scene: Anreise/Rueckreise */
-.scene-travel {
-  background: linear-gradient(180deg, #d0ddf0 0%, #8aaad0 50%, #4a6a9a 100%);
-}
-
-/* ══ TIMELINE ══ */
-#timeline-wrap {
-  background: #fff;
-  border-bottom: 2px solid var(--sand2);
-  position: sticky; top: 49px; z-index: 99;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
-}
-.tl-etappes {
-  display: flex; background: var(--sand);
-  overflow-x: auto; scrollbar-width: none;
-  padding: 2px 8px 0;
-}
-.tl-etappes::-webkit-scrollbar { display: none; }
-.tl-etag {
-  font-size: .56rem; font-weight: 900; text-transform: uppercase;
-  letter-spacing: .8px; padding: 3px 10px; white-space: nowrap; color: var(--muted);
-}
-.tl-etag.tv { color: var(--tv); }
-.tl-etag.e1 { color: var(--e1); }
-.tl-etag.e2 { color: var(--e2); }
-.tl-etag.e3 { color: var(--e3); }
-
-.tl-scroll {
-  overflow-x: auto; white-space: nowrap;
-  scrollbar-width: none; touch-action: pan-x;
+.day-card {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-}
-.tl-scroll::-webkit-scrollbar { display: none; }
-.tl-inner { display: inline-flex; gap: 3px; padding: 5px 8px; }
-
-/* Tab-Basis */
-.tbtn {
-  border: 2px solid transparent; border-radius: 9px;
-  padding: 5px 10px; font-size: .72rem; font-weight: 700;
-  white-space: nowrap; color: var(--muted); transition: all .18s;
-  position: relative;
-}
-.tbtn:hover { background: var(--sand); }
-
-/* State: locked */
-.tbtn.locked { color: #ccc; }
-.tbtn.locked::after { content: '🔒'; font-size: .55rem; position: absolute; top: -4px; right: -4px; }
-
-/* State: past */
-.tbtn.past { color: var(--olive); }
-.tbtn.past::after { content: '✓'; font-size: .6rem; font-weight: 900; color: var(--olive); position: absolute; top: -5px; right: -4px; }
-
-/* State: today */
-.tbtn.today-state {
-  animation: todayGlow 2.5s ease-in-out infinite;
-}
-@keyframes todayGlow {
-  0%,100% { box-shadow: 0 0 0 0 rgba(26,122,191,0); }
-  50%      { box-shadow: 0 0 0 4px rgba(26,122,191,.3); }
+  scroll-behavior: smooth;
 }
 
-/* Active (selected) */
-.tbtn.all.active  { background: var(--dark); border-color: var(--dark); color: #fff; }
-.tbtn.e1.active   { background: var(--e1);   border-color: var(--e1);   color: #fff; }
-.tbtn.e2.active   { background: var(--e2);   border-color: var(--e2);   color: #fff; }
-.tbtn.e3.active   { background: var(--e3);   border-color: var(--e3);   color: #fff; }
-.tbtn.tv.active   { background: var(--tv);   border-color: var(--tv);   color: #fff; }
-
-/* ══ MAIN LAYOUT (Task 6) ══ */
-.main-lay { display: grid; grid-template-columns: 1fr 400px; min-height: calc(100vh - 150px); }
-.map-panel { position: sticky; top: 150px; height: calc(100vh - 150px); }
-#map { width: 100%; height: 100%; }
-.content { padding: 18px; overflow-y: auto; max-height: calc(100vh - 150px); }
-.content::-webkit-scrollbar { width: 4px; }
-.content::-webkit-scrollbar-thumb { background: var(--sand2); border-radius: 2px; }
-
-/* ══ DAY CARD ══ */
-.dcard {
-  background: #fff; border-radius: var(--r2);
-  box-shadow: var(--sh2); margin-bottom: 22px; overflow: hidden;
-  opacity: 0; transform: translateY(20px);
-  transition: opacity .45s var(--ease-spring), transform .45s var(--ease-spring);
+/* ── Position Dots ── */
+#tab-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0 4px;
+  background: var(--warm-white);
 }
-.dcard.vis { opacity: 1; transform: translateY(0); }
-
-/* Karten-Hero */
-.dcard-hero {
-  height: 160px; position: relative; overflow: hidden;
-  display: flex; align-items: flex-end; padding: 16px 20px;
-}
-.dcard-hero-scene { position: absolute; inset: 0; }
-.dcard-hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(10,30,60,.82) 0%, rgba(10,30,60,.1) 60%, transparent 100%);
-}
-.dcard-hero-content { position: relative; z-index: 2; }
-.dtag {
-  font-family: 'Space Mono', monospace;
-  font-size: .62rem; color: rgba(255,255,255,.75); margin-bottom: 5px;
-  display: flex; align-items: center; gap: 8px;
-}
-.detag {
-  font-size: .55rem; padding: 2px 8px; border-radius: 10px;
-  background: rgba(255,255,255,.18); color: #fff; font-weight: 700;
-  letter-spacing: .5px; text-transform: uppercase;
-}
-.dcard-hero h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem; font-weight: 900; color: #fff; line-height: 1.15;
-}
-.dcard-hero p { font-size: .75rem; color: rgba(255,255,255,.65); margin-top: 3px; }
-
-/* Scene-Farben für Karten — diagonal für schönen Karten-Look */
-.scene-beach  { background: linear-gradient(160deg, #c4e8ff 0%, #5bb8f5 45%, #1a7abf 75%, #0a3d6b 100%); }
-.scene-ksamil { background: linear-gradient(160deg, #d4f8f5 0%, #4dd8cc 45%, #1aaba0 70%, #0a5550 100%); }
-.scene-city   { background: linear-gradient(160deg, #f5c890 0%, #e8885a 45%, #c4622d 70%, #5a2010 100%); }
-.scene-travel { background: linear-gradient(160deg, #d0ddf0 0%, #8aaad0 55%, #4a6a9a 100%); }
-
-/* Karten-Body */
-.dbody { padding: 16px 20px; }
-
-/* Freischalt-Animation */
-.unlock-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--lemon); color: var(--dark);
-  font-size: .58rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
-  border-radius: 20px; padding: 3px 10px; margin-bottom: 8px;
-  animation: unlockPop .6s var(--ease-spring);
-}
-@keyframes unlockPop {
-  from { transform: scale(.5); opacity: 0; }
-  to   { transform: scale(1);  opacity: 1; }
-}
-
-/* Aktivitätenliste */
-.alist { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
-.aitem { display: flex; gap: 10px; align-items: flex-start; }
-.aico  { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
-.atxt strong { display: block; font-size: .88rem; font-weight: 800; color: var(--dark); }
-.atxt span   { font-size: .78rem; color: var(--muted); }
-
-/* Selfie-Spots */
-.sbox {
-  background: linear-gradient(135deg, #fffbe6, #fff5cc);
-  border-radius: 10px; padding: 11px 14px; margin-bottom: 13px;
-  border-left: 3px solid var(--lemon2);
-}
-.sbox h4 { font-size: .68rem; font-weight: 900; color: #7a6000; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 7px; }
-.sitem   { font-size: .78rem; color: #5a4500; margin-bottom: 4px; }
-
-/* Abendprogramm */
-.ebox {
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  border-radius: 10px; padding: 11px 14px;
-  border-left: 3px solid var(--sea); margin-bottom: 13px;
-}
-.ebox h4 { font-size: .68rem; font-weight: 900; color: var(--sea); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
-.ebox p  { font-size: .82rem; color: var(--dark); }
-
-/* Fotos */
-.photos-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
-.photo-wrap  { border-radius: 9px; overflow: hidden; aspect-ratio: 4/3; background: var(--sand); position: relative; }
-.photo-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
-.photo-wrap:hover img { transform: scale(1.07); }
-.photo-cap  { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; font-size: .62rem; padding: 8px 7px 5px; font-weight: 700; }
-
-/* Restaurants */
-.slabel { font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted2); margin: 14px 0 8px; display: flex; align-items: center; gap: 8px; }
-.slabel::after { content: ''; flex: 1; height: 1px; background: var(--sand2); }
-.rcard { background: linear-gradient(135deg,#fff5ef,#fff0e8); border-radius: 9px; padding: 11px 14px; margin-bottom: 8px; border-left: 3px solid var(--terra); }
-.rcard h4 { font-size: .88rem; font-weight: 800; color: var(--terra); }
-.rcard p  { font-size: .78rem; color: var(--muted); margin-top: 4px; }
-.rtags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
-.rtag  { background: rgba(196,98,45,.1); color: var(--terra); border-radius: 5px; padding: 2px 7px; font-size: .65rem; font-weight: 800; }
-
-/* Tipps */
-.tips-box { background: #f0fff4; border-radius: 9px; padding: 11px 14px; margin-top: 13px; border-left: 3px solid var(--olive); }
-.tips-box h4 { font-size: .68rem; font-weight: 900; color: var(--olive); text-transform: uppercase; margin-bottom: 7px; }
-.tip-item { font-size: .78rem; color: #2d5016; margin-bottom: 4px; padding-left: 13px; position: relative; }
-.tip-item::before { content: '→'; position: absolute; left: 0; color: var(--olive); }
-
-/* Alerts */
-.alert-box { border-radius: 9px; padding: 11px 14px; margin-bottom: 13px; font-size: .8rem; }
-.alert-box.warn { background: #fff3e0; border-left: 3px solid var(--terra); color: #5a3000; }
-.alert-box.info { background: #e8f4ff; border-left: 3px solid var(--sea2); color: #003a5a; }
-.alert-box strong { display: block; font-weight: 800; margin-bottom: 4px; }
-
-/* Wetter-Box */
-.weather-wrap {
-  background: linear-gradient(135deg, #fff8e1, #ffe082);
-  border-radius: var(--r); padding: 14px 18px; margin-bottom: 20px;
-  border: 2px solid var(--lemon2);
-  display: flex; gap: 13px; align-items: flex-start;
-}
-.weather-ico { font-size: 2rem; flex-shrink: 0; }
-.weather-txt h3 { font-size: .88rem; font-weight: 900; color: #6b4000; margin-bottom: 7px; }
-.weather-txt li { font-size: .78rem; color: #5a3500; padding-left: 13px; position: relative; list-style: none; margin-bottom: 3px; }
-.weather-txt li::before { content: '☀️'; position: absolute; left: 0; font-size: .55rem; top: 3px; }
-
-/* Fähren-Box */
-.ferry-box { background: linear-gradient(135deg,#e0f2fe,#bae6fd); border-radius: 9px; padding: 11px 14px; margin-bottom: 13px; border-left: 3px solid var(--sea2); }
-.ferry-box h4 { font-size: .8rem; font-weight: 900; color: #0369a1; margin-bottom: 5px; }
-.ferry-box p  { font-size: .78rem; color: #0c4a6e; }
-
-/* ══ RESPONSIVE MAP ══ */
-@media (max-width: 768px) {
-  .main-lay { grid-template-columns: 1fr; grid-template-rows: 260px auto; }
-  .map-panel { position: relative; top: auto; height: 260px; order: -1; }
-  #map { height: 260px; }
-  .content { max-height: none; overflow-y: visible; }
-  .photos-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .map-panel { height: 210px; }
-  #map { height: 210px; }
-  .main-lay { grid-template-rows: 210px auto; }
-}
-
-/* Leaflet Popup */
-.leaflet-popup-content strong { font-size: .85rem; font-family: 'Nunito', sans-serif; }
-.leaflet-popup-content span   { font-size: .75rem; color: #666; }
-
-/* Benutzerdefinierter Karten-Marker (runder Farbpunkt mit Label) */
-.cmarker {
-  border: 2.5px solid #fff;
+.tab-dot {
+  width: 6px; height: 6px;
   border-radius: 50%;
+  border: 1.5px solid var(--blaugrau);
+  background: transparent;
+  transition: all 0.2s;
+}
+.tab-dot.active {
+  background: var(--active-etappe, var(--tiefsee));
+  border-color: var(--active-etappe, var(--tiefsee));
+  transform: scale(1.3);
+}
+
+/* ── Bottom Navigation ── */
+#bottom-nav {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .65rem;
-  font-weight: 800;
-  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  background: var(--warm-white);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
 }
-
-/* ══ MODALS ══ */
-.moverlay {
-  position: fixed; inset: 0; background: rgba(10,20,40,.75);
-  z-index: 1000; display: flex; align-items: flex-end; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity .3s;
-  backdrop-filter: blur(4px);
-}
-.moverlay.open { opacity: 1; pointer-events: all; }
-.msheet {
-  background: var(--chalk); border-radius: 24px 24px 0 0;
-  width: 100%; max-width: 720px; max-height: 88vh;
-  overflow-y: auto; padding: 22px 20px 40px;
-  transform: translateY(100%);
-  transition: transform .4s var(--ease-spring);
-}
-.moverlay.open .msheet { transform: translateY(0); }
-.mhandle { width: 40px; height: 4px; background: var(--sand2); border-radius: 2px; margin: 0 auto 20px; }
-.mhdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.mhdr h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--dark); }
-.mclose { background: var(--sand2); border-radius: 50%; width: 32px; height: 32px; font-size: .95rem; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-.mclose:hover { background: #e0cca0; }
-
-/* Route Modal */
-.rseg { margin-bottom: 24px; }
-.rseg h3 { font-family: 'Playfair Display', serif; font-size: .95rem; color: var(--sea); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--sand2); }
-.rstep { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 11px; position: relative; }
-.rstep:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 34px; bottom: -7px; width: 2px; background: var(--sand2); }
-.rbullet { width: 32px; height: 32px; border-radius: 50%; background: var(--sea); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
-.rbullet.tv { background: var(--tv); }
-.rbullet.e2 { background: var(--e2); }
-.rbullet.e3 { background: var(--e3); }
-.rcon strong { display: block; font-size: .88rem; font-weight: 700; }
-.rcon span   { font-size: .77rem; color: var(--muted); }
-
-/* Todo Modal */
-.todo-prog { background: var(--sand2); border-radius: 5px; height: 6px; margin-bottom: 16px; overflow: hidden; }
-.todo-bar  { background: linear-gradient(90deg, var(--olive), var(--sea2)); height: 100%; border-radius: 5px; transition: width .4s; }
-.todo-stat { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
-.tgroup    { margin-bottom: 20px; }
-.tgroup-hdr { font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); margin-bottom: 9px; }
-.titem { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #fff; border-radius: 9px; margin-bottom: 6px; cursor: pointer; transition: all .18s; border: 2px solid transparent; }
-.titem:hover     { border-color: var(--sand2); }
-.titem.done      { background: #f0fff4; border-color: #a8e6b8; }
-.titem.urgent .tlabel::after { content: ' ⚠️'; }
-.titem input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--olive); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
-.tlabel      { font-size: .83rem; font-weight: 700; }
-.titem.done .tlabel { text-decoration: line-through; color: var(--muted); }
-.tnote       { font-size: .72rem; color: var(--muted); margin-top: 2px; }
-
-/* ══ PHOTO HERO BACKGROUNDS (nur für .hero-trip-scene, nicht Karten) ══ */
-.hero-trip-scene.scene-beach {
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Corfu_Agios_Gordis_R04.jpg/1280px-Corfu_Agios_Gordis_R04.jpg') center/cover no-repeat;
-}
-.hero-trip-scene.scene-ksamil {
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
-    url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Ksamil_Beach.jpg') center/cover no-repeat;
-}
-.hero-trip-scene.scene-city {
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Old_Corfu_town_aerial_01.jpg/1280px-Old_Corfu_town_aerial_01.jpg') center/cover no-repeat;
-}
-.hero-trip-scene.scene-travel {
-  background: linear-gradient(160deg, #2c3e6b 0%, #1a2c45 40%, #4a5568 100%);
-}
-
-/* ══ FAMILIE SEKTION — Ganzkörper-Strip zwischen Hero und Timeline ══ */
-#family-section {
-  position: relative;
-  /* Exakt die Hintergrundfarbe von IMG_9823 → Figuren sitzen nahtlos drin */
-  background: #caaa90;
-  overflow: hidden;
-}
-/* Seitlicher Überblend zum Seiten-Hintergrund */
-#family-section::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    90deg,
-    var(--chalk) 0%,
-    transparent 8%,
-    transparent 92%,
-    var(--chalk) 100%
-  );
-  z-index: 2; pointer-events: none;
-}
-/* Oberer Überblend vom Hero-Wasserfarben-Übergang */
-#family-section::after {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 24px;
-  background: linear-gradient(to bottom, var(--chalk), transparent);
-  z-index: 2; pointer-events: none;
-}
-/* Figuren-Reihe */
-.family-strip {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 6% 0;
-  position: relative;
-  z-index: 1;
-}
-/* Einzel-Figur */
-.char-figure {
+.nav-tab {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--blaugrau);
+  border-top: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
   position: relative;
-  flex-shrink: 0;
 }
-.char-figure img {
-  display: block;
-  /* KEIN blend-mode nötig — Hintergrundfarbe passt exakt zur Sektion */
-  transition: transform .35s var(--ease-spring);
-  border-radius: 8px 8px 0 0;
-}
-.char-figure:hover img { transform: translateY(-8px) scale(1.04); }
-.char-name {
-  font-size: .58rem; font-weight: 900; letter-spacing: 1.8px;
-  text-transform: uppercase; color: rgba(255,255,255,.75);
-  padding: 5px 0 6px;
-  text-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
+.nav-tab.active { color: var(--tab-color); border-top-color: var(--tab-color); }
+.nav-tab svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-tab[data-tab="e1"] { --tab-color: var(--e1); }
+.nav-tab[data-tab="e2"] { --tab-color: var(--e2); }
+.nav-tab[data-tab="e3"] { --tab-color: var(--e3); }
 
-/* ══ WATERCOLOR EDGE TRANSITION ══ */
-.wc-edge {
-  position: absolute;
-  bottom: -2px;
-  left: 0; right: 0;
-  height: 120px;
+/* ── Modals ── */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(13,59,94,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.modal-backdrop.open { opacity: 1; }
+.modal-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-height: 88vh;
+  background: var(--warm-white);
+  border-radius: 20px 20px 0 0;
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform 0.35s var(--ease-smooth);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.modal-sheet.open { transform: translateY(0); }
+.modal-handle {
+  width: 40px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 12px auto 8px;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--tiefsee);
+}
+.modal-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--creme);
+  color: var(--blaugrau);
+}
+.modal-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.modal-body { padding: 20px; }
+
+/* ══════════════════════════════════════
+   SPLASH
+══════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0;
+  background: var(--tiefsee);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#splash.hidden {
+  opacity: 0;
   pointer-events: none;
-  z-index: 10;
+  transition: opacity 0.6s ease;
 }
-.wc-edge svg { width: 100%; height: 100%; display: block; }
+.sp-family {
+  width: min(80vw, 320px);
+  opacity: 0;
+  transform: translateY(24px);
+  animation: spFadeUp 0.8s var(--ease-smooth) 0.3s forwards;
+  mix-blend-mode: multiply;
+  filter: brightness(1.05);
+}
+.sp-title {
+  text-align: center;
+  margin-top: 24px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: spFadeUp 0.7s var(--ease-smooth) 0.9s forwards;
+}
+.sp-title h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  color: var(--warm-white);
+  font-weight: 700;
+}
+.sp-title p {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--horizont);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.sp-route {
+  width: min(90vw, 380px);
+  margin-top: 32px;
+  opacity: 0;
+  animation: spFadeUp 0.6s var(--ease-smooth) 1.8s forwards;
+}
+.sp-route svg { width: 100%; height: auto; overflow: visible; }
+.route-path {
+  stroke: var(--horizont);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: drawPath 1.4s var(--ease-smooth) 2.0s forwards;
+}
+.route-dot {
+  fill: var(--horizont);
+  opacity: 0;
+  animation: dotAppear 0.3s ease forwards;
+}
+.route-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  fill: rgba(91,163,201,0.85);
+  letter-spacing: 0.05em;
+}
+.sp-skip {
+  position: absolute;
+  top: 20px; right: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.sp-skip:hover { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.4); }
+@keyframes spFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes drawPath {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes dotAppear {
+  to { opacity: 1; }
+}
 
-/* ══ iOS / TOUCH OPTIMIERUNGEN ══ */
-/* ── 3D AVATAR PORTRAITS ── */
-.av-wrap {
-  width: 90px; height: 90px;
-  border-radius: 50%; overflow: hidden;
-  border: 3px solid rgba(255,255,255,0.9);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.45), 0 0 0 2px rgba(255,255,255,0.2);
+/* ══════════════════════════════════════
+   DAY CARD — PHOTO ZONE
+══════════════════════════════════════ */
+.card-photo-zone {
+  position: relative;
+  height: 58vh;
+  min-height: 260px;
+  overflow: hidden;
   flex-shrink: 0;
 }
-.av-wrap-sm {
-  width: 30px; height: 30px;
-  border-width: 2px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+.card-photo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 90%);
+  mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 90%);
 }
-.av-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-photo-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(13,59,94,0.35) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.watercolor-edge {
+  position: absolute;
+  bottom: -1px; left: -5%; right: -5%;
+  height: 100px;
+  pointer-events: none;
+}
+.watercolor-edge svg { width: 110%; height: 100%; }
 
-/* Header Mini-Avatare */
-.hdr-av {
-  width: 30px; height: 30px; border-radius: 50%; overflow: hidden;
-  border: 2px solid rgba(255,255,255,.45);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+/* Gesperrte Karte (zukünftige Tage) */
+.card-photo-zone.locked .card-photo {
+  filter: blur(4px) brightness(0.7);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.lock-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  color: rgba(255,255,255,0.9);
+}
+.lock-overlay svg { width: 36px; height: 36px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.lock-overlay span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Pre-Trip Countdown Overlay */
+.countdown-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  padding: clamp(20px,5vw,40px) clamp(20px,6vw,48px);
+  background: linear-gradient(
+    to top,
+    rgba(13,59,94,0.85) 0%,
+    rgba(13,59,94,0.4) 50%,
+    transparent 100%
+  );
+}
+.countdown-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--horizont);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.countdown-num {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 22vw, 9rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--warm-white);
+}
+.countdown-unit {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-style: italic;
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+}
+.countdown-next {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.9);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════
+   DAY CARD — CONTENT ZONE
+══════════════════════════════════════ */
+.card-content-zone {
+  background: var(--warm-white);
+  padding: 0 clamp(20px,6vw,36px);
+  padding-bottom: 32px;
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--blaugrau);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-top: 24px;
+  margin-bottom: 6px;
+}
+.card-etappe-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  position: relative; top: -1px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  font-weight: 900;
+  color: var(--tiefsee);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.card-sub {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--blaugrau);
+  font-weight: 400;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+.card-avatar {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 28px;
+  display: block;
+}
+.card-avatar img {
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+  border-radius: 8px;
+}
+
+/* Highlights */
+.card-highlights-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blaugrau);
+  margin-bottom: 10px;
+}
+.card-highlights {
+  border-top: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.highlight-item {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--tinte);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.highlight-item svg {
+  width: 16px; height: 16px;
+  stroke: var(--aegaeis); fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   flex-shrink: 0;
 }
-.hdr-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* iOS Safe Area */
-#app-hdr {
-  padding-top: max(11px, env(safe-area-inset-top));
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
+/* Scroll Hint */
+.scroll-hint {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+  color: var(--border);
 }
-/* Größere Touch-Targets für iPhone */
-.tbtn { min-height: 44px; min-width: 44px; }
-.hdr-btn { min-height: 44px; padding: 10px 18px; }
-.mclose { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
-/* Bessere Scrollperformance auf iOS */
-#timeline-scroll, #content-area, .msheet { -webkit-overflow-scrolling: touch; }
-/* Verhindern dass iOS Text zu groß skaliert */
-body { -webkit-text-size-adjust: 100%; }
-/* iPhone Retina: höhere Auflösung Icons */
-@media (-webkit-min-device-pixel-ratio: 2) {
-  .sp-av svg { image-rendering: -webkit-optimize-contrast; }
+.scroll-hint svg {
+  width: 22px; height: 22px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  animation: bounceDown 1.6s ease-in-out infinite;
 }
-/* Verbesserte Mobile Font-Sizes */
-@media (max-width: 480px) {
-  .hdr-logo span:first-child { font-size: 1.1rem; }
-  .hero-day-title { font-size: clamp(1.4rem, 5vw, 2rem); }
-  .dcard-title { font-size: 1.1rem; }
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* Detail Sections */
+.detail-section { margin-top: 32px; }
+.detail-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blaugrau);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Activity List */
+.act-list { display: flex; flex-direction: column; gap: 14px; }
+.act-item { display: flex; flex-direction: column; gap: 2px; }
+.act-title {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tinte);
+}
+.act-desc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--blaugrau);
+  line-height: 1.45;
+}
+
+/* Selfie Spots */
+.selfie-list { display: flex; flex-direction: column; gap: 14px; }
+.selfie-item { background: var(--creme); border-radius: 10px; padding: 12px 14px; }
+.selfie-title {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tiefsee);
+  margin-bottom: 4px;
+}
+.selfie-tip {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--blaugrau);
+  line-height: 1.4;
+}
+
+/* Restaurants */
+.rest-list { display: flex; flex-direction: column; gap: 16px; }
+.rest-item { border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+.rest-item:last-child { border-bottom: none; }
+.rest-name {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--tinte);
+  margin-bottom: 3px;
+}
+.rest-desc {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--blaugrau);
+  line-height: 1.4;
+  margin-bottom: 7px;
+}
+.rest-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.rest-tag {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blaugrau);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+/* Tips */
+.tips-list { display: flex; flex-direction: column; gap: 10px; }
+.tip-item {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--blaugrau);
+  line-height: 1.45;
+  padding-left: 14px;
+  position: relative;
+}
+.tip-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--aegaeis);
+}
+
+/* Evening */
+.card-eve {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--tinte);
+  line-height: 1.55;
+  font-style: italic;
+  padding: 14px 16px;
+  border-left: 3px solid var(--aegaeis);
+  background: var(--creme);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Alerts */
+.card-alert {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.card-alert.warn { background: #fff3cd; color: #664d03; }
+.card-alert.info { background: #d3eaf9; color: #0c5176; }
+
+/* Past day overlay */
+.day-card.past .card-photo-zone::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(247,242,235,0.25);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   MAP (Leaflet in Modal)
+══════════════════════════════════════ */
+#map-container {
+  height: 55vh;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+/* ══════════════════════════════════════
+   ROUTE MODAL CONTENT
+══════════════════════════════════════ */
+.route-timeline { display: flex; flex-direction: column; gap: 0; }
+.route-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.route-step:last-child { border-bottom: none; }
+.route-step-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.route-step-text { flex: 1; }
+.route-step-title {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tinte);
+  margin-bottom: 2px;
+}
+.route-step-detail {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--blaugrau);
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════════
+   TODO MODAL CONTENT
+══════════════════════════════════════ */
+.todo-progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.todo-progress-fill {
+  height: 100%;
+  background: var(--e2);
+  border-radius: 2px;
+  transition: width 0.4s var(--ease-smooth);
+}
+.todo-group { margin-bottom: 24px; }
+.todo-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blaugrau);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--creme);
+  cursor: pointer;
+}
+.todo-item:last-child { border-bottom: none; }
+.todo-check {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.todo-check svg { width: 11px; height: 11px; stroke: white; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; display: none; }
+.todo-item.done .todo-check { background: var(--e2); border-color: var(--e2); }
+.todo-item.done .todo-check svg { display: block; }
+.todo-item.done .todo-label { color: var(--blaugrau); text-decoration: line-through; }
+.todo-label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--tinte);
+  line-height: 1.4;
+  flex: 1;
+}
+.todo-note {
+  font-size: 0.75rem;
+  color: var(--blaugrau);
+  margin-top: 2px;
+  display: block;
+}
+.todo-urgent .todo-label::after {
+  content: '!';
+  display: inline-flex;
+  width: 14px; height: 14px;
+  background: #e63946;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ══════════════════════════════════════
+   TABLET (>=768px)
+══════════════════════════════════════ */
+@media (min-width: 768px) {
+  .day-card {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    overflow: hidden;
+  }
+  .card-photo-zone {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    height: 100%;
+    min-height: unset;
+  }
+  .card-content-zone {
+    grid-column: 2;
+    grid-row: 1;
+    overflow-y: auto;
+    height: 100%;
+  }
+  .card-photo {
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 75%, transparent 100%);
+    mask-image: linear-gradient(to right, black 0%, black 75%, transparent 100%);
+  }
+  .watercolor-edge { display: none; }
+  .modal-sheet { max-width: 480px; left: auto; border-radius: 20px 0 0 20px; height: 100%; max-height: 100%; }
 }
 </style>
 </head>
 <body>
 
-<!-- Preview Banner -->
-<div id="preview-banner">
-  👁 Preview-Modus · Familie sieht die zeitgesteuerte Version
-</div>
-
-<!-- Splash -->
+<!-- ═══ SPLASH ═══ -->
 <div id="splash">
-  <button id="skip-btn" onclick="endSplash()">Überspringen ✕</button>
-
-  <!-- Sonne -->
-  <div class="sp-sun"></div>
-
-  <!-- Inseln -->
-  <div class="sp-island sp-island-l"></div>
-  <div class="sp-island sp-island-r"></div>
-  <div class="sp-island sp-island-sm"></div>
-
-  <!-- Meer & Wellen -->
-  <div class="sp-wave sp-wave-1"></div>
-  <div class="sp-wave sp-wave-2"></div>
-  <div class="sp-sea"></div>
-
-  <!-- Segelboot -->
-  <div class="sp-boat">
-    <svg viewBox="0 0 42 42" fill="none">
-      <polygon points="21,4 21,34 6,34" fill="rgba(255,255,255,0.9)"/>
-      <polygon points="21,8 21,34 34,34" fill="rgba(255,255,255,0.6)"/>
-      <rect x="9" y="34" width="24" height="4" rx="2" fill="#0a3d6b"/>
-    </svg>
-  </div>
-
-  <!-- Titel: oben, über dem Horizont -->
+  <button class="sp-skip" id="sp-skip">Überspringen</button>
+  <img src="av-strand.png" class="sp-family" alt="Familie Monschein">
   <div class="sp-title">
-    <h1>Korfu &amp; Ksamil</h1>
-    <p>Sommer 2026 · Familie Monschein</p>
+    <h1>Familie Monschein</h1>
+    <p>Korfu &amp; Ksamil · Juli 2026</p>
   </div>
-
-  <!-- Familie Monschein — Ganzkörper-Gruppenfoto, nahtlos via multiply -->
-  <div class="sp-family-wrap" id="sp-family-wrap">
-    <img src="family-group.png" alt="Familie Monschein" class="sp-family-group">
+  <div class="sp-route" id="sp-route">
+    <!-- SVG wird per JS eingefügt (Task 3) -->
   </div>
 </div>
 
-<!-- App -->
-<div id="app">
-  <!-- Header -->
-  <header id="app-hdr"></header>
+<!-- ═══ APP ═══ -->
+<div id="app" hidden>
+  <header id="app-header">
+    <span class="header-logo">Korfu 2026</span>
+    <div class="header-actions">
+      <button class="header-btn" id="btn-todo" aria-label="Checkliste">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </button>
+      <button class="header-btn" id="btn-route" aria-label="Route">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/></svg>
+      </button>
+    </div>
+  </header>
 
-  <!-- Phase Hero -->
-  <section id="phase-hero"></section>
+  <div id="day-viewport">
+    <div class="cards-track" id="cards-track">
+      <!-- Day cards rendered by JS -->
+    </div>
+  </div>
 
-  <!-- Familie Monschein — Ganzkörper-Strip -->
-  <section id="family-section"></section>
+  <div id="tab-dots"></div>
 
-  <!-- Timeline -->
-  <nav id="timeline-wrap"></nav>
+  <nav id="bottom-nav">
+    <button class="nav-tab" data-tab="e1">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Agios Gordios
+    </button>
+    <button class="nav-tab" data-tab="e2">
+      <svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+      Ksamil
+    </button>
+    <button class="nav-tab" data-tab="e3">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Ypsos
+    </button>
+  </nav>
+</div>
 
-  <!-- Main -->
-  <div class="main-lay">
-    <div class="content" id="content"></div>
-    <div class="map-panel"><div id="map"></div></div>
+<!-- ═══ MODAL ROUTE ═══ -->
+<div id="modal-route-backdrop" class="modal-backdrop" hidden></div>
+<div id="modal-route" class="modal-sheet" hidden>
+  <div class="modal-handle"></div>
+  <div class="modal-header">
+    <span class="modal-title">Reiseroute</span>
+    <button class="modal-close" id="close-route">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div id="map-container"></div>
+    <div id="route-timeline" class="route-timeline"></div>
   </div>
 </div>
 
-<!-- Modals -->
-<div class="moverlay" id="modal-route">
-  <div class="msheet">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h2>🗺 Reiseroute</h2><button class="mclose" onclick="closeModal('route')">✕</button></div>
-    <div id="route-content"></div>
+<!-- ═══ MODAL TODO ═══ -->
+<div id="modal-todo-backdrop" class="modal-backdrop" hidden></div>
+<div id="modal-todo" class="modal-sheet" hidden>
+  <div class="modal-handle"></div>
+  <div class="modal-header">
+    <span class="modal-title">Reise-Checkliste</span>
+    <button class="modal-close" id="close-todo">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
-</div>
-<div class="moverlay" id="modal-todo">
-  <div class="msheet">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h2>✅ Checkliste</h2><button class="mclose" onclick="closeModal('todo')">✕</button></div>
-    <div class="todo-stat" id="todo-stat"></div>
-    <div class="todo-prog"><div class="todo-bar" id="todo-bar"></div></div>
+  <div class="modal-body">
+    <div class="todo-progress-bar"><div class="todo-progress-fill" id="todo-progress" style="width:0%"></div></div>
     <div id="todo-content"></div>
   </div>
 </div>
 
 <script>
+'use strict';
+
 /* ══════════════════════════════════════
-   VERIFIED IMAGE URLs (all HTTP 200)
+   DATEN — aus bestehender index.html übernommen
 ══════════════════════════════════════ */
+
 const IMG = {
   agiosGordios:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=600",
   korfuAerial:"https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Corfu%20town%20aerial%2002.jpg?width=600",
@@ -892,13 +908,7 @@ const IMG = {
   butrint:"https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=600",
   blueEye:"https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=600",
 };
-function imgTag(key,cap){
-  return`<div class="photo-wrap"><img src="${IMG[key]}" alt="${cap}" loading="lazy" onerror="this.parentElement.style.display='none'"><span class="photo-cap">${cap}</span></div>`;
-}
 
-/* ══════════════════════════════════════
-   CONTENT RENDERING (Task 6)
-══════════════════════════════════════ */
 const IMG_CAPS = {
   agiosGordios:'Agios Gordios Beach', korfuAerial:'Korfu-Stadt Panorama',
   alteFestung:'Alte Festung & Altstadt', paleokastritsa:'Paleokastritsa Panorama',
@@ -909,179 +919,38 @@ const IMG_CAPS = {
   blueEye:'Blaues Auge · Syri i Kaltër',
 };
 
-function weatherBox() {
-  return `<div class="weather-wrap">
-    <div class="weather-ico">☀️</div>
-    <div class="weather-txt">
-      <h3>Hitze-Alarm: Ende Juli / Anfang August!</h3>
-      <ul>
-        <li>32–38°C — Mittagssonne 13–16 Uhr meiden</li>
-        <li>LSF 50+ für alle, alle 2h neu auftragen</li>
-        <li>Mind. 2 Liter Wasser pro Person täglich</li>
-        <li>Aktivitäten vor 12 Uhr oder nach 17 Uhr</li>
-        <li>Leichte Kleidung, Hüte, Sonnenbrillen nicht vergessen</li>
-      </ul>
-    </div>
-  </div>`;
-}
-
-function renderDay(d, idx) {
-  const state      = getDayState(idx);
-  const sceneClass = getDayScene(d);
-  const etLabels   = { e1:'Etappe 1 · Agios Gordios', e2:'Etappe 2 · Ksamil', e3:'Etappe 3 · Ýpsos', tv:'Transfer' };
-  const isToday    = state === 'today';
-  const isLocked   = state === 'locked';
-
-  let h = `<div class="dcard" id="dc-${d.id}">`;
-
-  // Karten-Hero mit animiertem Szenen-Hintergrund
-  h += `<div class="dcard-hero">
-    <div class="dcard-hero-scene ${sceneClass}"></div>
-    <div class="dcard-hero-overlay"></div>
-    <div class="dcard-hero-content">
-      <div class="dtag">
-        <span>${d.id} · ${d.date} · ${d.wd}</span>
-        <span class="detag">${etLabels[d.et] || ''}</span>
-      </div>
-      <h2>${d.title}</h2>
-      <p>${d.sub}</p>
-    </div>
-  </div>`;
-
-  h += `<div class="dbody">`;
-
-  // Freischalt-Badge beim heutigen Tag — nur beim ERSTEN Aufruf des Tages (localStorage-Flag)
-  if (isToday) {
-    const key = 'korfu26_unlocked_' + d.id;
-    const firstVisit = !localStorage.getItem(key);
-    if (firstVisit) {
-      localStorage.setItem(key, '1');
-      h += `<div class="unlock-badge">✨ ${d.title} freigeschaltet!</div>`;
-    }
-  }
-
-  // Gesperrte Tage: nur 🔒 + Datum zeigen, kein Inhalt dahinter
-  if (isLocked) {
-    h += `<div style="text-align:center;padding:24px 0;color:var(--muted2)">
-      <div style="font-size:1.8rem;margin-bottom:8px">🔒</div>
-      <div style="font-size:.82rem;font-weight:700">Verfügbar ab ${d.date}</div>
-    </div>`;
-    h += `</div></div>`;
-    return h;
-  }
-
-  // Alerts (Warnungen & Info-Boxen)
-  d.alerts.forEach(a => h += `<div class="alert-box ${a.t}"><strong>${a.t==='warn'?'⚠️ Wichtig:':'ℹ️ Info:'}</strong>${a.text}</div>`);
-
-  // Aktivitätenliste
-  if (d.acts.length) {
-    h += `<ul class="alist">`;
-    d.acts.forEach(a => h += `<li class="aitem"><span class="aico">${a.i}</span><div class="atxt"><strong>${a.t}</strong><span>${a.d}</span></div></li>`);
-    h += `</ul>`;
-  }
-
-  // Fotos im 2-Spalten-Grid
-  if (d.photos.length) {
-    h += `<div class="photos-grid">`;
-    d.photos.forEach(p => h += imgTag(p, IMG_CAPS[p] || p));
-    h += `</div>`;
-  }
-
-  // Selfie & Foto-Spots
-  if (d.selfie.length) {
-    h += `<div class="sbox"><h4>📸 Selfie & Foto-Spots</h4>`;
-    d.selfie.forEach(s => h += `<div class="sitem">📍 <strong>${s.t}</strong> — ${s.tip}</div>`);
-    h += `</div>`;
-  }
-
-  // Restaurants & Cafés
-  if (d.rests.length) {
-    h += `<div class="slabel">🍴 Restaurants & Cafés</div>`;
-    d.rests.forEach(r => h += `<div class="rcard"><h4>${r.n}</h4><p>${r.d}</p><div class="rtags">${r.tags.map(t=>`<span class="rtag">${t}</span>`).join('')}</div></div>`);
-  }
-
-  // Abendprogramm
-  if (d.eve) h += `<div class="ebox"><h4>🌆 Abendprogramm</h4><p>${d.eve}</p></div>`;
-
-  // Insider-Tipps
-  if (d.tips.length) {
-    h += `<div class="tips-box"><h4>💡 Tipps</h4>`;
-    d.tips.forEach(t => h += `<div class="tip-item">${t}</div>`);
-    h += `</div>`;
-  }
-
-  // Fähren-Infobox (automatisch für T9 und T13)
-  if (d.id === 'T9')  h += `<div class="ferry-box"><h4>⛴ Fähre Korfu → Saranda</h4><p>Ionian Seaways / Finikas Lines · ca. 45 Min · VORAB buchen! ca. 15–20 €/P</p></div>`;
-  if (d.id === 'T13') h += `<div class="ferry-box"><h4>⛴ Fähre Saranda → Korfu</h4><p>Rückticket · gleiche Anbieter · ca. 45 Min</p></div>`;
-
-  h += `</div></div>`;
-  return h;
-}
-
-function renderContent(id) {
-  const ct = document.getElementById('content');
-  if (!ct) return; // Guard: DOM noch nicht bereit
-
-  if (id === 'ALL') {
-    // Alle 17 Tage + Wetter-Box anzeigen
-    let h = weatherBox();
-    DAYS.forEach((d, idx) => h += renderDay(d, idx));
-    ct.innerHTML = h;
-  } else {
-    // Einzelnen Tag anzeigen
-    const idx = DAYS.findIndex(x => x.id === id);
-    if (idx < 0) return;
-    ct.innerHTML = weatherBox() + renderDay(DAYS[idx], idx);
-  }
-
-  // Karten gestaffelt einblenden (stagger animation)
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.dcard').forEach((c, i) => {
-      setTimeout(() => c.classList.add('vis'), i * 55);
-    });
-  });
-
-  ct.scrollTop = 0;
-}
-
-/* ══════════════════════════════════════
-   MAP LOCATIONS
-══════════════════════════════════════ */
 const LOCS={
-  airport:{ll:[39.6015,19.9117],name:"✈️ Flughafen Korfu (CFU)",type:"tv"},
-  korfuPort:{ll:[39.6230,19.9168],name:"⛴ Neuer Hafen Korfu",type:"ferry"},
-  poseidon:{ll:[39.5558,19.8695],name:"🏨 Poseidon Suites · Agios Gordios",type:"hotel"},
-  agiosBeach:{ll:[39.5520,19.8660],name:"🏖 Agios Gordios Beach",type:"e1"},
-  korfuTown:{ll:[39.6243,19.9217],name:"🏛 Korfu-Stadt Altstadt (UNESCO)",type:"e1"},
-  alteFestung:{ll:[39.6235,19.9318],name:"📸 Alte Festung Korfu",type:"selfie"},
-  liston:{ll:[39.6238,19.9200],name:"🌆 Liston Promenade",type:"e1"},
-  paleo:{ll:[39.6683,19.7046],name:"📸 Paleokastritsa Bucht",type:"selfie"},
-  achilleion:{ll:[39.5778,19.9129],name:"🏛 Achilleion Palast",type:"e1"},
-  pontikonisi:{ll:[39.6057,19.9159],name:"📸 Pontikonisi (Mauseinsel)",type:"selfie"},
-  kanoni:{ll:[39.6048,19.9130],name:"📸 Kanoni Aussichtspunkt",type:"selfie"},
-  aqualand:{ll:[39.6325,19.8380],name:"🎢 Aqualand Corfu",type:"e1"},
-  yannis:{ll:[39.6850,19.8735],name:"🏨 Hotel Yannis Corfu · Ýpsos",type:"hotel"},
-  ypsosBeach:{ll:[39.6835,19.8715],name:"🏖 Ýpsos Beach",type:"e3"},
-  saranda:{ll:[39.8756,20.0053],name:"⛴ Saranda Hafen (Albanien)",type:"ferry"},
-  muze:{ll:[39.7703,20.0027],name:"🏨 Muze Hotel · Ksamil",type:"hotel"},
-  ksamilBeach:{ll:[39.7685,20.0010],name:"📸 Ksamil Beach",type:"selfie"},
-  ksamilIslands:{ll:[39.7640,19.9958],name:"📸 Ksamil Inseln",type:"selfie"},
-  butrint:{ll:[39.7481,20.0214],name:"🏛 Butrint (UNESCO)",type:"e2"},
-  blueEye:{ll:[39.9063,20.2327],name:"📸 Blaues Auge · Syri i Kaltër",type:"selfie"},
+  airport:{ll:[39.6015,19.9117],name:"Flughafen Korfu (CFU)",type:"tv"},
+  korfuPort:{ll:[39.6230,19.9168],name:"Neuer Hafen Korfu",type:"ferry"},
+  poseidon:{ll:[39.5558,19.8695],name:"Poseidon Suites · Agios Gordios",type:"hotel"},
+  agiosBeach:{ll:[39.5520,19.8660],name:"Agios Gordios Beach",type:"e1"},
+  korfuTown:{ll:[39.6243,19.9217],name:"Korfu-Stadt Altstadt (UNESCO)",type:"e1"},
+  alteFestung:{ll:[39.6235,19.9318],name:"Alte Festung Korfu",type:"selfie"},
+  liston:{ll:[39.6238,19.9200],name:"Liston Promenade",type:"e1"},
+  paleo:{ll:[39.6683,19.7046],name:"Paleokastritsa Bucht",type:"selfie"},
+  achilleion:{ll:[39.5778,19.9129],name:"Achilleion Palast",type:"e1"},
+  pontikonisi:{ll:[39.6057,19.9159],name:"Pontikonisi (Mauseinsel)",type:"selfie"},
+  kanoni:{ll:[39.6048,19.9130],name:"Kanoni Aussichtspunkt",type:"selfie"},
+  aqualand:{ll:[39.6325,19.8380],name:"Aqualand Corfu",type:"e1"},
+  yannis:{ll:[39.6850,19.8735],name:"Hotel Yannis Corfu · Ypsos",type:"hotel"},
+  ypsosBeach:{ll:[39.6835,19.8715],name:"Ypsos Beach",type:"e3"},
+  saranda:{ll:[39.8756,20.0053],name:"Saranda Hafen (Albanien)",type:"ferry"},
+  muze:{ll:[39.7703,20.0027],name:"Muze Hotel · Ksamil",type:"hotel"},
+  ksamilBeach:{ll:[39.7685,20.0010],name:"Ksamil Beach",type:"selfie"},
+  ksamilIslands:{ll:[39.7640,19.9958],name:"Ksamil Inseln",type:"selfie"},
+  butrint:{ll:[39.7481,20.0214],name:"Butrint (UNESCO)",type:"e2"},
+  blueEye:{ll:[39.9063,20.2327],name:"Blaues Auge · Syri i Kaltër",type:"selfie"},
 };
 
-/* ══════════════════════════════════════
-   17 TAGE REISEDATEN
-══════════════════════════════════════ */
 const DAYS=[
 {id:"T1",date:"18.07",wd:"Sa",et:"tv",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
   center:[39.6015,19.9117,10],marks:["airport","poseidon"],
   acts:[
-    {i:"🚗",t:"Abfahrt Plankenwarth",d:"Fahrt zum Grazer Hauptbahnhof, ca. 20 Min"},
-    {i:"🚆",t:"Zug OS3588 · Ab 14:00 Graz Hbf",d:"Ankunft Wien Hbf 16:57 · ca. 2h 57 Min · AUA-Codeshare"},
-    {i:"✈️",t:"Flug OS863 · Ab 19:30 Wien (VIE)",d:"Ankunft Korfu (CFU) ca. 21:15 Uhr Ortszeit · 1h 45 Min"},
-    {i:"🚕",t:"Transfer Flughafen → Poseidon Suites",d:"Agios Gordios · ca. 30 Min · Taxi vorab buchen (ca. 25 €)"},
-    {i:"🏨",t:"Check-in Poseidon Suites by CorfuEscapes",d:"Agios Gordios · Ankunft ca. 22:00 Uhr"},
+    {i:"Auto",t:"Abfahrt Plankenwarth",d:"Fahrt zum Grazer Hauptbahnhof, ca. 20 Min"},
+    {i:"Zug",t:"Zug OS3588 · Ab 14:00 Graz Hbf",d:"Ankunft Wien Hbf 16:57 · ca. 2h 57 Min · AUA-Codeshare"},
+    {i:"Flug",t:"Flug OS863 · Ab 19:30 Wien (VIE)",d:"Ankunft Korfu (CFU) ca. 21:15 Uhr Ortszeit · 1h 45 Min"},
+    {i:"Taxi",t:"Transfer Flughafen → Poseidon Suites",d:"Agios Gordios · ca. 30 Min · Taxi vorab buchen (ca. 25 €)"},
+    {i:"Hotel",t:"Check-in Poseidon Suites by CorfuEscapes",d:"Agios Gordios · Ankunft ca. 22:00 Uhr"},
   ],
   selfie:[],photos:[],
   tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
@@ -1090,10 +959,10 @@ const DAYS=[
 {id:"T2",date:"19.07",wd:"So",et:"e1",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
   center:[39.553,19.868,13],marks:["poseidon","agiosBeach"],
   acts:[
-    {i:"🌅",t:"Erstes Frühstück auf Korfu",d:"Hotelfühstück, Terrassenmeerblick genießen"},
-    {i:"🏖",t:"Agios Gordios Beach erkunden",d:"Langer Sandstrand, ruhige Bucht — perfekt zum Eingewöhnen"},
-    {i:"🛒",t:"Supermarkt & Basics",d:"Sonnencreme, Wasser, Snacks, lokale Köstlichkeiten kaufen"},
-    {i:"🏊",t:"Schwimmen & Pool",d:"Nachmittags chillen, Pool oder Meer, erste Sonnenstunden"},
+    {i:"Sonne",t:"Erstes Frühstück auf Korfu",d:"Hotelfühstück, Terrassenmeerblick genießen"},
+    {i:"Strand",t:"Agios Gordios Beach erkunden",d:"Langer Sandstrand, ruhige Bucht — perfekt zum Eingewöhnen"},
+    {i:"Einkauf",t:"Supermarkt & Basics",d:"Sonnencreme, Wasser, Snacks, lokale Köstlichkeiten kaufen"},
+    {i:"Schwimmen",t:"Schwimmen & Pool",d:"Nachmittags chillen, Pool oder Meer, erste Sonnenstunden"},
   ],
   selfie:[{t:"Agios Gordios Bucht",tip:"Panorama von der Südklippe — beste Zeit: Sonnenuntergang (ca. 20:30)"}],
   photos:["agiosGordios"],
@@ -1104,10 +973,10 @@ const DAYS=[
 {id:"T3",date:"20.07",wd:"Mo",et:"e1",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
   center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
   acts:[
-    {i:"🚤",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
-    {i:"🏄",t:"Stand-Up-Paddle (SUP)",d:"Verleih am Strand · entspannte Erkundung der Bucht"},
-    {i:"🤿",t:"Schnorcheln in der Bucht",d:"Klares Wasser, Fische, Ausrüstung leihbar · Bucht südlich ideal"},
-    {i:"⛵",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
+    {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
+    {i:"SUP",t:"Stand-Up-Paddle (SUP)",d:"Verleih am Strand · entspannte Erkundung der Bucht"},
+    {i:"Schnorcheln",t:"Schnorcheln in der Bucht",d:"Klares Wasser, Fische, Ausrüstung leihbar · Bucht südlich ideal"},
+    {i:"Segelboot",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
   ],
   selfie:[{t:"Jetski-Actionfoto",tip:"Jemanden ans Ufer stellen zum Fotografieren — beste Hintergrundbucht!"}],
   photos:["agiosGordios"],
@@ -1118,11 +987,11 @@ const DAYS=[
 {id:"T4",date:"21.07",wd:"Di",et:"e1",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
   center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
   acts:[
-    {i:"🚗",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
-    {i:"🏛",t:"Altstadt-Bummel (UNESCO)",d:"Venezianische Gassen, Kirchen, Spianada-Platz — Europas zweitgrößte Piazza"},
-    {i:"⚔️",t:"Alte Festung (Palaio Frourio)",d:"Toller Panoramablick über die Stadt & Meer · Eintritt ca. 6 € · lohnt sich!"},
-    {i:"🛡",t:"Neue Festung (Neo Frourio)",d:"Weniger voll als die Alte, interessante Stadtmauer-Perspektive"},
-    {i:"🛍",t:"Shopping in der Altstadt",d:"Olivenöl, Kumquat-Likör, griechische Keramik — tolle Souvenirs"},
+    {i:"Auto",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
+    {i:"Tempel",t:"Altstadt-Bummel (UNESCO)",d:"Venezianische Gassen, Kirchen, Spianada-Platz — Europas zweitgrößte Piazza"},
+    {i:"Burg",t:"Alte Festung (Palaio Frourio)",d:"Toller Panoramablick über die Stadt & Meer · Eintritt ca. 6 € · lohnt sich!"},
+    {i:"Burg",t:"Neue Festung (Neo Frourio)",d:"Weniger voll als die Alte, interessante Stadtmauer-Perspektive"},
+    {i:"Einkauf",t:"Shopping in der Altstadt",d:"Olivenöl, Kumquat-Likör, griechische Keramik — tolle Souvenirs"},
   ],
   selfie:[{t:"Alte Festung Panorama",tip:"Aussichtsplattform oben — Meerblick und Stadtpanorama. Beste Fotos am Nachmittag (Licht)."},{t:"Liston Arkaden",tip:"Venezianische Bogengänge — wunderbar fotogen, besonders abends mit Beleuchtung."}],
   photos:["alteFestung","korfuAerial"],
@@ -1133,29 +1002,29 @@ const DAYS=[
 {id:"T5",date:"22.07",wd:"Mi",et:"tv",title:"Transfer → Ksamil",sub:"Check-out Poseidon Suites · Fähre Korfu → Saranda · Check-in Muze Hotel",
   center:[39.770,20.003,12],marks:["korfuPort","saranda","muze"],
   acts:[
-    {i:"🏨",t:"Check-out Poseidon Suites",d:"Koffer früh gepackt, Frühstück, Schlüssel abgeben"},
-    {i:"🚗",t:"Fahrt → Neuer Hafen Korfu",d:"ca. 35 Min · Parkplatz am Neo Limani"},
-    {i:"⛴",t:"Fähre Korfu → Saranda",d:"Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB buchen! (ca. 15–20 €/P)"},
-    {i:"🛂",t:"Albanien Einreise Saranda",d:"REISEPASS PFLICHT (kein EU-Schengen!) · Grenzkontrolle am Hafen"},
-    {i:"🚕",t:"Transfer Saranda → Ksamil",d:"ca. 20 Min, ca. 8–12 € Taxi oder Minibus"},
-    {i:"🏨",t:"Check-in Muze Hotel Ksamil",d:"Ksamil Village · Lage direkt nahe den besten Stränden"},
-    {i:"🏖",t:"Erster Ksamil-Strand",d:"Nachmittags: Eingewöhnen, erstes Bad im türkisen albanischen Wasser"},
+    {i:"Hotel",t:"Check-out Poseidon Suites",d:"Koffer früh gepackt, Frühstück, Schlüssel abgeben"},
+    {i:"Auto",t:"Fahrt → Neuer Hafen Korfu",d:"ca. 35 Min · Parkplatz am Neo Limani"},
+    {i:"Fähre",t:"Fähre Korfu → Saranda",d:"Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB buchen! (ca. 15–20 €/P)"},
+    {i:"Pass",t:"Albanien Einreise Saranda",d:"REISEPASS PFLICHT (kein EU-Schengen!) · Grenzkontrolle am Hafen"},
+    {i:"Taxi",t:"Transfer Saranda → Ksamil",d:"ca. 20 Min, ca. 8–12 € Taxi oder Minibus"},
+    {i:"Hotel",t:"Check-in Muze Hotel Ksamil",d:"Ksamil Village · Lage direkt nahe den besten Stränden"},
+    {i:"Strand",t:"Erster Ksamil-Strand",d:"Nachmittags: Eingewöhnen, erstes Bad im türkisen albanischen Wasser"},
   ],
   selfie:[{t:"Ksamil Strandblick",tip:"Blick von der Strandbar auf die vorgelagerten Inseln — Nachmittag mit tief stehender Sonne ideal"}],
   photos:["ksamil"],
   tips:["REISEPASS nicht vergessen — Albanien ist KEIN EU/Schengen-Land!","Roaming in Albanien: KEIN EU-Roaming-Schutz → Datenvolumen prüfen!","Albanische Lek am ATM in Saranda abheben (Euro wird auch akzeptiert, aber Lek besser)","Fähre: Tickets idealerweise 1–2 Tage vorher online buchen"],
   eve:"Erster albanischer Sonnenuntergang am Ksamil-Strand — sehr fotogen",
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails, perfekt zum Ankommen",tags:["Strandbar","€€","Inseln-Blick"]}],
-  alerts:[{t:"warn",text:"⚠️ WICHTIG: Albanien ist kein EU-Mitglied. Reisepass für alle Familienmitglieder nötig. EU-Roaming gilt NICHT — Datenkosten prüfen!"}]},
+  alerts:[{t:"warn",text:"WICHTIG: Albanien ist kein EU-Mitglied. Reisepass für alle Familienmitglieder nötig. EU-Roaming gilt NICHT — Datenkosten prüfen!"}]},
 
 {id:"T6",date:"23.07",wd:"Do",et:"e2",title:"Ksamil · Erste Strände",sub:"Eingewöhnen, türkises Wasser & Inseln-Panorama entdecken",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze","ksamilIslands"],
   acts:[
-    {i:"☀️",t:"Frühstück & Strandmorgen",d:"Entspannt starten, Lieblingsplatz am Strand sichern — früh lohnt sich!"},
-    {i:"🏖",t:"Ksamil Hauptstrand erkunden",d:"Feiner Sand, türkises Wasser, Panorama auf die kleinen vorgelagerten Inseln"},
-    {i:"🤿",t:"Schnorcheln im Kristallwasser",d:"Wasserqualität überragend — Ausrüstung am Strand leihbar (ca. 5–8 €)"},
-    {i:"🛶",t:"Kajak zu den Inseln",d:"Kajak-Verleih am Hauptstrand · in 10–15 Min paddeln die kleinen Inseln erkunden"},
-    {i:"🍦",t:"Ksamil Village erkunden",d:"Kleine Straßen, lokale Eisdielen, albanische Atmosphäre genießen"},
+    {i:"Sonne",t:"Frühstück & Strandmorgen",d:"Entspannt starten, Lieblingsplatz am Strand sichern — früh lohnt sich!"},
+    {i:"Strand",t:"Ksamil Hauptstrand erkunden",d:"Feiner Sand, türkises Wasser, Panorama auf die kleinen vorgelagerten Inseln"},
+    {i:"Schnorcheln",t:"Schnorcheln im Kristallwasser",d:"Wasserqualität überragend — Ausrüstung am Strand leihbar (ca. 5–8 €)"},
+    {i:"Kajak",t:"Kajak zu den Inseln",d:"Kajak-Verleih am Hauptstrand · in 10–15 Min paddeln die kleinen Inseln erkunden"},
+    {i:"Dorf",t:"Ksamil Village erkunden",d:"Kleine Straßen, lokale Eisdielen, albanische Atmosphäre genießen"},
   ],
   selfie:[{t:"Strandpanorama mit Ksamil-Inseln",tip:"Aussicht vom Hauptstrand auf die 4 kleinen Inseln — perfektes Türkis-Panorama am frühen Nachmittag"}],
   photos:["ksamil","ksamilRiviera"],
@@ -1166,10 +1035,10 @@ const DAYS=[
 {id:"T7",date:"24.07",wd:"Fr",et:"e2",title:"Ksamil · Inseln & Schnorcheln",sub:"Bootstour zu den 4 Ksamil-Inseln + Cliff Jumping",
   center:[39.765,19.998,13],marks:["ksamilBeach","ksamilIslands","muze"],
   acts:[
-    {i:"⛵",t:"Bootstour zu den Ksamil-Inseln",d:"4 kleine Inseln mit türkisem Wasser & weißem Sand · ab ca. 10 €/P · direkt am Strand buchen"},
-    {i:"🤿",t:"Schnorcheln & Schwimmen",d:"Wasserqualität und -klarheit hier überragend ★★★★★ — besser als überall auf Korfu"},
-    {i:"🪨",t:"Cliff Jumping",d:"Sichere Sprungfelsen bei den Inseln — Leah & Maxi werden lieben. Vor dem Springen Tiefe prüfen!"},
-    {i:"🏖",t:"Strandbar-Nachmittag",d:"Liegen am Hauptstrand, kühle Drinks, Inseln-Panorama genießen"},
+    {i:"Boot",t:"Bootstour zu den Ksamil-Inseln",d:"4 kleine Inseln mit türkisem Wasser & weißem Sand · ab ca. 10 €/P · direkt am Strand buchen"},
+    {i:"Schnorcheln",t:"Schnorcheln & Schwimmen",d:"Wasserqualität und -klarheit hier überragend — besser als überall auf Korfu"},
+    {i:"Felsen",t:"Cliff Jumping",d:"Sichere Sprungfelsen bei den Inseln — Leah & Maxi werden lieben. Vor dem Springen Tiefe prüfen!"},
+    {i:"Strand",t:"Strandbar-Nachmittag",d:"Liegen am Hauptstrand, kühle Drinks, Inseln-Panorama genießen"},
   ],
   selfie:[{t:"Ksamil-Inseln aus dem Boot",tip:"Drohnenperspektive-Look: Bootfahrer bitten kurz anzuhalten, türkises Wasser als Hintergrund"},{t:"Strandbar Inseln-Blick",tip:"Bekanntester Instagram-Spot Ksamils: Strandliege mit den kleinen Inseln dahinter"}],
   photos:["ksamil","ksamilRiviera"],
@@ -1180,10 +1049,10 @@ const DAYS=[
 {id:"T8",date:"25.07",wd:"Sa",et:"e2",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
   center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
   acts:[
-    {i:"🏛",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
-    {i:"🏺",t:"Butrint Museum",d:"Funde aus der Ausgrabung · kurz aber informativ · Eintritt ca. 10 €"},
-    {i:"🥘",t:"Mittagspause in Saranda",d:"Hafenpromenade Saranda · Restaurants mit Meerblick · ca. 35 Min von Butrint"},
-    {i:"👁",t:"Blaues Auge (Syri i Kaltër)",d:"ca. 23 km von Saranda · mystischer Quellsee mit glasklarem, tiefblauem Wasser — WOW-Faktor!"},
+    {i:"Museum",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
+    {i:"Museum",t:"Butrint Museum",d:"Funde aus der Ausgrabung · kurz aber informativ · Eintritt ca. 10 €"},
+    {i:"Essen",t:"Mittagspause in Saranda",d:"Hafenpromenade Saranda · Restaurants mit Meerblick · ca. 35 Min von Butrint"},
+    {i:"Auge",t:"Blaues Auge (Syri i Kaltër)",d:"ca. 23 km von Saranda · mystischer Quellsee mit glasklarem, tiefblauem Wasser — WOW-Faktor!"},
   ],
   selfie:[{t:"Butrint Amphitheater",tip:"Antikes griechisches Theater — Stufen als Fotokulisse. Früh morgens kaum Touristen."},{t:"Blaues Auge von oben",tip:"Aussichtsplattform am Rande des Quells — bestes Foto von oben. Tiefblau garantiert!"}],
   photos:["butrint","blueEye"],
@@ -1194,11 +1063,11 @@ const DAYS=[
 {id:"T9",date:"26.07",wd:"So",et:"e2",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
   acts:[
-    {i:"🚕",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
-    {i:"🌊",t:"Saranda Hafen-Promenade",d:"Entspannter Stadtbummel entlang der Küste, Cafés, Eis, albanisches Flair"},
-    {i:"🥘",t:"Mittagessen Saranda",d:"Frische Meeresfrüchte am Hafen · albanische Küche günstiger als in Griechenland"},
-    {i:"🏰",t:"Lëkurësi-Burg",d:"Osmanische Festung über Saranda · spektakulärer Rundblick auf Korfu-Kanal & Inseln · 10 Min Fahrt"},
-    {i:"🏖",t:"Nachmittag zurück in Ksamil",d:"Ruhiger Nachmittag am Strand nach dem Ausflug"},
+    {i:"Taxi",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
+    {i:"Wasser",t:"Saranda Hafen-Promenade",d:"Entspannter Stadtbummel entlang der Küste, Cafés, Eis, albanisches Flair"},
+    {i:"Essen",t:"Mittagessen Saranda",d:"Frische Meeresfrüchte am Hafen · albanische Küche günstiger als in Griechenland"},
+    {i:"Burg",t:"Lëkurësi-Burg",d:"Osmanische Festung über Saranda · spektakulärer Rundblick auf Korfu-Kanal & Inseln · 10 Min Fahrt"},
+    {i:"Strand",t:"Nachmittag zurück in Ksamil",d:"Ruhiger Nachmittag am Strand nach dem Ausflug"},
   ],
   selfie:[{t:"Lëkurësi-Burg Panorama",tip:"360°-Blick auf Saranda, den Kanal und Korfu im Hintergrund — ein absolutes Highlight!"},{t:"Saranda Hafen",tip:"Abendstimmung am Hafen mit Blick nach Korfu — malerisch und einzigartig"}],
   photos:["ksamil"],
@@ -1209,10 +1078,10 @@ const DAYS=[
 {id:"T10",date:"27.07",wd:"Mo",et:"e2",title:"Ksamil · Wassersport",sub:"Jetski, Wakeboard & Kajak im türkisen albanischen Wasser",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
-    {i:"🚤",t:"Jetski & Banana Boat",d:"Direkt am Ksamil Hauptstrand buchbar · Adrenalin pur auf türkisem Wasser"},
-    {i:"🏄",t:"Wakeboard / Wasserski",d:"Angeboten am Hauptstrand · Leah & Maxi werden Spaß haben"},
-    {i:"🏊",t:"Freischwimmen zu den Inseln",d:"Die kleinen Ksamil-Inseln sind schwimmend erreichbar — ca. 200–300 m"},
-    {i:"🚣",t:"SUP bei Sonnenuntergang",d:"Stehpaddeln in ruhigem Wasser, perfekte Abendstimmung"},
+    {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Ksamil Hauptstrand buchbar · Adrenalin pur auf türkisem Wasser"},
+    {i:"Wakeboard",t:"Wakeboard / Wasserski",d:"Angeboten am Hauptstrand · Leah & Maxi werden Spaß haben"},
+    {i:"Schwimmen",t:"Freischwimmen zu den Inseln",d:"Die kleinen Ksamil-Inseln sind schwimmend erreichbar — ca. 200–300 m"},
+    {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Stehpaddeln in ruhigem Wasser, perfekte Abendstimmung"},
   ],
   selfie:[{t:"Jetski Action",tip:"Jemanden ans Ufer stellen zum Fotografieren — Wasserreflexion + Geschwindigkeit = perfektes Foto!"}],
   photos:["ksamil"],
@@ -1223,10 +1092,10 @@ const DAYS=[
 {id:"T11",date:"28.07",wd:"Di",et:"e2",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
-    {i:"🏖",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
-    {i:"🏄",t:"Wakeboard / Wasserski",d:"Angeboten am Hauptstrand · Leah & Maxi werden Spaß haben"},
-    {i:"🛶",t:"Kajak bei Sonnenuntergang",d:"Kajak-Verleih am Strand · perfekte Abendstimmung auf dem ruhigen Wasser"},
-    {i:"🍦",t:"Eis & Desserts erkunden",d:"Ksamil-Dorf erkunden, lokale Gelaterie, albanische Süßigkeiten probieren"},
+    {i:"Strand",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
+    {i:"Wakeboard",t:"Wakeboard / Wasserski",d:"Angeboten am Hauptstrand · Leah & Maxi werden Spaß haben"},
+    {i:"Kajak",t:"Kajak bei Sonnenuntergang",d:"Kajak-Verleih am Strand · perfekte Abendstimmung auf dem ruhigen Wasser"},
+    {i:"Eis",t:"Eis & Desserts erkunden",d:"Ksamil-Dorf erkunden, lokale Gelaterie, albanische Süßigkeiten probieren"},
   ],
   selfie:[{t:"Strandbar mit Inseln-Blick",tip:"Letzter Ksamil-Sonnenuntergang — wer schöne Bilder will, kommt 30 Min vor Sonnenuntergang"}],
   photos:["ksamilRiviera"],
@@ -1234,30 +1103,30 @@ const DAYS=[
   eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
   rests:[{n:"Era Restaurant (Abschlussabend)",d:"Albanische Spezialitäten zum Abschied: Tave Kosi (Joghurt-Lamm) probieren!",tags:["Albanisch","Lokal","€"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T12",date:"29.07",wd:"Mi",et:"tv",title:"Transfer → Ýpsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
+{id:"T12",date:"29.07",wd:"Mi",et:"tv",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
   center:[39.685,19.873,12],marks:["saranda","korfuPort","yannis","ypsosBeach"],
   acts:[
-    {i:"🏨",t:"Check-out Muze Hotel Ksamil",d:"Koffer fertig, Frühstück, Abschied von Ksamil"},
-    {i:"🚕",t:"Transfer → Saranda Hafen",d:"ca. 20 Min Taxi · rechtzeitig am Hafen sein"},
-    {i:"⛴",t:"Fähre Saranda → Korfu",d:"Rückreise ca. 45 Min · Neuer Hafen Korfu (Neo Limani)"},
-    {i:"🚗",t:"Transfer → Ýpsos",d:"Nordosten Korfu · ca. 25 Min vom Hafen · Hotel Yannis Corfu"},
-    {i:"🏨",t:"Check-in Hotel Yannis Corfu",d:"Ýpsos Village · direkte Strandlage"},
-    {i:"🏖",t:"Nachmittag Ýpsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
+    {i:"Hotel",t:"Check-out Muze Hotel Ksamil",d:"Koffer fertig, Frühstück, Abschied von Ksamil"},
+    {i:"Taxi",t:"Transfer → Saranda Hafen",d:"ca. 20 Min Taxi · rechtzeitig am Hafen sein"},
+    {i:"Fähre",t:"Fähre Saranda → Korfu",d:"Rückreise ca. 45 Min · Neuer Hafen Korfu (Neo Limani)"},
+    {i:"Auto",t:"Transfer → Ypsos",d:"Nordosten Korfu · ca. 25 Min vom Hafen · Hotel Yannis Corfu"},
+    {i:"Hotel",t:"Check-in Hotel Yannis Corfu",d:"Ypsos Village · direkte Strandlage"},
+    {i:"Strand",t:"Nachmittag Ypsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
   ],
-  selfie:[{t:"Ýpsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
+  selfie:[{t:"Ypsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
   photos:["korfuAerial"],
-  tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ýpsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
-  eve:"Erster Abend in Ýpsos: Strandpromenade entlang, lokale Tavernen erkunden",
-  rests:[{n:"Taverna Stamatis Ýpsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ýpsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ýpsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
+  tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ypsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
+  eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
+  rests:[{n:"Taverna Stamatis Ypsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ypsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ypsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
 
-{id:"T13",date:"30.07",wd:"Do",et:"e3",title:"Ýpsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
+{id:"T13",date:"30.07",wd:"Do",et:"e3",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
   center:[39.668,19.705,13],marks:["paleo"],
   acts:[
-    {i:"🚗",t:"Fahrt nach Paleokastritsa",d:"ca. 50 Min von Ýpsos · spektakuläre Küstenstraße über den Norden Korfus"},
-    {i:"⛵",t:"Bootstour zu Meereshöhlen",d:"Ca. 45 Min, ab Hauptstrand · beleuchtete Höhlen, türkise Buchten — unvergesslich!"},
-    {i:"🤿",t:"Schnorcheln in den Buchten",d:"Kristallklares Wasser, viele Fische — Snorkel lohnt sich sehr"},
-    {i:"⛪",t:"Moni Paleokastritsa",d:"Kleines Kloster auf dem Fels — atemberaubender Ausblick (20 Min Fußweg)"},
-    {i:"🍹",t:"Café La Grotta",d:"Legendäre Bar direkt in den Felsen gebaut — Cocktails über dem Meer!"},
+    {i:"Auto",t:"Fahrt nach Paleokastritsa",d:"ca. 50 Min von Ypsos · spektakuläre Küstenstraße über den Norden Korfus"},
+    {i:"Boot",t:"Bootstour zu Meereshöhlen",d:"Ca. 45 Min, ab Hauptstrand · beleuchtete Höhlen, türkise Buchten — unvergesslich!"},
+    {i:"Schnorcheln",t:"Schnorcheln in den Buchten",d:"Kristallklares Wasser, viele Fische — Snorkel lohnt sich sehr"},
+    {i:"Kloster",t:"Moni Paleokastritsa",d:"Kleines Kloster auf dem Fels — atemberaubender Ausblick (20 Min Fußweg)"},
+    {i:"Bar",t:"Café La Grotta",d:"Legendäre Bar direkt in den Felsen gebaut — Cocktails über dem Meer!"},
   ],
   selfie:[{t:"Paleokastritsa Klippen",tip:"Von der Bella Vista Aussicht — beste Sicht auf die türkisen Buchten. Früh hingehen!"},{t:"Café La Grotta",tip:"Einzigartige Felsbar-Perspektive — TikTok & Instagram Pflicht. Mittags weniger voll."}],
   photos:["paleokastritsa","paleokastritsa2"],
@@ -1265,28 +1134,28 @@ const DAYS=[
   eve:"Sonnenuntergang von der Bella Vista Terrasse über Paleokastritsa — eines der schönsten Abendpanoramen Korfus",
   rests:[{n:"Café La Grotta",d:"Felsbar über dem Meer, Cocktails & Snacks, absolutes Highlight für Teens",tags:["Felsbar","Cocktails","€€","Selfie-Spot"]},{n:"Taverne Paleokastritsa",d:"Frischer Fisch direkt am Hauptstrand, mittelpreisig",tags:["Fisch","Griechisch","€€"]}],alerts:[]},
 
-{id:"T14",date:"31.07",wd:"Fr",et:"e3",title:"Ýpsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
+{id:"T14",date:"31.07",wd:"Fr",et:"e3",title:"Ypsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
   center:[39.684,19.872,13],marks:["ypsosBeach","yannis"],
   acts:[
-    {i:"🪂",t:"Parasailing",d:"Spektakulärer Blick von oben auf Korfu & das ionische Meer — unvergesslich!"},
-    {i:"🤿",t:"Strand Ýpsos — Schwimmen & Schnorcheln",d:"Ruhiger Strandabschnitt, gute Sicht im Wasser"},
-    {i:"🏄",t:"Wakeboard / Wasserski",d:"Angeboten am Ýpsos-Strand · ideal für sportliche Teens"},
-    {i:"🚣",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
+    {i:"Parasailing",t:"Parasailing",d:"Spektakulärer Blick von oben auf Korfu & das ionische Meer — unvergesslich!"},
+    {i:"Schnorcheln",t:"Strand Ypsos — Schwimmen & Schnorcheln",d:"Ruhiger Strandabschnitt, gute Sicht im Wasser"},
+    {i:"Wakeboard",t:"Wakeboard / Wasserski",d:"Angeboten am Ypsos-Strand · ideal für sportliche Teens"},
+    {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
   ],
   selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
   photos:["korfuAerial"],
-  tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ýpsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
-  eve:"Beach-Bar-Abend an der Ýpsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
-  rests:[{n:"Ýpsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ýpsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ýpsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
+  tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
+  eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
+  rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
 
 {id:"T15",date:"01.08",wd:"Sa",et:"e3",title:"Achilleion + Korfu-Stadt",sub:"Kaiserin Sisis Palast, Pontikonisi & Liston-Abendessen",
   center:[39.603,19.921,11],marks:["achilleion","pontikonisi","kanoni","korfuTown","alteFestung","liston"],
   acts:[
-    {i:"🏛",t:"Achilleion Palast",d:"Kaiserin Sisis Sommerresidenz · ca. 30 Min von Ýpsos · prächtige Gartenanlage & Statuen · Eintritt ca. 7 €"},
-    {i:"📸",t:"Kanoni Aussichtspunkt",d:"Ikonisches Foto: Lagune + Vlacherna Kloster + Pontikonisi — und Flugzeuge im Tiefflug!"},
-    {i:"⛵",t:"Fähre zu Pontikonisi",d:"Kleine Fähre zur Mauseinsel (Pontikonisi) · kleines Kloster, traumhafter Blick · ca. 2–3 € pro Person"},
-    {i:"🛍",t:"Shopping in der Altstadt",d:"Abschluss-Souvenirs: Olivenöl, Kumquat, Keramik, T-Shirts"},
-    {i:"⚔️",t:"Alte Festung im Abendlicht",d:"Das goldene Abendlicht macht Fotos unvergesslich — Pflichtbesuch!"},
+    {i:"Palast",t:"Achilleion Palast",d:"Kaiserin Sisis Sommerresidenz · ca. 30 Min von Ypsos · prächtige Gartenanlage & Statuen · Eintritt ca. 7 €"},
+    {i:"Foto",t:"Kanoni Aussichtspunkt",d:"Ikonisches Foto: Lagune + Vlacherna Kloster + Pontikonisi — und Flugzeuge im Tiefflug!"},
+    {i:"Boot",t:"Fähre zu Pontikonisi",d:"Kleine Fähre zur Mauseinsel (Pontikonisi) · kleines Kloster, traumhafter Blick · ca. 2–3 € pro Person"},
+    {i:"Einkauf",t:"Shopping in der Altstadt",d:"Abschluss-Souvenirs: Olivenöl, Kumquat, Keramik, T-Shirts"},
+    {i:"Burg",t:"Alte Festung im Abendlicht",d:"Das goldene Abendlicht macht Fotos unvergesslich — Pflichtbesuch!"},
   ],
   selfie:[{t:"Kanoni mit Flugzeug",tip:"Flugzeuge landen über der Lagune — ca. 10–20 Min Wartezeit. Abends traumhaftes Licht!"},{t:"Alte Festung im Abendgold",tip:"18–19 Uhr: Goldstunde am Meerblick der Alten Festung — absolut fantastisch!"},{t:"Liston Abendatmosphäre",tip:"Venezianische Bögen beleuchtet, Abendtrubel — tolle Stimmungsfotos"}],
   photos:["achilleion","pontikonisi","oldFortress"],
@@ -1297,36 +1166,33 @@ const DAYS=[
 {id:"T16",date:"02.08",wd:"So",et:"e3",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
   center:[39.684,19.872,12],marks:["ypsosBeach","yannis"],
   acts:[
-    {i:"🏍",t:"Quad-/Buggy-Tour oder Aqualand (optional)",d:"Morgen-Abenteuer: 2–3h Quad-/Buggy-Tour durch Olivenhaine & Berge · ODER Aqualand Corfu (35 Min Fahrt, Griechenlands größter Wasserpark)"},
-    {i:"🏖",t:"Letzter Strandtag Ýpsos",d:"Vollgas-Strandtag: Schwimmen, Dösen, Meeresluft tanken"},
-    {i:"🪨",t:"Cliff Jumping (optional)",d:"Sichere Stellen bei Barbati/Nissaki erkunden — ca. 10 Min von Ýpsos"},
-    {i:"🧳",t:"Koffer packen",d:"Abends rechtzeitig packen — Flug morgen 10:50 Uhr!"},
-    {i:"🥂",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
+    {i:"Quad",t:"Quad-/Buggy-Tour oder Aqualand (optional)",d:"Morgen-Abenteuer: 2–3h Quad-/Buggy-Tour durch Olivenhaine & Berge · ODER Aqualand Corfu (35 Min Fahrt, Griechenlands größter Wasserpark)"},
+    {i:"Strand",t:"Letzter Strandtag Ypsos",d:"Vollgas-Strandtag: Schwimmen, Dösen, Meeresluft tanken"},
+    {i:"Felsen",t:"Cliff Jumping (optional)",d:"Sichere Stellen bei Barbati/Nissaki erkunden — ca. 10 Min von Ypsos"},
+    {i:"Koffer",t:"Koffer packen",d:"Abends rechtzeitig packen — Flug morgen 10:50 Uhr!"},
+    {i:"Glas",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
   ],
-  selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ýpsos-Strand — diesen Moment einfrieren!"}],
+  selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ypsos-Strand — diesen Moment einfrieren!"}],
   photos:["korfuAerial"],
-  tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ýpsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
-  eve:"Abschluss-Abendessen mit dem besten Meerblick in Ýpsos — Abschied vom ionischen Meer",
-  rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"⚠️ FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
+  tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ypsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
+  eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
+  rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
 
 {id:"T17",date:"03.08",wd:"Mo",et:"tv",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
   center:[39.6015,19.9117,10],marks:["airport","yannis"],
   acts:[
-    {i:"⏰",t:"Frühzeitig aufstehen & Check-out",d:"Frühstück nur wenn zeitlich möglich · Hotel Yannis Corfu"},
-    {i:"🚕",t:"Transfer → Flughafen Korfu",d:"ca. 25 Min · VORAB gebuchtes Taxi · bis 08:30 Uhr am Flughafen sein"},
-    {i:"✈️",t:"Flug OS862 · 10:50 Uhr Korfu (CFU)",d:"→ Wien (VIE) · Ankunft 12:35 Uhr · Austrian Airlines"},
-    {i:"🏛",t:"Aufenthalt Wien",d:"2h 25 Min Verbindung · Sicherheitscheck, Gate suchen, Mittagssnack"},
-    {i:"✈️",t:"Flug OS117 · 15:00 Uhr Wien (VIE)",d:"→ Graz (GRZ) · Ankunft 15:35 Uhr · ca. 35 Min Flug"},
-    {i:"🚗",t:"Abholung Flughafen Graz",d:"Heimfahrt Plankenwarth 228, 8113 St. Oswald · ca. 20 Min"},
+    {i:"Wecker",t:"Frühzeitig aufstehen & Check-out",d:"Frühstück nur wenn zeitlich möglich · Hotel Yannis Corfu"},
+    {i:"Taxi",t:"Transfer → Flughafen Korfu",d:"ca. 25 Min · VORAB gebuchtes Taxi · bis 08:30 Uhr am Flughafen sein"},
+    {i:"Flug",t:"Flug OS862 · 10:50 Uhr Korfu (CFU)",d:"→ Wien (VIE) · Ankunft 12:35 Uhr · Austrian Airlines"},
+    {i:"Wien",t:"Aufenthalt Wien",d:"2h 25 Min Verbindung · Sicherheitscheck, Gate suchen, Mittagssnack"},
+    {i:"Flug",t:"Flug OS117 · 15:00 Uhr Wien (VIE)",d:"→ Graz (GRZ) · Ankunft 15:35 Uhr · ca. 35 Min Flug"},
+    {i:"Auto",t:"Abholung Flughafen Graz",d:"Heimfahrt Plankenwarth 228, 8113 St. Oswald · ca. 20 Min"},
   ],
   selfie:[],photos:[],
-  tips:["Online Check-in OS862 vorab erledigen","Gepäck zügig aufgeben — Warteschlangen Hochsaison","Wien Transfer: Gate-Info sofort prüfen (VIE ist groß!)","Zuhause: Koffer auspacken, Fotos sortieren, schon nach nächstem Urlaub suchen 😄"],
+  tips:["Online Check-in OS862 vorab erledigen","Gepäck zügig aufgeben — Warteschlangen Hochsaison","Wien Transfer: Gate-Info sofort prüfen (VIE ist groß!)","Zuhause: Koffer auspacken, Fotos sortieren, schon nach nächstem Urlaub suchen"],
   eve:null,rests:[],alerts:[{t:"info",text:"Letzter Tag! OS862 · 10:50 Korfu → Wien 12:35. Weiter OS117 · 15:00 Wien → Graz 15:35. Welcome home!"}]},
 ];
 
-/* ══════════════════════════════════════
-   TODO ITEMS
-══════════════════════════════════════ */
 const TODOS=[
   {g:"Dokumente & Einreise",items:[
     {id:"t1",label:"Reisepässe für ALLE 4 Personen prüfen (Albanien!)",note:"Albanien = kein EU-Schengen → Personalausweis reicht NICHT!",urgent:true},
@@ -1342,9 +1208,9 @@ const TODOS=[
   {g:"Unterkunft & Transfers",items:[
     {id:"t8",label:"Poseidon Suites: Check-in-Zeit & Anreise-Info klären",note:"Ankommen ca. 22 Uhr — vorab Bescheid geben"},
     {id:"t9",label:"Muze Hotel Ksamil: Anreise-Details klären",note:"Fähre-Ankunft in Saranda, Transfer organisieren"},
-    {id:"t10",label:"Hotel Yannis Corfu: Check-in-Zeit klären",note:"Ýpsos, Nordkorfu"},
+    {id:"t10",label:"Hotel Yannis Corfu: Check-in-Zeit klären",note:"Ypsos, Nordkorfu"},
     {id:"t11",label:"Taxi Korfu Flughafen → Agios Gordios vorbuchen",note:"Ca. 25 €, Festpreis vereinbaren"},
-    {id:"t12",label:"Taxi Ýpsos → Flughafen Korfu vorbuchen (03.08.!)",note:"Frühflug → Taxi vorab buchen! Ca. 18–22 €, Abfahrt ~08:00"},
+    {id:"t12",label:"Taxi Ypsos → Flughafen Korfu vorbuchen (03.08.!)",note:"Frühflug → Taxi vorab buchen! Ca. 18–22 €, Abfahrt ~08:00"},
   ]},
   {g:"Aktivitäten vorbuchen",items:[
     {id:"t13",label:"Aqualand Corfu Tickets online kaufen (Fr 24.07.)",note:"Online günstiger · aqualand.gr"},
@@ -1363,7 +1229,7 @@ const TODOS=[
     {id:"t22",label:"Powerbank einpacken",note:"Lange Ausflugstage brauchen Akku-Backup"},
     {id:"t23",label:"Wasserdichte Kamerahülle / GoPro",note:"Für Schnorcheln, Bootstouren, Wasserpark"},
   ]},
-  {g:"Geld & Pakken",items:[
+  {g:"Geld & Packen",items:[
     {id:"t24",label:"Euro-Bargeld besorgen (Korfu & Fähre)",note:"Griechenland = Euro; Bargeld für Aktivitäten vor Ort"},
     {id:"t25",label:"Albanischen Lek am ATM in Saranda holen",note:"Geldautomaten am Saranda Hafen verfügbar · Euro wird auch akzeptiert"},
     {id:"t26",label:"Schnorchelset einpacken (oder vor Ort leihen)",note:"Eigenes Set spart Leihgebühren über 2+ Wochen"},
@@ -1371,37 +1237,34 @@ const TODOS=[
   ]},
 ];
 
-/* ══════════════════════════════════════
-   ROUTE GUIDE CONTENT
-══════════════════════════════════════ */
 const ROUTE_HTML=`
 <div class="rseg">
-  <h3>🚗✈️ Tag 1 · 18.07. — Anreise nach Korfu</h3>
-  <div class="rstep"><div class="rbullet tv">🚗</div><div class="rcon"><strong>Plankenwarth 228 → Graz Hauptbahnhof</strong><span>ca. 20 Min mit dem Auto · Parken am Bahnhof oder mit Taxi</span></div></div>
-  <div class="rstep"><div class="rbullet tv">🚆</div><div class="rcon"><strong>Zug OS3588 · 14:00 Uhr ab Graz Hbf</strong><span>Ankunft Wien Hbf 16:57 · Fahrzeit ca. 2h 57 Min · AUA-Codeshare Zugverbindung</span></div></div>
-  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS863 · 19:30 Uhr Wien (VIE) → Korfu (CFU)</strong><span>Austrian Airlines · Flugzeit ca. 1h 45 Min · Ankunft Korfu ca. 21:15 Uhr Ortszeit</span></div></div>
-  <div class="rstep"><div class="rbullet tv">🚕</div><div class="rcon"><strong>Transfer Flughafen Korfu → Agios Gordios</strong><span>Taxi Festpreis ca. 25 € · Fahrzeit ca. 30 Min · Poseidon Suites by CorfuEscapes</span></div></div>
+  <h3>Tag 1 · 18.07. — Anreise nach Korfu</h3>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Plankenwarth 228 → Graz Hauptbahnhof</strong><span>ca. 20 Min mit dem Auto · Parken am Bahnhof oder mit Taxi</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Zug OS3588 · 14:00 Uhr ab Graz Hbf</strong><span>Ankunft Wien Hbf 16:57 · Fahrzeit ca. 2h 57 Min · AUA-Codeshare Zugverbindung</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Flug OS863 · 19:30 Uhr Wien (VIE) → Korfu (CFU)</strong><span>Austrian Airlines · Flugzeit ca. 1h 45 Min · Ankunft Korfu ca. 21:15 Uhr Ortszeit</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Transfer Flughafen Korfu → Agios Gordios</strong><span>Taxi Festpreis ca. 25 € · Fahrzeit ca. 30 Min · Poseidon Suites by CorfuEscapes</span></div></div>
 </div>
 <div class="rseg">
-  <h3>⛴ Tag 9 · 26.07. — Transfer Korfu → Ksamil (Albanien)</h3>
-  <div class="rstep"><div class="rbullet e2">🚗</div><div class="rcon"><strong>Agios Gordios → Neuer Hafen Korfu (Neo Limani)</strong><span>ca. 35 Min · Parkplatz oder Taxi · rechtzeitig für Fähre da sein</span></div></div>
-  <div class="rstep"><div class="rbullet e2">⛴</div><div class="rcon"><strong>Fähre Korfu → Saranda (Albanien)</strong><span>Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB BUCHEN! ca. 15–20 €/Person</span></div></div>
-  <div class="rstep"><div class="rbullet e2">🛂</div><div class="rcon"><strong>Albanien-Einreise Saranda Hafen</strong><span>REISEPASS PFLICHT · Grenzkontrolle · kurze Wartezeit möglich</span></div></div>
-  <div class="rstep"><div class="rbullet e2">🚕</div><div class="rcon"><strong>Saranda → Ksamil</strong><span>ca. 20 Min · Taxi ca. 8–12 € oder Minibus · direkt am Hafen verfügbar</span></div></div>
+  <h3>Tag 9 · 26.07. — Transfer Korfu → Ksamil (Albanien)</h3>
+  <div class="rstep"><div class="rbullet e2"></div><div class="rcon"><strong>Agios Gordios → Neuer Hafen Korfu (Neo Limani)</strong><span>ca. 35 Min · Parkplatz oder Taxi · rechtzeitig für Fähre da sein</span></div></div>
+  <div class="rstep"><div class="rbullet e2"></div><div class="rcon"><strong>Fähre Korfu → Saranda (Albanien)</strong><span>Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB BUCHEN! ca. 15–20 €/Person</span></div></div>
+  <div class="rstep"><div class="rbullet e2"></div><div class="rcon"><strong>Albanien-Einreise Saranda Hafen</strong><span>REISEPASS PFLICHT · Grenzkontrolle · kurze Wartezeit möglich</span></div></div>
+  <div class="rstep"><div class="rbullet e2"></div><div class="rcon"><strong>Saranda → Ksamil</strong><span>ca. 20 Min · Taxi ca. 8–12 € oder Minibus · direkt am Hafen verfügbar</span></div></div>
 </div>
 <div class="rseg">
-  <h3>⛴ Tag 13 · 30.07. — Rücktransfer Ksamil → Ýpsos (Korfu)</h3>
-  <div class="rstep"><div class="rbullet e3">🚕</div><div class="rcon"><strong>Ksamil → Saranda Hafen</strong><span>ca. 20 Min Taxi · rechtzeitig für Fähre am Hafen sein</span></div></div>
-  <div class="rstep"><div class="rbullet e3">⛴</div><div class="rcon"><strong>Fähre Saranda → Korfu (Neuer Hafen)</strong><span>ca. 45 Min · Rückticket VORAB gebucht! Ankommen in Korfu ca. 1h nach Abfahrt</span></div></div>
-  <div class="rstep"><div class="rbullet e3">🚗</div><div class="rcon"><strong>Korfu Hafen → Ýpsos</strong><span>Nordosten Korfu · ca. 25 Min · Hotel Yannis Corfu in Ýpsos Village</span></div></div>
+  <h3>Tag 13 · 30.07. — Rücktransfer Ksamil → Ypsos (Korfu)</h3>
+  <div class="rstep"><div class="rbullet e3"></div><div class="rcon"><strong>Ksamil → Saranda Hafen</strong><span>ca. 20 Min Taxi · rechtzeitig für Fähre am Hafen sein</span></div></div>
+  <div class="rstep"><div class="rbullet e3"></div><div class="rcon"><strong>Fähre Saranda → Korfu (Neuer Hafen)</strong><span>ca. 45 Min · Rückticket VORAB gebucht! Ankommen in Korfu ca. 1h nach Abfahrt</span></div></div>
+  <div class="rstep"><div class="rbullet e3"></div><div class="rcon"><strong>Korfu Hafen → Ypsos</strong><span>Nordosten Korfu · ca. 25 Min · Hotel Yannis Corfu in Ypsos Village</span></div></div>
 </div>
 <div class="rseg">
-  <h3>✈️ Tag 17 · 03.08. — Rückreise nach Hause</h3>
-  <div class="rstep"><div class="rbullet tv">🚕</div><div class="rcon"><strong>Ýpsos → Flughafen Korfu (CFU)</strong><span>ca. 25 Min · Taxi VORAB gebucht · Abfahrt ca. 08:00 Uhr · am Flughafen bis 08:30</span></div></div>
-  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS862 · 10:50 Uhr Korfu (CFU) → Wien (VIE)</strong><span>Austrian Airlines · Ankunft Wien 12:35 Uhr · Flugzeit ca. 1h 45 Min</span></div></div>
-  <div class="rstep"><div class="rbullet tv">🕒</div><div class="rcon"><strong>Aufenthalt Wien (VIE)</strong><span>2h 25 Min · Gate suchen · Mittagssnack · Weiterflug Gate prüfen</span></div></div>
-  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS117 · 15:00 Uhr Wien (VIE) → Graz (GRZ)</strong><span>Ankunft Graz 15:35 Uhr · Flugzeit ca. 35 Min</span></div></div>
-  <div class="rstep"><div class="rbullet tv">🚗</div><div class="rcon"><strong>Abholung Flughafen Graz → Plankenwarth</strong><span>ca. 20 Min Heimfahrt · Plankenwarth 228, 8113 St. Oswald</span></div></div>
+  <h3>Tag 17 · 03.08. — Rückreise nach Hause</h3>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Ypsos → Flughafen Korfu (CFU)</strong><span>ca. 25 Min · Taxi VORAB gebucht · Abfahrt ca. 08:00 Uhr · am Flughafen bis 08:30</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Flug OS862 · 10:50 Uhr Korfu (CFU) → Wien (VIE)</strong><span>Austrian Airlines · Ankunft Wien 12:35 Uhr · Flugzeit ca. 1h 45 Min</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Aufenthalt Wien (VIE)</strong><span>2h 25 Min · Gate suchen · Mittagssnack · Weiterflug Gate prüfen</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Flug OS117 · 15:00 Uhr Wien (VIE) → Graz (GRZ)</strong><span>Ankunft Graz 15:35 Uhr · Flugzeit ca. 35 Min</span></div></div>
+  <div class="rstep"><div class="rbullet tv"></div><div class="rcon"><strong>Abholung Flughafen Graz → Plankenwarth</strong><span>ca. 20 Min Heimfahrt · Plankenwarth 228, 8113 St. Oswald</span></div></div>
 </div>`;
 
 /* ══ PHASE & PREVIEW ══ */
@@ -1417,7 +1280,7 @@ function getPhase() {
   return 'trip';
 }
 
-// Gibt 0-basierter Tages-Index des aktuellen Reisetags zurück (-1 wenn kein Reisetag)
+// Gibt 0-basierten Tages-Index des aktuellen Reisetags zurück (-1 wenn kein Reisetag)
 function getTodayIndex() {
   if (IS_PREVIEW) return -1;
   const now = new Date();
@@ -1439,525 +1302,101 @@ function getDayState(dayIndex) {
   return 'locked';
 }
 
-// Preview-Banner zeigen
-if (IS_PREVIEW) {
-  document.getElementById('preview-banner').classList.add('show');
+/* ══════════════════════════════════════
+   APP STATE
+══════════════════════════════════════ */
+const TAB_DAYS = {
+  e1: ['T1','T2','T3','T4','T5'],
+  e2: ['T6','T7','T8','T9','T10','T11'],
+  e3: ['T12','T13','T14','T15','T16','T17'],
+};
+const ETAPPE_COLOR = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)', tv:'var(--tv)' };
+const AVT_IMG = {
+  airport:  'av-airport.png',
+  ferry:    'av-faehre.png',
+  beach:    'av-picknick.png',
+  sport:    'av-sport.png',
+  bar:      'av-bar.png',
+  taverna:  'av-taverna.png',
+  evening:  'av-abend.png',
+  group:    'av-strand.png',
+};
+
+let activeTab = 'e1';
+let activeDayInTab = 0;
+
+/* ══════════════════════════════════════
+   STUB FUNCTIONS — werden in späteren Tasks befüllt
+══════════════════════════════════════ */
+
+// Task 4: Karten rendern
+function renderCards() { /* stub */ }
+
+// Task 4: Karten-Inhalte aufbauen
+function buildCardContent(day, idx) { /* stub */ return ''; }
+
+// Task 5: Swipe-Gesten
+function initSwipe() { /* stub */ }
+
+// Task 6: Bottom-Nav rendern
+function renderBottomNav() { /* stub */ }
+
+// Task 7: Dots rendern
+function renderDots() { /* stub */ }
+
+// Task 8: Modals initialisieren
+function initModals() { /* stub */ }
+
+// Task 9: Karte initialisieren (Leaflet)
+function initMap() { /* stub */ }
+
+/* ══════════════════════════════════════
+   INIT — wird nach Splash aufgerufen
+══════════════════════════════════════ */
+function initApp() {
+  setInitialTab();
+  renderCards();
+  renderBottomNav();
+  renderDots();
+  initSplash();
+  initModals();
+  initMap();
+  initSwipe();
 }
 
-/* ══ SPLASH ══ */
-function endSplash() {
-  const splash = document.getElementById('splash');
-  splash.classList.add('out');
-  setTimeout(() => {
-    splash.style.display = 'none';
-    document.getElementById('app').classList.add('vis');
-    initApp(); // wird in Task 4 definiert
-  }, 900);
-}
-
-(function initSplash() {
-  // Familienfoto erscheint nach kurzer Verzögerung (CSS animation handled)
-  setTimeout(endSplash, 9000);
-})();
-
-/* ══ HEADER ══ */
-function renderHeader() {
-  document.getElementById('app-hdr').innerHTML = `
-    <div class="hdr-logo">🌊 Korfu &amp; <span>Ksamil</span></div>
-    <div class="hdr-avs">
-      <div class="hdr-av" title="Michael"><img src="av-michael.png" alt="Michael"></div>
-      <div class="hdr-av" title="Nina"><img src="av-nina.png" alt="Nina"></div>
-      <div class="hdr-av" title="Maxi"><img src="av-maxi.png" alt="Maxi"></div>
-      <div class="hdr-av" title="Leah"><img src="av-leah.png" alt="Leah"></div>
-    </div>
-    <div class="hdr-btns">
-      <button class="hbtn" onclick="openModal('route')">🗺 Route</button>
-      <button class="hbtn" onclick="openModal('todo')">✅ Liste</button>
-    </div>
-  `;
-}
-
-/* ══ PHASE HERO ══ */
-function getDaysUntilTrip() {
-  const now = new Date();
-  const diff = TRIP_START - now;
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
-
-// Nimmt das volle Day-Objekt um Sonderszenen (Korfu-Stadt) zu erkennen
-function getDayScene(d) {
-  if (d.et === 'tv')  return 'scene-travel';
-  if (d.et === 'e2')  return 'scene-ksamil';
-  // Korfu-Stadt Tage erkennen
-  if (d.id === 'T4' || d.id === 'T6' || d.id === 'T15') return 'scene-city';
-  return 'scene-beach';
-}
-
-function renderPhaseHero() {
+function setInitialTab() {
   const phase = getPhase();
-  const hero = document.getElementById('phase-hero');
-
-  if (phase === 'pre') {
-    const days = getDaysUntilTrip();
-    hero.innerHTML = `
-      <div class="hero-pre">
-        <div class="hero-pre-bg"></div>
-        <div class="hero-pre-overlay"></div>
-        <div class="hero-pre-inner">
-          <div class="hero-pre-label">Noch</div>
-          <div class="hero-pre-num">${days}</div>
-          <div class="hero-pre-unit">Tage bis Korfu</div>
-          <div class="hero-pre-next">
-            <div class="hero-pre-next-label">Erste Station</div>
-            <div class="hero-pre-next-title">🏖 Agios Gordios · Poseidon Suites · ab 18. Juli</div>
-          </div>
-        </div>
-      </div>
-      <div class="wc-edge">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,80
-            C30,65 55,90 90,72 C115,58 140,85 175,70
-            C200,58 225,82 255,68 C278,57 302,78 330,62
-            C358,46 380,75 412,58 C440,43 462,72 492,55
-            C520,40 548,68 578,52 C605,38 628,62 658,48
-            C685,35 710,60 742,44 C770,30 796,55 828,40
-            C858,26 882,52 912,36 C940,22 965,46 996,30
-            C1024,16 1050,38 1080,22 C1108,8 1135,30 1160,18
-            L1200,10 L1200,120 L0,120 Z" fill="white"/>
-          <path d="M0,95
-            C40,85 75,100 110,88 C145,76 175,95 210,84
-            C245,72 278,90 314,80 C350,70 382,88 418,76
-            C454,64 488,85 524,73 C560,60 592,82 628,68
-            C664,55 698,75 734,62 C770,48 804,70 840,56
-            C876,42 910,65 946,50 C982,36 1016,58 1052,44
-            C1088,30 1122,52 1160,38
-            L1200,30 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.65)"/>
-        </svg>
-      </div>`;
-    return;
-  }
-
-  if (phase === 'post') {
-    hero.innerHTML = `
-      <div class="hero-post">
-        <h2>17 unvergessliche Tage 🌊</h2>
-        <p>Korfu &amp; Ksamil · Sommer 2026 · Familie Monschein</p>
-      </div>`;
-    return;
-  }
-
-  // 'trip' oder 'preview' → heutigen Tag oder ersten Tag zeigen
   const todayIdx = getTodayIndex();
-  const d = DAYS[todayIdx >= 0 ? todayIdx : 0];
-  const sceneClass = getDayScene(d);
-  const isToday = phase === 'trip';
-
-  hero.innerHTML = `
-    <div class="hero-trip">
-      <div class="hero-trip-scene ${sceneClass}"></div>
-      <div class="hero-trip-overlay"></div>
-      <div class="hero-trip-content">
-        ${isToday ? '<div class="hero-trip-badge">✨ Heute</div>' : ''}
-        <div class="hero-trip-title">${d.title}</div>
-        <div class="hero-trip-sub">${d.date} · ${d.wd} · ${d.sub}</div>
-      </div>
-    </div>
-    <div class="wc-edge">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0,80
-          C30,65 55,90 90,72 C115,58 140,85 175,70
-          C200,58 225,82 255,68 C278,57 302,78 330,62
-          C358,46 380,75 412,58 C440,43 462,72 492,55
-          C520,40 548,68 578,52 C605,38 628,62 658,48
-          C685,35 710,60 742,44 C770,30 796,55 828,40
-          C858,26 882,52 912,36 C940,22 965,46 996,30
-          C1024,16 1050,38 1080,22 C1108,8 1135,30 1160,18
-          L1200,10 L1200,120 L0,120 Z" fill="white"/>
-        <path d="M0,95
-          C40,85 75,100 110,88 C145,76 175,95 210,84
-          C245,72 278,90 314,80 C350,70 382,88 418,76
-          C454,64 488,85 524,73 C560,60 592,82 628,68
-          C664,55 698,75 734,62 C770,48 804,70 840,56
-          C876,42 910,65 946,50 C982,36 1016,58 1052,44
-          C1088,30 1122,52 1160,38
-          L1200,30 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.65)"/>
-      </svg>
-    </div>`;
-}
-
-/* ══ TIMELINE ══ */
-const ETAPPES = [
-  { label:'✈️ Anreise',                   cls:'tv', ids:['T1'] },
-  { label:'🔵 Etappe 1 · Agios Gordios', cls:'e1', ids:['T2','T3','T4'] },
-  { label:'🔴 Transfer → Ksamil',        cls:'tv', ids:['T5'] },
-  { label:'🔴 Etappe 2 · Ksamil',        cls:'e2', ids:['T6','T7','T8','T9','T10','T11'] },
-  { label:'🟢 Transfer → Ýpsos',         cls:'tv', ids:['T12'] },
-  { label:'🟢 Etappe 3 · Ýpsos',         cls:'e3', ids:['T13','T14','T15','T16'] },
-  { label:'✈️ Rückreise',                 cls:'tv', ids:['T17'] },
-];
-
-// activeDay: 0-basierter Index des angezeigten Tags (für Task 6)
-let activeDay = getTodayIndex() >= 0 ? getTodayIndex() : 0;
-
-// activeTab: ID des aktiven Tabs ('ALL' oder Tages-ID wie 'T5')
-let activeTab = 'ALL';
-
-function buildTimeline() {
-  // DOM anlegen falls noch nicht vorhanden (erster Aufruf)
-  const inner = document.getElementById('tl-inner') || createTimelineDOM();
-  const etBar = document.getElementById('tl-etappes') || document.querySelector('.tl-etappes');
-
-  // ALLE-Button (zeigt Übersicht aller Tage)
-  const allBtn = makeTabBtn('ALL', 'ALLE', 'all');
-  allBtn.classList.add('active');
-  inner.appendChild(allBtn);
-
-  // Pro Etappe: Etappen-Label + Tages-Tabs
-  ETAPPES.forEach((e) => {
-    // Etappen-Beschriftung in der oberen Leiste
-    const etEl = document.createElement('span');
-    etEl.className = `tl-etag ${e.cls}`;
-    etEl.textContent = e.label;
-    etBar.appendChild(etEl);
-
-    // Tages-Buttons für diese Etappe
-    e.ids.forEach((tid) => {
-      const d     = DAYS.find(x => x.id === tid);
-      const idx   = DAYS.indexOf(d);
-      const state = getDayState(idx);
-      const btn   = makeTabBtn(tid, `${d.wd} ${d.date}`, d.et);
-      if (state === 'past')   btn.classList.add('past');
-      if (state === 'today')  btn.classList.add('today-state');
-      if (state === 'locked') btn.classList.add('locked');
-      inner.appendChild(btn);
-    });
-  });
-
-  // Im Trip-Modus: automatisch zum heutigen Tab scrollen & ihn aktivieren
-  const todayIdx = getTodayIndex();
-  if (todayIdx >= 0) {
-    const todayId = DAYS[todayIdx].id;
-    const phase   = getPhase();
-    if (phase === 'trip') {
-      // 200ms Delay damit renderContent (Task 6) bereits initialisiert ist
-      setTimeout(() => switchTab(todayId), 200);
-    }
-  }
-}
-
-function createTimelineDOM() {
-  // Baut die zweistufige Timeline-Struktur in #timeline-wrap
-  const wrap = document.getElementById('timeline-wrap');
-  wrap.innerHTML = `
-    <div class="tl-etappes" id="tl-etappes"></div>
-    <div class="tl-scroll"><div class="tl-inner" id="tl-inner"></div></div>`;
-  return document.getElementById('tl-inner');
-}
-
-function makeTabBtn(id, label, cls) {
-  // Erstellt einen einzelnen Timeline-Button
-  const b = document.createElement('button');
-  b.className   = `tbtn ${cls}`;
-  b.dataset.id  = id;
-  b.textContent = label;
-  b.onclick     = () => switchTab(id);
-  return b;
-}
-
-function switchTab(id) {
-  // Guard: gesperrte Tage können nicht aufgerufen werden
-  const dayIdx = DAYS.findIndex(d => d.id === id);
-  if (dayIdx >= 0 && getDayState(dayIdx) === 'locked') return;
-
-  // Aktiven Tab und activeDay aktualisieren
-  activeTab = id;
-  if (dayIdx >= 0) activeDay = dayIdx; // nur bei echtem Tages-Tab
-
-  // Active-Klasse auf allen Buttons neu setzen
-  document.querySelectorAll('.tbtn').forEach(b => {
-    b.classList.toggle('active', b.dataset.id === id);
-  });
-
-  // Inhaltsbereich aktualisieren (Task 6) — Guard für Aufrufe vor Task 6
-  if (typeof renderContent === 'function') renderContent(id);
-  // Karte aktualisieren (Task 7) — Guard für Aufrufe vor Task 7
-  if (typeof updateMap === 'function') updateMap(id);
-
-  // Aktiven Tab horizontal in Sicht scrollen
-  const btn = document.querySelector(`.tbtn[data-id="${id}"]`);
-  if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-}
-
-// Alias für Task 6: switchDay(index) wechselt nach Index statt nach ID
-function switchDay(index) {
-  if (index >= 0 && index < DAYS.length) {
-    switchTab(DAYS[index].id);
+  if (phase === 'pre' || phase === 'preview') { activeTab = 'e1'; activeDayInTab = 0; return; }
+  if (phase === 'post') { activeTab = 'e1'; activeDayInTab = 0; return; }
+  // trip: finde den heutigen Tag
+  const todayId = DAYS[todayIdx]?.id;
+  for (const [tab, ids] of Object.entries(TAB_DAYS)) {
+    const idx = ids.indexOf(todayId);
+    if (idx >= 0) { activeTab = tab; activeDayInTab = idx; return; }
   }
 }
 
 /* ══════════════════════════════════════
-   MAP — Task 7
-   Leaflet-Karte mit CartoDB Positron Tiles
-   Funktionen: initMap(), updateMap(id), makeIcon(type, label), addRoute(pts, color)
+   SPLASH — Initialisierung
 ══════════════════════════════════════ */
-let map, layerGroup;
+function initSplash() {
+  const splash = document.getElementById('splash');
+  const app    = document.getElementById('app');
+  const skip   = document.getElementById('sp-skip');
 
-function initMap() {
-  // Leaflet-Karte im #map-Element initialisieren
-  map = L.map('map', { zoomControl: true, attributionControl: false });
-
-  // CartoDB Positron: heller, sauberer Kartenstil — passt besser zum Design als OSM-Standard
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    subdomains: 'abcd'
-  }).addTo(map);
-
-  // Attributions-Control manuell hinzufügen (attributionControl:false oben)
-  L.control.attribution({ prefix: '© CartoDB · © OpenStreetMap' }).addTo(map);
-
-  // Alle Marker & Linien leben in dieser Layer-Gruppe (einfaches Leeren beim Tab-Wechsel)
-  layerGroup = L.layerGroup().addTo(map);
-
-  // Initiale Ansicht: Gesamtübersicht aller Etappen
-  updateMap('ALL');
-}
-
-// Erstellt einen runden CSS-Marker mit Farbe je nach Ort-Typ
-function makeIcon(type, label) {
-  // Farben je Ort-Typ (passend zu den CSS-Variablen)
-  const colors = {
-    e1:    '#1a7abf', // Etappe 1 Agios Gordios — Blau
-    e2:    '#c4622d', // Etappe 2 Ksamil — Terra
-    e3:    '#5c7a3e', // Etappe 3 Ýpsos — Olive
-    tv:    '#4a5568', // Transfer/Reise — Grau
-    hotel: '#5c7a3e', // Hotels — Olivgrün
-    selfie:'#ffe566', // Foto-Spots — Zitronengelb
-    ferry: '#00b4b4'  // Fähren — Türkis
-  };
-  // Bei hellem Hintergrund (selfie) dunklen Text verwenden
-  const textColors = { selfie: '#5a4000' };
-
-  const c  = colors[type]      || '#888';
-  const tc = textColors[type]  || '#fff';
-
-  return L.divIcon({
-    html: `<div class="cmarker" style="background:${c};color:${tc};width:30px;height:30px">${label}</div>`,
-    className: '',        // Leaflet's Standard-Klassen entfernen
-    iconSize:    [30, 30],
-    iconAnchor:  [15, 15], // Marker-Ankerpunkt: Mitte des Kreises
-    popupAnchor: [0, -15]  // Popup erscheint über dem Marker
-  });
-}
-
-// Zeichnet eine gestrichelte Linie zwischen allen Punkten (für Routen-Visualisierung)
-function addRoute(pts, color) {
-  if (pts.length < 2) return; // Mindestens 2 Punkte nötig für eine Linie
-  L.polyline(pts, {
-    color,
-    weight:    3,
-    opacity:   0.65,
-    dashArray: '6,4'  // Gestrichelt für einen "Reiserouten"-Look
-  }).addTo(layerGroup);
-}
-
-// Hilfsfunktion: Etappen-Farbe nach Etappen-Kürzel
-function etColor(et) {
-  return { e1: '#1a7abf', e2: '#c4622d', e3: '#5c7a3e', tv: '#4a5568' }[et] || '#888';
-}
-
-// Karte aktualisieren — entweder Gesamtübersicht ('ALL') oder ein einzelner Tag (Tages-ID)
-function updateMap(id) {
-  if (!map) return; // Guard: Karte noch nicht initialisiert
-  layerGroup.clearLayers(); // Alle vorherigen Marker & Linien entfernen
-
-  if (id === 'ALL') {
-    // ── GESAMTÜBERSICHT: farbige Routen für alle 3 Etappen + Fährlinie ──
-
-    // Pro Etappe: Route aus dem ersten Ort jedes Tages zeichnen
-    ['e1', 'e2', 'e3'].forEach(et => {
-      // Unique Punkte: Set verhindert Duplikate (z.B. Hotel-Rückkehr am letzten Tag)
-      const pts = [...new Set(
-        DAYS.filter(d => d.et === et)
-            .map(d => LOCS[d.marks[0]])
-            .filter(Boolean)
-            .map(l => JSON.stringify(l.ll))  // Serialisieren für Set-Vergleich
-      )].map(JSON.parse);                    // Zurück zu [lat, lng] Arrays
-      addRoute(pts, etColor(et));
-    });
-
-    // Fährlinie Korfu ↔ Saranda (türkis)
-    addRoute([LOCS.korfuPort.ll, LOCS.saranda.ll], '#00b4b4');
-
-    // Alle Orte als Marker einzeichnen
-    Object.entries(LOCS).forEach(([k, loc]) => {
-      // Icon-Label je nach Ort-Typ
-      const lbl = loc.type === 'selfie' ? '📸'
-                : loc.type === 'hotel'  ? '🏠'
-                : loc.type === 'ferry'  ? '⛴'
-                : '●';
-      L.marker(loc.ll, { icon: makeIcon(loc.type, lbl) })
-       .addTo(layerGroup)
-       .bindPopup(`<strong>${loc.name}</strong>`);
-    });
-
-    // Bounds so gewählt dass Korfu (West) + Ksamil/Saranda (Ost) komplett sichtbar sind
-    map.fitBounds([[39.45, 19.60], [39.95, 20.40]], { padding: [20, 20] });
-
-  } else {
-    // ── EINZEL-TAG: Orte des Tages + Route zwischen ihnen ──
-
-    const d   = DAYS.find(x => x.id === id);
-    const pts = d.marks.map(k => LOCS[k]).filter(Boolean); // Ort-Objekte aus LOCS
-    const lls = pts.map(l => l.ll);                        // Nur die Koordinaten
-
-    // Route zwischen den Tages-Orten zeichnen (falls mehr als 1 Ort)
-    if (lls.length > 1) addRoute(lls, etColor(d.et));
-
-    // Marker für jeden Ort setzen
-    pts.forEach((loc, i) => {
-      const lbl = loc.type === 'selfie' ? '📸'
-                : loc.type === 'hotel'  ? '🏠'
-                : loc.type === 'ferry'  ? '⛴'
-                : `${i + 1}`; // Nummerierung für normale Orte
-      L.marker(loc.ll, { icon: makeIcon(loc.type, lbl) })
-       .addTo(layerGroup)
-       .bindPopup(`<strong>${loc.name}</strong><br><span>${d.title}</span>`)
-       .openPopup(); // Popup des letzten Markers bleibt geöffnet
-    });
-
-    // Kartenausschnitt anpassen
-    if (lls.length === 1) {
-      map.setView(lls[0], d.center[2] || 13);
-    } else if (lls.length > 1) {
-      map.fitBounds(lls, { padding: [40, 40] });
-    } else {
-      // Fallback: center aus DAYS-Daten verwenden
-      map.setView([d.center[0], d.center[1]], d.center[2] || 12);
-    }
+  function endSplash() {
+    splash.classList.add('hidden');
+    app.hidden = false;
+    setTimeout(() => { splash.style.display = 'none'; }, 700);
   }
+
+  if (skip) skip.addEventListener('click', endSplash);
+  // Automatisch nach 8 Sekunden beenden
+  setTimeout(endSplash, 8000);
 }
 
-/* ══ MODALS ══ */
-
-/* buildModals: registriert Backdrop-Click-Handler auf beiden Overlays.
-   Die Modal-HTML-Struktur ist bereits im Body vorhanden (statisch eingebettet). */
-function buildModals() {
-  document.querySelectorAll('.moverlay').forEach(m => {
-    m.addEventListener('click', e => {
-      // Nur schließen wenn direkt auf den dunklen Backdrop geklickt wurde
-      if (e.target === m) closeModal(m.id.replace('modal-', ''));
-    });
-  });
-}
-
-/* openModal: befüllt Inhalt (lazy) und öffnet das gewünschte Modal.
-   Body-Scroll wird gesperrt damit die Seite hinter dem Sheet nicht scrollt. */
-function openModal(id) {
-  if (id === 'route') document.getElementById('route-content').innerHTML = ROUTE_HTML;
-  if (id === 'todo')  renderTodo();
-  document.getElementById('modal-' + id).classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-/* closeModal: blendet Modal aus und gibt den Body-Scroll wieder frei. */
-function closeModal(id) {
-  document.getElementById('modal-' + id).classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-/* ── TODO-Checkliste ── */
-
-/* Liest den gespeicherten Zustand aus localStorage (Key: korfu26_todo).
-   Gibt ein Objekt {itemId: true/false} zurück oder {} bei leerem/fehlerhaftem State. */
-function getTodoState() {
-  try { return JSON.parse(localStorage.getItem('korfu26_todo') || '{}'); } catch { return {}; }
-}
-
-/* Schreibt den gesamten Zustand zurück in localStorage. */
-function saveTodoState(s) { localStorage.setItem('korfu26_todo', JSON.stringify(s)); }
-
-/* renderTodo: baut die Checkliste vollständig neu auf.
-   Liest State aus localStorage, berechnet Fortschritt und rendert alle Gruppen + Items. */
-function renderTodo() {
-  const state  = getTodoState();
-  const allIds = TODOS.flatMap(g => g.items.map(i => i.id));
-  const done   = allIds.filter(id => state[id]).length;
-  const pct    = Math.round(done / allIds.length * 100);
-
-  // Fortschrittsanzeige aktualisieren
-  document.getElementById('todo-stat').textContent = `${done} von ${allIds.length} erledigt`;
-  document.getElementById('todo-bar').style.width  = pct + '%';
-
-  // HTML für alle Gruppen und Items aufbauen
-  let h = '';
-  TODOS.forEach(g => {
-    h += `<div class="tgroup"><div class="tgroup-hdr">${g.g}</div>`;
-    g.items.forEach(item => {
-      const chk = !!state[item.id];
-      h += `<div class="titem${chk ? ' done' : ''}${item.urgent ? ' urgent' : ''}" onclick="toggleTodo('${item.id}')">
-        <input type="checkbox" id="cb_${item.id}" ${chk ? 'checked' : ''} onclick="event.stopPropagation()">
-        <div>
-          <div class="tlabel">${item.label}</div>
-          ${item.note ? `<div class="tnote">${item.note}</div>` : ''}
-        </div>
-      </div>`;
-    });
-    h += `</div>`;
-  });
-  document.getElementById('todo-content').innerHTML = h;
-}
-
-/* toggleTodo: schaltet ein einzelnes Item um, speichert sofort, rendert neu.
-   Wird per onclick auf .titem aufgerufen — stopPropagation auf der Checkbox
-   verhindert doppeltes Triggern. */
-function toggleTodo(id) {
-  const s = getTodoState();
-  s[id] = !s[id];
-  saveTodoState(s);
-  renderTodo();
-}
-
-/* ══ FAMILIE SEKTION ══ */
-function renderFamilySection() {
-  const sec = document.getElementById('family-section');
-  if (!sec) return;
-
-  /* Ganzkörper-Figuren nebeneinander.
-     Die Sektion hat denselben Beige-Ton (#caaa90) wie der Bild-Hintergrund —
-     kein Blend-Mode nötig, Figuren sitzen nahtlos. */
-  sec.innerHTML = `
-    <div class="family-strip">
-      <div class="char-figure">
-        <img src="nina-body.png" alt="Nina" height="190" loading="eager">
-        <span class="char-name">Nina</span>
-      </div>
-      <div class="char-figure">
-        <img src="michael-body.png" alt="Michael" height="178" loading="eager">
-        <span class="char-name">Michael</span>
-      </div>
-      <div class="char-figure">
-        <img src="maxi-body.png" alt="Maxi" height="165" loading="eager">
-        <span class="char-name">Maxi</span>
-      </div>
-      <div class="char-figure">
-        <img src="leah-body.png" alt="Leah" height="178" loading="eager">
-        <span class="char-name">Leah</span>
-      </div>
-    </div>
-    <div style="height:6px;background:linear-gradient(to bottom,transparent,var(--chalk));position:relative;z-index:3"></div>`;
-}
-
-/* ══ APP INIT ══ */
-function initApp() {
-  renderHeader();
-  renderPhaseHero();
-  renderFamilySection();
-  buildTimeline();   // Task 5
-  renderContent('ALL'); // Task 6
-  initMap();         // Task 7
-  buildModals();     // Task 8
-}
+document.addEventListener('DOMContentLoaded', initApp);
 </script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
