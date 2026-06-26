@@ -186,6 +186,133 @@ ul { list-style: none; }
   backdrop-filter: blur(6px); transition: background .2s;
 }
 #skip-btn:hover { background: rgba(255,255,255,.32); }
+
+/* ══ HEADER ══ */
+#app-hdr {
+  background: linear-gradient(135deg, var(--sea-deep) 0%, #0d2a50 100%);
+  padding: 11px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 20px rgba(10,40,80,.3);
+}
+.hdr-logo {
+  font-family: 'Playfair Display', serif;
+  color: #fff; font-size: clamp(.9rem, 2.2vw, 1.25rem); font-weight: 700;
+}
+.hdr-logo span { color: var(--lemon); }
+.hdr-avs { display: flex; gap: 4px; align-items: center; }
+.hdr-av  { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,.3); }
+.hdr-btns { display: flex; gap: 6px; }
+.hbtn {
+  background: rgba(255,255,255,.13); color: #fff;
+  border: 1.5px solid rgba(255,255,255,.28); border-radius: 9px;
+  padding: 6px 11px; font-size: .72rem; font-weight: 800;
+  display: flex; align-items: center; gap: 4px;
+  transition: all .18s;
+}
+.hbtn:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
+
+/* ══ PHASE HERO ══ */
+#phase-hero {
+  width: 100%; overflow: hidden;
+  position: relative; min-height: 300px;
+}
+
+/* Pre-Trip Hero */
+.hero-pre {
+  background: linear-gradient(170deg, var(--sand) 0%, #dceeff 50%, var(--sea3) 100%);
+  padding: 40px 20px 50px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-pre-sun {
+  position: absolute; top: -20px; right: -20px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #fff9c4, #ffe566 40%, rgba(255,180,0,0) 100%);
+  opacity: .6;
+}
+.hero-pre-wave {
+  position: absolute; bottom: -10px; left: -5%; right: -5%;
+  height: 40px; background: var(--chalk); border-radius: 50%;
+}
+.hero-pre-label {
+  font-size: .62rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--sea); font-weight: 800; margin-bottom: 10px;
+}
+.hero-pre-num {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(4rem, 14vw, 8rem); font-weight: 900;
+  color: var(--dark); line-height: 1; letter-spacing: -4px;
+  animation: numPulse 3s ease-in-out infinite;
+}
+@keyframes numPulse {
+  50% { transform: scale(1.02); }
+}
+.hero-pre-unit {
+  font-size: clamp(.85rem, 2.5vw, 1.1rem); font-weight: 800;
+  color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 6px;
+}
+.hero-pre-next {
+  margin-top: 22px; padding: 12px 20px;
+  background: rgba(255,255,255,.7); border-radius: var(--r);
+  backdrop-filter: blur(8px); border: 1.5px solid rgba(255,255,255,.9);
+}
+.hero-pre-next-label { font-size: .58rem; letter-spacing: 2px; text-transform: uppercase; color: var(--terra); font-weight: 800; margin-bottom: 4px; }
+.hero-pre-next-title { font-size: .95rem; font-weight: 800; color: var(--dark); }
+
+/* Trip Hero */
+.hero-trip {
+  position: relative; overflow: hidden; min-height: 320px;
+  display: flex; align-items: flex-end; padding: 24px 20px;
+}
+.hero-trip-scene { position: absolute; inset: 0; }
+.hero-trip-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(10,30,60,.88) 0%, rgba(10,30,60,.15) 55%, transparent 100%);
+}
+.hero-trip-content { position: relative; z-index: 2; width: 100%; }
+.hero-trip-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--lemon); color: var(--dark);
+  font-size: .6rem; font-weight: 900; letter-spacing: 1.5px;
+  text-transform: uppercase; border-radius: 20px; padding: 4px 11px;
+  margin-bottom: 10px;
+}
+.hero-trip-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 5vw, 2.5rem); font-weight: 900;
+  color: #fff; line-height: 1.1; margin-bottom: 8px;
+}
+.hero-trip-sub { font-size: .82rem; color: rgba(255,255,255,.7); font-weight: 600; }
+
+/* Post Hero */
+.hero-post {
+  background: linear-gradient(135deg, var(--sea-deep), var(--dark));
+  padding: 40px 20px; text-align: center; color: #fff;
+}
+.hero-post h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem,4vw,2.2rem); font-weight: 900; margin-bottom: 8px;
+}
+.hero-post p { color: rgba(255,255,255,.65); font-size: .9rem; }
+
+/* Scene: Strand (Agios Gordios + Ypsos default) */
+.scene-beach {
+  background: linear-gradient(180deg, #c4e8ff 0%, #5bb8f5 45%, #1a7abf 70%, #0a3d6b 100%);
+}
+/* Scene: Ksamil (tuetkis) */
+.scene-ksamil {
+  background: linear-gradient(180deg, #d4f8f5 0%, #4dd8cc 40%, #1aaba0 65%, #0a5550 100%);
+}
+/* Scene: Korfu-Stadt (Sonnenuntergang) */
+.scene-city {
+  background: linear-gradient(180deg, #f5c890 0%, #e8885a 40%, #c4622d 65%, #5a2010 100%);
+}
+/* Scene: Anreise/Rueckreise */
+.scene-travel {
+  background: linear-gradient(180deg, #d0ddf0 0%, #8aaad0 50%, #4a6a9a 100%);
+}
 </style>
 </head>
 <body>
@@ -822,6 +949,101 @@ function endSplash() {
   });
   setTimeout(endSplash, 10000);
 })();
+
+/* ══ HEADER ══ */
+function renderHeader() {
+  const MINI_AVATARS = [
+    // Verkleinerte Kopf-SVGs (nur Kreis + Merkmal)
+    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="9" width="9" height="5" rx="2.5" fill="#1a5fa8" opacity=".9"/><rect x="15" y="9" width="9" height="5" rx="2.5" fill="#1a5fa8" opacity=".9"/></svg>`,
+    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="9" width="8" height="6" rx="2" fill="none" stroke="#cc1a1a" stroke-width="1.8"/><rect x="16" y="9" width="8" height="6" rx="2" fill="none" stroke="#cc1a1a" stroke-width="1.8"/></svg>`,
+    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><circle cx="7" cy="11" r="4" fill="#100808"/><circle cx="21" cy="11" r="4" fill="#100808"/><circle cx="14" cy="7" r="4" fill="#100808"/></svg>`,
+    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="5" width="7" height="4" rx="2" fill="#1a1a1a" opacity=".85"/><rect x="17" y="5" width="7" height="4" rx="2" fill="#1a1a1a" opacity=".85"/></svg>`,
+  ];
+  document.getElementById('app-hdr').innerHTML = `
+    <div class="hdr-logo">🌊 Korfu &amp; <span>Ksamil</span></div>
+    <div class="hdr-avs">
+      ${MINI_AVATARS.map(s => `<div class="hdr-av">${s}</div>`).join('')}
+    </div>
+    <div class="hdr-btns">
+      <button class="hbtn" onclick="openModal('route')">🗺 Route</button>
+      <button class="hbtn" onclick="openModal('todo')">✅ Liste</button>
+    </div>
+  `;
+}
+
+/* ══ PHASE HERO ══ */
+function getDaysUntilTrip() {
+  const now = new Date();
+  const diff = TRIP_START - now;
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
+// Nimmt das volle Day-Objekt um Sonderszenen (Korfu-Stadt) zu erkennen
+function getDayScene(d) {
+  if (d.et === 'tv')  return 'scene-travel';
+  if (d.et === 'e2')  return 'scene-ksamil';
+  // Korfu-Stadt Tage erkennen
+  if (d.id === 'T4' || d.id === 'T6' || d.id === 'T15') return 'scene-city';
+  return 'scene-beach';
+}
+
+function renderPhaseHero() {
+  const phase = getPhase();
+  const hero = document.getElementById('phase-hero');
+
+  if (phase === 'pre') {
+    const days = getDaysUntilTrip();
+    hero.innerHTML = `
+      <div class="hero-pre">
+        <div class="hero-pre-sun"></div>
+        <div class="hero-pre-label">Noch</div>
+        <div class="hero-pre-num">${days}</div>
+        <div class="hero-pre-unit">Tage bis Korfu</div>
+        <div class="hero-pre-next">
+          <div class="hero-pre-next-label">Erste Station</div>
+          <div class="hero-pre-next-title">🏖 Agios Gordios · Poseidon Suites · ab 18. Juli</div>
+        </div>
+        <div class="hero-pre-wave"></div>
+      </div>`;
+    return;
+  }
+
+  if (phase === 'post') {
+    hero.innerHTML = `
+      <div class="hero-post">
+        <h2>17 unvergessliche Tage 🌊</h2>
+        <p>Korfu &amp; Ksamil · Sommer 2026 · Familie Monschein</p>
+      </div>`;
+    return;
+  }
+
+  // 'trip' oder 'preview' → heutigen Tag oder ersten Tag zeigen
+  const todayIdx = getTodayIndex();
+  const d = DAYS[todayIdx >= 0 ? todayIdx : 0];
+  const sceneClass = getDayScene(d);
+  const isToday = phase === 'trip';
+
+  hero.innerHTML = `
+    <div class="hero-trip">
+      <div class="hero-trip-scene ${sceneClass}"></div>
+      <div class="hero-trip-overlay"></div>
+      <div class="hero-trip-content">
+        ${isToday ? '<div class="hero-trip-badge">✨ Heute</div>' : ''}
+        <div class="hero-trip-title">${d.title}</div>
+        <div class="hero-trip-sub">${d.date} · ${d.wd} · ${d.sub}</div>
+      </div>
+    </div>`;
+}
+
+/* ══ APP INIT ══ */
+function initApp() {
+  renderHeader();
+  renderPhaseHero();
+  buildTimeline();   // Task 5
+  renderContent('ALL'); // Task 6
+  initMap();         // Task 7
+  buildModals();     // Task 8
+}
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
