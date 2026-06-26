@@ -313,6 +313,68 @@ ul { list-style: none; }
 .scene-travel {
   background: linear-gradient(180deg, #d0ddf0 0%, #8aaad0 50%, #4a6a9a 100%);
 }
+
+/* ══ TIMELINE ══ */
+#timeline-wrap {
+  background: #fff;
+  border-bottom: 2px solid var(--sand2);
+  position: sticky; top: 49px; z-index: 99;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.tl-etappes {
+  display: flex; background: var(--sand);
+  overflow-x: auto; scrollbar-width: none;
+  padding: 2px 8px 0;
+}
+.tl-etappes::-webkit-scrollbar { display: none; }
+.tl-etag {
+  font-size: .56rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: .8px; padding: 3px 10px; white-space: nowrap; color: var(--muted);
+}
+.tl-etag.e1 { color: var(--e1); }
+.tl-etag.e2 { color: var(--e2); }
+.tl-etag.e3 { color: var(--e3); }
+
+.tl-scroll {
+  overflow-x: auto; white-space: nowrap;
+  scrollbar-width: none; touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+}
+.tl-scroll::-webkit-scrollbar { display: none; }
+.tl-inner { display: inline-flex; gap: 3px; padding: 5px 8px; }
+
+/* Tab-Basis */
+.tbtn {
+  border: 2px solid transparent; border-radius: 9px;
+  padding: 5px 10px; font-size: .72rem; font-weight: 700;
+  white-space: nowrap; color: var(--muted); transition: all .18s;
+  position: relative;
+}
+.tbtn:hover { background: var(--sand); }
+
+/* State: locked */
+.tbtn.locked { color: #ccc; }
+.tbtn.locked::after { content: '🔒'; font-size: .55rem; position: absolute; top: -4px; right: -4px; }
+
+/* State: past */
+.tbtn.past { color: var(--olive); }
+.tbtn.past::after { content: '✓'; font-size: .6rem; font-weight: 900; color: var(--olive); position: absolute; top: -5px; right: -4px; }
+
+/* State: today */
+.tbtn.today-state {
+  animation: todayGlow 2.5s ease-in-out infinite;
+}
+@keyframes todayGlow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(26,122,191,0); }
+  50%      { box-shadow: 0 0 0 4px rgba(26,122,191,.3); }
+}
+
+/* Active (selected) */
+.tbtn.all.active  { background: var(--dark); border-color: var(--dark); color: #fff; }
+.tbtn.e1.active   { background: var(--e1);   border-color: var(--e1);   color: #fff; }
+.tbtn.e2.active   { background: var(--e2);   border-color: var(--e2);   color: #fff; }
+.tbtn.e3.active   { background: var(--e3);   border-color: var(--e3);   color: #fff; }
+.tbtn.tv.active   { background: var(--tv);   border-color: var(--tv);   color: #fff; }
 </style>
 </head>
 <body>
@@ -1033,6 +1095,109 @@ function renderPhaseHero() {
         <div class="hero-trip-sub">${d.date} · ${d.wd} · ${d.sub}</div>
       </div>
     </div>`;
+}
+
+/* ══ TIMELINE ══ */
+const ETAPPES = [
+  { label:'🔵 Etappe 1 · Agios Gordios', cls:'e1', ids:['T1','T2','T3','T4','T5','T6','T7','T8'] },
+  { label:'🔴 Etappe 2 · Ksamil',        cls:'e2', ids:['T9','T10','T11','T12'] },
+  { label:'🟢 Etappe 3 · Ýpsos',         cls:'e3', ids:['T13','T14','T15','T16','T17'] },
+];
+
+// activeDay: 0-basierter Index des angezeigten Tags (für Task 6)
+let activeDay = getTodayIndex() >= 0 ? getTodayIndex() : 0;
+
+// activeTab: ID des aktiven Tabs ('ALL' oder Tages-ID wie 'T5')
+let activeTab = 'ALL';
+
+function buildTimeline() {
+  // DOM anlegen falls noch nicht vorhanden (erster Aufruf)
+  const inner = document.getElementById('tl-inner') || createTimelineDOM();
+  const etBar = document.getElementById('tl-etappes') || document.querySelector('.tl-etappes');
+
+  // ALLE-Button (zeigt Übersicht aller Tage)
+  const allBtn = makeTabBtn('ALL', 'ALLE', 'all');
+  allBtn.classList.add('active');
+  inner.appendChild(allBtn);
+
+  // Pro Etappe: Etappen-Label + Tages-Tabs
+  ETAPPES.forEach((e) => {
+    // Etappen-Beschriftung in der oberen Leiste
+    const etEl = document.createElement('span');
+    etEl.className = `tl-etag ${e.cls}`;
+    etEl.textContent = e.label;
+    etBar.appendChild(etEl);
+
+    // Tages-Buttons für diese Etappe
+    e.ids.forEach((tid) => {
+      const d     = DAYS.find(x => x.id === tid);
+      const idx   = DAYS.indexOf(d);
+      const state = getDayState(idx);
+      const btn   = makeTabBtn(tid, `${d.wd} ${d.date}`, d.et);
+      if (state === 'past')   btn.classList.add('past');
+      if (state === 'today')  btn.classList.add('today-state');
+      if (state === 'locked') btn.classList.add('locked');
+      inner.appendChild(btn);
+    });
+  });
+
+  // Im Trip-Modus: automatisch zum heutigen Tab scrollen & ihn aktivieren
+  const todayIdx = getTodayIndex();
+  if (todayIdx >= 0) {
+    const todayId = DAYS[todayIdx].id;
+    const phase   = getPhase();
+    if (phase === 'trip') {
+      // 200ms Delay damit renderContent (Task 6) bereits initialisiert ist
+      setTimeout(() => switchTab(todayId), 200);
+    }
+  }
+}
+
+function createTimelineDOM() {
+  // Baut die zweistufige Timeline-Struktur in #timeline-wrap
+  const wrap = document.getElementById('timeline-wrap');
+  wrap.innerHTML = `
+    <div class="tl-etappes" id="tl-etappes"></div>
+    <div class="tl-scroll"><div class="tl-inner" id="tl-inner"></div></div>`;
+  return document.getElementById('tl-inner');
+}
+
+function makeTabBtn(id, label, cls) {
+  // Erstellt einen einzelnen Timeline-Button
+  const b = document.createElement('button');
+  b.className   = `tbtn ${cls}`;
+  b.dataset.id  = id;
+  b.textContent = label;
+  b.onclick     = () => switchTab(id);
+  return b;
+}
+
+function switchTab(id) {
+  // Aktiven Tab und activeDay aktualisieren
+  activeTab = id;
+  const dayIdx = DAYS.findIndex(d => d.id === id);
+  if (dayIdx >= 0) activeDay = dayIdx; // nur bei echtem Tages-Tab
+
+  // Active-Klasse auf allen Buttons neu setzen
+  document.querySelectorAll('.tbtn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === id);
+  });
+
+  // Inhaltsbereich aktualisieren (Task 6) — Guard für Aufrufe vor Task 6
+  if (typeof renderContent === 'function') renderContent(id);
+  // Karte aktualisieren (Task 7) — Guard für Aufrufe vor Task 7
+  if (typeof updateMap === 'function') updateMap(id);
+
+  // Aktiven Tab horizontal in Sicht scrollen
+  const btn = document.querySelector(`.tbtn[data-id="${id}"]`);
+  if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+// Alias für Task 6: switchDay(index) wechselt nach Index statt nach ID
+function switchDay(index) {
+  if (index >= 0 && index < DAYS.length) {
+    switchTab(DAYS[index].id);
+  }
 }
 
 /* ══ APP INIT ══ */
