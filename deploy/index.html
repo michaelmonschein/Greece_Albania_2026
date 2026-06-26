@@ -83,20 +83,49 @@ ul { list-style: none; }
 /* ══ SPLASH ══ */
 #splash {
   position: fixed; inset: 0; z-index: 9999;
-  background: linear-gradient(175deg, #f0f8ff 0%, #c4e8ff 35%, #5bb8f5 65%, #1a7abf 85%, #0a3d6b 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  /* Hell oben (Familie integrate sich nahtlos via multiply), tief-blau unten (Meer) */
+  background: linear-gradient(175deg,
+    #f0f8ff 0%,
+    #c4e8ff 35%,
+    #5bb8f5 65%,
+    #1a7abf 85%,
+    #0a3d6b 100%
+  );
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
   overflow: hidden; transition: opacity .9s var(--ease-out);
 }
 #splash.out { opacity: 0; pointer-events: none; }
 
+/* Familienfoto Wrapper — Positionierung ohne transform-Konflikt mit fadeUp */
+.sp-family-wrap {
+  position: absolute;
+  /* Im hellen Bereich des Gradients (oben = Hellblau/Creme) */
+  top: clamp(16vh, 20%, 24vh);
+  left: 50%; transform: translateX(-50%);
+  width: min(92vw, 580px);
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeUp .9s var(--ease-spring) .5s forwards;
+  /* Unten auslaufen lassen — Figuren "tauchen aus dem Meer auf" */
+  mask-image: linear-gradient(to bottom, black 0%, black 48%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 48%, transparent 78%);
+}
+.sp-family-group {
+  width: 100%; display: block;
+  /* Weißer Hintergrund des Bildes verschwindet auf hellen Flächen via multiply */
+  mix-blend-mode: multiply;
+}
+
 /* Sonne */
 .sp-sun {
-  position: absolute; top: 6vh; left: 50%; transform: translateX(-50%);
-  width: clamp(70px,12vw,110px); height: clamp(70px,12vw,110px);
+  position: absolute; top: 8vh; left: 50%; transform: translateX(-50%);
+  width: clamp(55px,10vw,90px); height: clamp(55px,10vw,90px);
   border-radius: 50%;
   background: radial-gradient(circle at 38% 38%, #fff9c4, #ffe566 35%, #ffc200 65%, rgba(255,150,0,0) 100%);
-  box-shadow: 0 0 0 clamp(12px,2vw,24px) rgba(255,220,50,.18), 0 0 0 clamp(24px,4vw,48px) rgba(255,200,0,.09);
+  box-shadow: 0 0 0 clamp(10px,1.8vw,20px) rgba(255,220,50,.18), 0 0 0 clamp(20px,3.5vw,40px) rgba(255,200,0,.09);
   animation: sunPulse 4s ease-in-out infinite;
+  z-index: 8;
 }
 @keyframes sunPulse {
   50% { box-shadow: 0 0 0 clamp(18px,3vw,36px) rgba(255,220,50,.25), 0 0 0 clamp(36px,6vw,72px) rgba(255,200,0,.12); }
@@ -135,20 +164,20 @@ ul { list-style: none; }
 .sp-boat svg { width: 42px; height: 42px; }
 @keyframes boatAppear { to { opacity: 1; } }
 
-/* Titel */
+/* Titel — klein und elegant oben, auf hellem Gradient */
 .sp-title {
-  position: relative; z-index: 10; text-align: center;
-  opacity: 0; animation: fadeUp .7s var(--ease-spring) .3s forwards;
-  margin-bottom: 10px;
+  position: absolute; top: 5vh; left: 50%; transform: translateX(-50%);
+  z-index: 10; text-align: center; width: 90%;
+  opacity: 0; animation: fadeUp .7s var(--ease-spring) .2s forwards;
 }
 .sp-title h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900;
-  color: #fff; text-shadow: 0 2px 24px rgba(10,40,80,.35);
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem); font-weight: 900;
+  color: var(--sea-deep); text-shadow: 0 1px 8px rgba(255,255,255,.6);
   letter-spacing: -.5px;
 }
 .sp-title p {
-  font-size: clamp(.75rem,2vw,1rem); color: rgba(255,255,255,.8);
+  font-size: clamp(.68rem,1.8vw,.85rem); color: var(--sea);
   letter-spacing: 2.5px; text-transform: uppercase; margin-top: 5px;
   font-weight: 700;
 }
@@ -218,48 +247,75 @@ ul { list-style: none; }
   position: relative; min-height: 300px;
 }
 
-/* Pre-Trip Hero */
+/* Pre-Trip Hero — Epic Photo Style (wie Epic.com Referenz) */
 .hero-pre {
-  background: linear-gradient(170deg, var(--sand) 0%, #dceeff 50%, var(--sea3) 100%);
-  padding: 40px 20px 50px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center;
-  position: relative; overflow: hidden;
+  position: relative;
+  min-height: clamp(58vh, 72vh, 82vh);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: clamp(50px,8vh,80px) clamp(24px,8vw,80px) clamp(110px,18vh,160px);
 }
-.hero-pre-sun {
-  position: absolute; top: -20px; right: -20px;
-  width: 160px; height: 160px; border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #fff9c4, #ffe566 40%, rgba(255,180,0,0) 100%);
-  opacity: .6;
+/* Vollbild Korfu-Luftfoto als Hintergrund */
+.hero-pre-bg {
+  position: absolute; inset: 0;
+  background:
+    url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Corfu_Agios_Gordis_R04.jpg/1280px-Corfu_Agios_Gordis_R04.jpg')
+    center/cover no-repeat;
+  transform: scale(1.03); /* leichte Vergößerung verhindert weiße Ränder */
+  transition: transform 8s ease-out;
 }
-.hero-pre-wave {
-  position: absolute; bottom: -10px; left: -5%; right: -5%;
-  height: 40px; background: var(--chalk); border-radius: 50%;
+/* Gradient-Overlay: links dunkel (Text lesbar), rechts offen (Foto sichtbar) */
+.hero-pre-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg,
+    rgba(10,30,60,.95) 0%,
+    rgba(10,30,60,.80) 30%,
+    rgba(10,30,60,.40) 60%,
+    rgba(10,30,60,.05) 85%,
+    transparent 100%
+  );
 }
+/* Text-Container — links ausgerichtet wie Epic-Referenz */
+.hero-pre-inner {
+  position: relative; z-index: 2;
+  max-width: 460px;
+}
+/* Kleine Zeile darüber: "Noch" */
 .hero-pre-label {
-  font-size: .62rem; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--sea); font-weight: 800; margin-bottom: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem; letter-spacing: 3.5px; text-transform: uppercase;
+  color: rgba(255,255,255,.6); font-weight: 400; margin-bottom: 4px;
 }
+/* Große Countdown-Zahl */
 .hero-pre-num {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(4rem, 14vw, 8rem); font-weight: 900;
-  color: var(--dark); line-height: 1; letter-spacing: -4px;
+  font-size: clamp(5rem, 16vw, 9.5rem); font-weight: 900;
+  color: #fff; line-height: 0.88; letter-spacing: -5px;
   animation: numPulse 3s ease-in-out infinite;
 }
 @keyframes numPulse {
-  50% { transform: scale(1.02); }
+  50% { transform: scale(1.015); }
 }
+/* "Tage bis Korfu" */
 .hero-pre-unit {
-  font-size: clamp(.85rem, 2.5vw, 1.1rem); font-weight: 800;
-  color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
-  margin-top: 6px;
+  font-size: clamp(.88rem, 2.5vw, 1.2rem); font-weight: 700;
+  color: rgba(255,255,255,.78); letter-spacing: 2.5px; text-transform: uppercase;
+  margin-top: 10px;
 }
+/* Glasmorphism-Karte "Erste Station" */
 .hero-pre-next {
-  margin-top: 22px; padding: 12px 20px;
-  background: rgba(255,255,255,.7); border-radius: var(--r);
-  backdrop-filter: blur(8px); border: 1.5px solid rgba(255,255,255,.9);
+  margin-top: 28px; padding: 13px 18px;
+  background: rgba(255,255,255,.1); border-radius: var(--r);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.22);
+  display: inline-block;
 }
-.hero-pre-next-label { font-size: .58rem; letter-spacing: 2px; text-transform: uppercase; color: var(--terra); font-weight: 800; margin-bottom: 4px; }
-.hero-pre-next-title { font-size: .95rem; font-weight: 800; color: var(--dark); }
+.hero-pre-next-label {
+  font-size: .57rem; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--lemon); font-weight: 800; margin-bottom: 5px;
+}
+.hero-pre-next-title { font-size: .9rem; font-weight: 800; color: #fff; }
 
 /* Trip Hero */
 .hero-trip {
@@ -612,6 +668,65 @@ ul { list-style: none; }
   background: linear-gradient(160deg, #2c3e6b 0%, #1a2c45 40%, #4a5568 100%);
 }
 
+/* ══ FAMILIE SEKTION — Ganzkörper-Strip zwischen Hero und Timeline ══ */
+#family-section {
+  position: relative;
+  /* Exakt die Hintergrundfarbe von IMG_9823 → Figuren sitzen nahtlos drin */
+  background: #caaa90;
+  overflow: hidden;
+}
+/* Seitlicher Überblend zum Seiten-Hintergrund */
+#family-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--chalk) 0%,
+    transparent 8%,
+    transparent 92%,
+    var(--chalk) 100%
+  );
+  z-index: 2; pointer-events: none;
+}
+/* Oberer Überblend vom Hero-Wasserfarben-Übergang */
+#family-section::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 24px;
+  background: linear-gradient(to bottom, var(--chalk), transparent);
+  z-index: 2; pointer-events: none;
+}
+/* Figuren-Reihe */
+.family-strip {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 6% 0;
+  position: relative;
+  z-index: 1;
+}
+/* Einzel-Figur */
+.char-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.char-figure img {
+  display: block;
+  /* KEIN blend-mode nötig — Hintergrundfarbe passt exakt zur Sektion */
+  transition: transform .35s var(--ease-spring);
+  border-radius: 8px 8px 0 0;
+}
+.char-figure:hover img { transform: translateY(-8px) scale(1.04); }
+.char-name {
+  font-size: .58rem; font-weight: 900; letter-spacing: 1.8px;
+  text-transform: uppercase; color: rgba(255,255,255,.75);
+  padding: 5px 0 6px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+
 /* ══ WATERCOLOR EDGE TRANSITION ══ */
 .wc-edge {
   position: absolute;
@@ -707,37 +822,15 @@ body { -webkit-text-size-adjust: 100%; }
     </svg>
   </div>
 
-  <!-- Titel -->
+  <!-- Titel: oben, über dem Horizont -->
   <div class="sp-title">
     <h1>Korfu &amp; Ksamil</h1>
     <p>Sommer 2026 · Familie Monschein</p>
   </div>
 
-  <!-- Avatare -->
-  <div class="sp-avatars" id="sp-avatars">
-    <!-- Michael -->
-    <div class="sp-av" id="sp-av-0">
-      <div class="av-wrap"><img src="av-michael.png" alt="Michael" class="av-img"></div>
-      <span class="sp-av-name">Michael</span>
-    </div>
-
-    <!-- Nina -->
-    <div class="sp-av" id="sp-av-1">
-      <div class="av-wrap"><img src="av-nina.png" alt="Nina" class="av-img"></div>
-      <span class="sp-av-name">Nina</span>
-    </div>
-
-    <!-- Maxi -->
-    <div class="sp-av" id="sp-av-2">
-      <div class="av-wrap"><img src="av-maxi.png" alt="Maxi" class="av-img"></div>
-      <span class="sp-av-name">Maxi</span>
-    </div>
-
-    <!-- Leah -->
-    <div class="sp-av" id="sp-av-3">
-      <div class="av-wrap"><img src="av-leah.png" alt="Leah" class="av-img"></div>
-      <span class="sp-av-name">Leah</span>
-    </div>
+  <!-- Familie Monschein — Ganzkörper-Gruppenfoto, nahtlos via multiply -->
+  <div class="sp-family-wrap" id="sp-family-wrap">
+    <img src="family-group.png" alt="Familie Monschein" class="sp-family-group">
   </div>
 </div>
 
@@ -748,6 +841,9 @@ body { -webkit-text-size-adjust: 100%; }
 
   <!-- Phase Hero -->
   <section id="phase-hero"></section>
+
+  <!-- Familie Monschein — Ganzkörper-Strip -->
+  <section id="family-section"></section>
 
   <!-- Timeline -->
   <nav id="timeline-wrap"></nav>
@@ -1356,14 +1452,8 @@ function endSplash() {
 }
 
 (function initSplash() {
-  const delays = [400, 950, 1500, 2050];
-  delays.forEach((d, i) => {
-    setTimeout(() => {
-      const el = document.getElementById('sp-av-' + i);
-      if (el) el.classList.add('show');
-    }, d);
-  });
-  setTimeout(endSplash, 10000);
+  // Familienfoto erscheint nach kurzer Verzögerung (CSS animation handled)
+  setTimeout(endSplash, 9000);
 })();
 
 /* ══ HEADER ══ */
@@ -1407,15 +1497,38 @@ function renderPhaseHero() {
     const days = getDaysUntilTrip();
     hero.innerHTML = `
       <div class="hero-pre">
-        <div class="hero-pre-sun"></div>
-        <div class="hero-pre-label">Noch</div>
-        <div class="hero-pre-num">${days}</div>
-        <div class="hero-pre-unit">Tage bis Korfu</div>
-        <div class="hero-pre-next">
-          <div class="hero-pre-next-label">Erste Station</div>
-          <div class="hero-pre-next-title">🏖 Agios Gordios · Poseidon Suites · ab 18. Juli</div>
+        <div class="hero-pre-bg"></div>
+        <div class="hero-pre-overlay"></div>
+        <div class="hero-pre-inner">
+          <div class="hero-pre-label">Noch</div>
+          <div class="hero-pre-num">${days}</div>
+          <div class="hero-pre-unit">Tage bis Korfu</div>
+          <div class="hero-pre-next">
+            <div class="hero-pre-next-label">Erste Station</div>
+            <div class="hero-pre-next-title">🏖 Agios Gordios · Poseidon Suites · ab 18. Juli</div>
+          </div>
         </div>
-        <div class="hero-pre-wave"></div>
+      </div>
+      <div class="wc-edge">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,80
+            C30,65 55,90 90,72 C115,58 140,85 175,70
+            C200,58 225,82 255,68 C278,57 302,78 330,62
+            C358,46 380,75 412,58 C440,43 462,72 492,55
+            C520,40 548,68 578,52 C605,38 628,62 658,48
+            C685,35 710,60 742,44 C770,30 796,55 828,40
+            C858,26 882,52 912,36 C940,22 965,46 996,30
+            C1024,16 1050,38 1080,22 C1108,8 1135,30 1160,18
+            L1200,10 L1200,120 L0,120 Z" fill="white"/>
+          <path d="M0,95
+            C40,85 75,100 110,88 C145,76 175,95 210,84
+            C245,72 278,90 314,80 C350,70 382,88 418,76
+            C454,64 488,85 524,73 C560,60 592,82 628,68
+            C664,55 698,75 734,62 C770,48 804,70 840,56
+            C876,42 910,65 946,50 C982,36 1016,58 1052,44
+            C1088,30 1122,52 1160,38
+            L1200,30 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.65)"/>
+        </svg>
       </div>`;
     return;
   }
@@ -1798,10 +1911,41 @@ function toggleTodo(id) {
   renderTodo();
 }
 
+/* ══ FAMILIE SEKTION ══ */
+function renderFamilySection() {
+  const sec = document.getElementById('family-section');
+  if (!sec) return;
+
+  /* Ganzkörper-Figuren nebeneinander.
+     Die Sektion hat denselben Beige-Ton (#caaa90) wie der Bild-Hintergrund —
+     kein Blend-Mode nötig, Figuren sitzen nahtlos. */
+  sec.innerHTML = `
+    <div class="family-strip">
+      <div class="char-figure">
+        <img src="nina-body.png" alt="Nina" height="190" loading="eager">
+        <span class="char-name">Nina</span>
+      </div>
+      <div class="char-figure">
+        <img src="michael-body.png" alt="Michael" height="178" loading="eager">
+        <span class="char-name">Michael</span>
+      </div>
+      <div class="char-figure">
+        <img src="maxi-body.png" alt="Maxi" height="165" loading="eager">
+        <span class="char-name">Maxi</span>
+      </div>
+      <div class="char-figure">
+        <img src="leah-body.png" alt="Leah" height="178" loading="eager">
+        <span class="char-name">Leah</span>
+      </div>
+    </div>
+    <div style="height:6px;background:linear-gradient(to bottom,transparent,var(--chalk));position:relative;z-index:3"></div>`;
+}
+
 /* ══ APP INIT ══ */
 function initApp() {
   renderHeader();
   renderPhaseHero();
+  renderFamilySection();
   buildTimeline();   // Task 5
   renderContent('ALL'); // Task 6
   initMap();         // Task 7
