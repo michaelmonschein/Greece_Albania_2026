@@ -512,6 +512,36 @@ ul { list-style: none; }
 .ferry-box { background: linear-gradient(135deg,#e0f2fe,#bae6fd); border-radius: 9px; padding: 11px 14px; margin-bottom: 13px; border-left: 3px solid var(--sea2); }
 .ferry-box h4 { font-size: .8rem; font-weight: 900; color: #0369a1; margin-bottom: 5px; }
 .ferry-box p  { font-size: .78rem; color: #0c4a6e; }
+
+/* ══ RESPONSIVE MAP ══ */
+@media (max-width: 768px) {
+  .main-lay { grid-template-columns: 1fr; grid-template-rows: 260px auto; }
+  .map-panel { position: relative; top: auto; height: 260px; order: -1; }
+  #map { height: 260px; }
+  .content { max-height: none; overflow-y: visible; }
+  .photos-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .map-panel { height: 210px; }
+  #map { height: 210px; }
+  .main-lay { grid-template-rows: 210px auto; }
+}
+
+/* Leaflet Popup */
+.leaflet-popup-content strong { font-size: .85rem; font-family: 'Nunito', sans-serif; }
+.leaflet-popup-content span   { font-size: .75rem; color: #666; }
+
+/* Benutzerdefinierter Karten-Marker (runder Farbpunkt mit Label) */
+.cmarker {
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .65rem;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
 </style>
 </head>
 <body>
@@ -1487,6 +1517,148 @@ function switchTab(id) {
 function switchDay(index) {
   if (index >= 0 && index < DAYS.length) {
     switchTab(DAYS[index].id);
+  }
+}
+
+/* ══════════════════════════════════════
+   MAP — Task 7
+   Leaflet-Karte mit CartoDB Positron Tiles
+   Funktionen: initMap(), updateMap(id), makeIcon(type, label), addRoute(pts, color)
+══════════════════════════════════════ */
+let map, layerGroup;
+
+function initMap() {
+  // Leaflet-Karte im #map-Element initialisieren
+  map = L.map('map', { zoomControl: true, attributionControl: false });
+
+  // CartoDB Positron: heller, sauberer Kartenstil — passt besser zum Design als OSM-Standard
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd'
+  }).addTo(map);
+
+  // Attributions-Control manuell hinzufügen (attributionControl:false oben)
+  L.control.attribution({ prefix: '© CartoDB · © OpenStreetMap' }).addTo(map);
+
+  // Alle Marker & Linien leben in dieser Layer-Gruppe (einfaches Leeren beim Tab-Wechsel)
+  layerGroup = L.layerGroup().addTo(map);
+
+  // Initiale Ansicht: Gesamtübersicht aller Etappen
+  updateMap('ALL');
+}
+
+// Erstellt einen runden CSS-Marker mit Farbe je nach Ort-Typ
+function makeIcon(type, label) {
+  // Farben je Ort-Typ (passend zu den CSS-Variablen)
+  const colors = {
+    e1:    '#1a7abf', // Etappe 1 Agios Gordios — Blau
+    e2:    '#c4622d', // Etappe 2 Ksamil — Terra
+    e3:    '#5c7a3e', // Etappe 3 Ýpsos — Olive
+    tv:    '#4a5568', // Transfer/Reise — Grau
+    hotel: '#5c7a3e', // Hotels — Olivgrün
+    selfie:'#ffe566', // Foto-Spots — Zitronengelb
+    ferry: '#00b4b4'  // Fähren — Türkis
+  };
+  // Bei hellem Hintergrund (selfie) dunklen Text verwenden
+  const textColors = { selfie: '#5a4000' };
+
+  const c  = colors[type]      || '#888';
+  const tc = textColors[type]  || '#fff';
+
+  return L.divIcon({
+    html: `<div class="cmarker" style="background:${c};color:${tc};width:30px;height:30px">${label}</div>`,
+    className: '',        // Leaflet's Standard-Klassen entfernen
+    iconSize:    [30, 30],
+    iconAnchor:  [15, 15], // Marker-Ankerpunkt: Mitte des Kreises
+    popupAnchor: [0, -15]  // Popup erscheint über dem Marker
+  });
+}
+
+// Zeichnet eine gestrichelte Linie zwischen allen Punkten (für Routen-Visualisierung)
+function addRoute(pts, color) {
+  if (pts.length < 2) return; // Mindestens 2 Punkte nötig für eine Linie
+  L.polyline(pts, {
+    color,
+    weight:    3,
+    opacity:   0.65,
+    dashArray: '6,4'  // Gestrichelt für einen "Reiserouten"-Look
+  }).addTo(layerGroup);
+}
+
+// Hilfsfunktion: Etappen-Farbe nach Etappen-Kürzel
+function etColor(et) {
+  return { e1: '#1a7abf', e2: '#c4622d', e3: '#5c7a3e', tv: '#4a5568' }[et] || '#888';
+}
+
+// Karte aktualisieren — entweder Gesamtübersicht ('ALL') oder ein einzelner Tag (Tages-ID)
+function updateMap(id) {
+  if (!map) return; // Guard: Karte noch nicht initialisiert
+  layerGroup.clearLayers(); // Alle vorherigen Marker & Linien entfernen
+
+  if (id === 'ALL') {
+    // ── GESAMTÜBERSICHT: farbige Routen für alle 3 Etappen + Fährlinie ──
+
+    // Pro Etappe: Route aus dem ersten Ort jedes Tages zeichnen
+    ['e1', 'e2', 'e3'].forEach(et => {
+      // Unique Punkte: Set verhindert Duplikate (z.B. Hotel-Rückkehr am letzten Tag)
+      const pts = [...new Set(
+        DAYS.filter(d => d.et === et)
+            .map(d => LOCS[d.marks[0]])
+            .filter(Boolean)
+            .map(l => JSON.stringify(l.ll))  // Serialisieren für Set-Vergleich
+      )].map(JSON.parse);                    // Zurück zu [lat, lng] Arrays
+      addRoute(pts, etColor(et));
+    });
+
+    // Fährlinie Korfu ↔ Saranda (türkis)
+    addRoute([LOCS.korfuPort.ll, LOCS.saranda.ll], '#00b4b4');
+
+    // Alle Orte als Marker einzeichnen
+    Object.entries(LOCS).forEach(([k, loc]) => {
+      // Icon-Label je nach Ort-Typ
+      const lbl = loc.type === 'selfie' ? '📸'
+                : loc.type === 'hotel'  ? '🏠'
+                : loc.type === 'ferry'  ? '⛴'
+                : '●';
+      L.marker(loc.ll, { icon: makeIcon(loc.type, lbl) })
+       .addTo(layerGroup)
+       .bindPopup(`<strong>${loc.name}</strong>`);
+    });
+
+    // Bounds so gewählt dass Korfu (West) + Ksamil/Saranda (Ost) komplett sichtbar sind
+    map.fitBounds([[39.45, 19.60], [39.95, 20.40]], { padding: [20, 20] });
+
+  } else {
+    // ── EINZEL-TAG: Orte des Tages + Route zwischen ihnen ──
+
+    const d   = DAYS.find(x => x.id === id);
+    const pts = d.marks.map(k => LOCS[k]).filter(Boolean); // Ort-Objekte aus LOCS
+    const lls = pts.map(l => l.ll);                        // Nur die Koordinaten
+
+    // Route zwischen den Tages-Orten zeichnen (falls mehr als 1 Ort)
+    if (lls.length > 1) addRoute(lls, etColor(d.et));
+
+    // Marker für jeden Ort setzen
+    pts.forEach((loc, i) => {
+      const lbl = loc.type === 'selfie' ? '📸'
+                : loc.type === 'hotel'  ? '🏠'
+                : loc.type === 'ferry'  ? '⛴'
+                : `${i + 1}`; // Nummerierung für normale Orte
+      L.marker(loc.ll, { icon: makeIcon(loc.type, lbl) })
+       .addTo(layerGroup)
+       .bindPopup(`<strong>${loc.name}</strong><br><span>${d.title}</span>`)
+       .openPopup(); // Popup des letzten Markers bleibt geöffnet
+    });
+
+    // Kartenausschnitt anpassen
+    if (lls.length === 1) {
+      map.setView(lls[0], d.center[2] || 13);
+    } else if (lls.length > 1) {
+      map.fitBounds(lls, { padding: [40, 40] });
+    } else {
+      // Fallback: center aus DAYS-Daten verwenden
+      map.setView([d.center[0], d.center[1]], d.center[2] || 12);
+    }
   }
 }
 
