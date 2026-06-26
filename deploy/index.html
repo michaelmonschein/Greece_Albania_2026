@@ -542,6 +542,55 @@ ul { list-style: none; }
   font-weight: 800;
   box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
+
+/* ══ MODALS ══ */
+.moverlay {
+  position: fixed; inset: 0; background: rgba(10,20,40,.75);
+  z-index: 1000; display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+  backdrop-filter: blur(4px);
+}
+.moverlay.open { opacity: 1; pointer-events: all; }
+.msheet {
+  background: var(--chalk); border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 720px; max-height: 88vh;
+  overflow-y: auto; padding: 22px 20px 40px;
+  transform: translateY(100%);
+  transition: transform .4s var(--ease-spring);
+}
+.moverlay.open .msheet { transform: translateY(0); }
+.mhandle { width: 40px; height: 4px; background: var(--sand2); border-radius: 2px; margin: 0 auto 20px; }
+.mhdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.mhdr h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--dark); }
+.mclose { background: var(--sand2); border-radius: 50%; width: 32px; height: 32px; font-size: .95rem; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.mclose:hover { background: #e0cca0; }
+
+/* Route Modal */
+.rseg { margin-bottom: 24px; }
+.rseg h3 { font-family: 'Playfair Display', serif; font-size: .95rem; color: var(--sea); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--sand2); }
+.rstep { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 11px; position: relative; }
+.rstep:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 34px; bottom: -7px; width: 2px; background: var(--sand2); }
+.rbullet { width: 32px; height: 32px; border-radius: 50%; background: var(--sea); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
+.rbullet.tv { background: var(--tv); }
+.rbullet.e2 { background: var(--e2); }
+.rbullet.e3 { background: var(--e3); }
+.rcon strong { display: block; font-size: .88rem; font-weight: 700; }
+.rcon span   { font-size: .77rem; color: var(--muted); }
+
+/* Todo Modal */
+.todo-prog { background: var(--sand2); border-radius: 5px; height: 6px; margin-bottom: 16px; overflow: hidden; }
+.todo-bar  { background: linear-gradient(90deg, var(--olive), var(--sea2)); height: 100%; border-radius: 5px; transition: width .4s; }
+.todo-stat { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
+.tgroup    { margin-bottom: 20px; }
+.tgroup-hdr { font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2); margin-bottom: 9px; }
+.titem { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #fff; border-radius: 9px; margin-bottom: 6px; cursor: pointer; transition: all .18s; border: 2px solid transparent; }
+.titem:hover     { border-color: var(--sand2); }
+.titem.done      { background: #f0fff4; border-color: #a8e6b8; }
+.titem.urgent .tlabel::after { content: ' ⚠️'; }
+.titem input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--olive); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.tlabel      { font-size: .83rem; font-weight: 700; }
+.titem.done .tlabel { text-decoration: line-through; color: var(--muted); }
+.tnote       { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -1660,6 +1709,86 @@ function updateMap(id) {
       map.setView([d.center[0], d.center[1]], d.center[2] || 12);
     }
   }
+}
+
+/* ══ MODALS ══ */
+
+/* buildModals: registriert Backdrop-Click-Handler auf beiden Overlays.
+   Die Modal-HTML-Struktur ist bereits im Body vorhanden (statisch eingebettet). */
+function buildModals() {
+  document.querySelectorAll('.moverlay').forEach(m => {
+    m.addEventListener('click', e => {
+      // Nur schließen wenn direkt auf den dunklen Backdrop geklickt wurde
+      if (e.target === m) closeModal(m.id.replace('modal-', ''));
+    });
+  });
+}
+
+/* openModal: befüllt Inhalt (lazy) und öffnet das gewünschte Modal.
+   Body-Scroll wird gesperrt damit die Seite hinter dem Sheet nicht scrollt. */
+function openModal(id) {
+  if (id === 'route') document.getElementById('route-content').innerHTML = ROUTE_HTML;
+  if (id === 'todo')  renderTodo();
+  document.getElementById('modal-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* closeModal: blendet Modal aus und gibt den Body-Scroll wieder frei. */
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── TODO-Checkliste ── */
+
+/* Liest den gespeicherten Zustand aus localStorage (Key: korfu26_todo).
+   Gibt ein Objekt {itemId: true/false} zurück oder {} bei leerem/fehlerhaftem State. */
+function getTodoState() {
+  try { return JSON.parse(localStorage.getItem('korfu26_todo') || '{}'); } catch { return {}; }
+}
+
+/* Schreibt den gesamten Zustand zurück in localStorage. */
+function saveTodoState(s) { localStorage.setItem('korfu26_todo', JSON.stringify(s)); }
+
+/* renderTodo: baut die Checkliste vollständig neu auf.
+   Liest State aus localStorage, berechnet Fortschritt und rendert alle Gruppen + Items. */
+function renderTodo() {
+  const state  = getTodoState();
+  const allIds = TODOS.flatMap(g => g.items.map(i => i.id));
+  const done   = allIds.filter(id => state[id]).length;
+  const pct    = Math.round(done / allIds.length * 100);
+
+  // Fortschrittsanzeige aktualisieren
+  document.getElementById('todo-stat').textContent = `${done} von ${allIds.length} erledigt`;
+  document.getElementById('todo-bar').style.width  = pct + '%';
+
+  // HTML für alle Gruppen und Items aufbauen
+  let h = '';
+  TODOS.forEach(g => {
+    h += `<div class="tgroup"><div class="tgroup-hdr">${g.g}</div>`;
+    g.items.forEach(item => {
+      const chk = !!state[item.id];
+      h += `<div class="titem${chk ? ' done' : ''}${item.urgent ? ' urgent' : ''}" onclick="toggleTodo('${item.id}')">
+        <input type="checkbox" id="cb_${item.id}" ${chk ? 'checked' : ''} onclick="event.stopPropagation()">
+        <div>
+          <div class="tlabel">${item.label}</div>
+          ${item.note ? `<div class="tnote">${item.note}</div>` : ''}
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  });
+  document.getElementById('todo-content').innerHTML = h;
+}
+
+/* toggleTodo: schaltet ein einzelnes Item um, speichert sofort, rendert neu.
+   Wird per onclick auf .titem aufgerufen — stopPropagation auf der Checkbox
+   verhindert doppeltes Triggern. */
+function toggleTodo(id) {
+  const s = getTodoState();
+  s[id] = !s[id];
+  saveTodoState(s);
+  renderTodo();
 }
 
 /* ══ APP INIT ══ */
