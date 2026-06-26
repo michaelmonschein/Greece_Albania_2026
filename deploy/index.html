@@ -331,6 +331,7 @@ ul { list-style: none; }
   font-size: .56rem; font-weight: 900; text-transform: uppercase;
   letter-spacing: .8px; padding: 3px 10px; white-space: nowrap; color: var(--muted);
 }
+.tl-etag.tv { color: var(--tv); }
 .tl-etag.e1 { color: var(--e1); }
 .tl-etag.e2 { color: var(--e2); }
 .tl-etag.e3 { color: var(--e3); }
@@ -1099,9 +1100,11 @@ function renderPhaseHero() {
 
 /* ══ TIMELINE ══ */
 const ETAPPES = [
-  { label:'🔵 Etappe 1 · Agios Gordios', cls:'e1', ids:['T1','T2','T3','T4','T5','T6','T7','T8'] },
+  { label:'✈️ Anreise',                   cls:'tv', ids:['T1'] },
+  { label:'🔵 Etappe 1 · Agios Gordios', cls:'e1', ids:['T2','T3','T4','T5','T6','T7','T8'] },
   { label:'🔴 Etappe 2 · Ksamil',        cls:'e2', ids:['T9','T10','T11','T12'] },
-  { label:'🟢 Etappe 3 · Ýpsos',         cls:'e3', ids:['T13','T14','T15','T16','T17'] },
+  { label:'🟢 Etappe 3 · Ýpsos',         cls:'e3', ids:['T13','T14','T15','T16'] },
+  { label:'✈️ Rückreise',                 cls:'tv', ids:['T17'] },
 ];
 
 // activeDay: 0-basierter Index des angezeigten Tags (für Task 6)
@@ -1173,6 +1176,10 @@ function makeTabBtn(id, label, cls) {
 }
 
 function switchTab(id) {
+  // Guard: gesperrte Tage können nicht aufgerufen werden
+  const dayIdx = DAYS.findIndex(d => d.id === id);
+  if (dayIdx >= 0 && getDayState(dayIdx) === 'locked') return;
+
   // Aktiven Tab und activeDay aktualisieren
   activeTab = id;
   const dayIdx = DAYS.findIndex(d => d.id === id);
