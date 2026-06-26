@@ -1,0 +1,205 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d12; color: #f0f0f0; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 32px 20px; }
+
+  h2 { font-size: 1.4rem; font-weight: 700; text-align: center; margin-bottom: 6px; color: #fff; }
+  .subtitle { text-align: center; color: #777; margin-bottom: 36px; font-size: 0.88rem; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 1080px; margin: 0 auto; }
+  .card {
+    border-radius: 18px; overflow: hidden; cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.06);
+    transition: all 0.3s ease; background: #141418;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+  .card.selected { border-color: #1a7abf !important; box-shadow: 0 0 0 1px #1a7abf, 0 20px 60px rgba(26,122,191,0.25); }
+
+  /* LAYOUT A: Full-Screen Hero Story */
+  .mock-a { height: 270px; position: relative; overflow: hidden; }
+  .mock-a-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(170deg, #d4ecff 0%, #5bb8f5 40%, #1a7abf 75%, #0a3d6b 100%);
+  }
+  .mock-a-sun { position: absolute; top: 18px; right: 22px; width: 50px; height: 50px; border-radius: 50%; background: radial-gradient(circle, #ffe566, #ffa500); box-shadow: 0 0 20px rgba(255,200,0,0.5); }
+  .mock-a-wave1 { position: absolute; bottom: 70px; left: -5%; right: -5%; height: 28px; background: rgba(255,255,255,0.25); border-radius: 50%; }
+  .mock-a-wave2 { position: absolute; bottom: 55px; left: -5%; right: -5%; height: 22px; background: rgba(255,255,255,0.15); border-radius: 50%; }
+  .mock-a-sea { position: absolute; bottom: 0; left: 0; right: 0; height: 65px; background: linear-gradient(180deg, #1a5f9e, #0a2d52); }
+  .mock-a-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,20,40,0.92) 0%, rgba(10,20,40,0.2) 45%, transparent 70%); }
+  .mock-a-content { position: absolute; bottom: 18px; left: 18px; right: 18px; }
+  .mock-a-eyebrow { font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; color: #5bb8f5; margin-bottom: 5px; font-weight: 600; }
+  .mock-a-title { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 8px; }
+  .mock-a-pills { display: flex; gap: 5px; }
+  .mock-a-pill { font-size: 0.55rem; padding: 2px 7px; border-radius: 20px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+  .mock-a-progress { position: absolute; top: 14px; left: 14px; display: flex; gap: 3px; }
+  .mock-a-dot { width: 18px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.25); }
+  .mock-a-dot.active { background: #fff; }
+
+  /* LAYOUT B: Timeline + Expanding Card */
+  .mock-b { height: 270px; position: relative; overflow: hidden; background: #f7f2ea; }
+  .mock-b-timeline { position: absolute; top: 0; left: 0; right: 0; height: 52px; background: #fff; border-bottom: 1px solid #e8e0d4; display: flex; align-items: center; padding: 0 10px; gap: 6px; }
+  .mock-b-day { width: 32px; height: 34px; border-radius: 8px; background: #f0e8da; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+  .mock-b-day.active { background: #1a7abf; }
+  .mock-b-day-num { font-size: 0.65rem; font-weight: 800; color: #666; line-height: 1; }
+  .mock-b-day.active .mock-b-day-num { color: #fff; }
+  .mock-b-day-wd { font-size: 0.45rem; color: #999; text-transform: uppercase; }
+  .mock-b-day.active .mock-b-day-wd { color: rgba(255,255,255,0.7); }
+  .mock-b-card { position: absolute; top: 62px; left: 12px; right: 12px; bottom: 12px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+  .mock-b-hero { height: 110px; background: linear-gradient(135deg, #1a7abf, #5bb8f5, #c4f1ff); position: relative; }
+  .mock-b-hero-sun { position: absolute; top: 10px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: radial-gradient(circle, #ffe566, #ffc200); }
+  .mock-b-hero-wave { position: absolute; bottom: -1px; left: 0; right: 0; height: 22px; background: #fff; border-radius: 100% 100% 0 0; }
+  .mock-b-card-body { padding: 10px 14px; }
+  .mock-b-card-tag { font-size: 0.5rem; letter-spacing: 2px; text-transform: uppercase; color: #c4622d; font-weight: 700; margin-bottom: 3px; }
+  .mock-b-card-title { font-size: 0.85rem; font-weight: 800; color: #1a2c45; }
+  .mock-b-card-acts { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .mock-b-act { display: flex; gap: 7px; align-items: center; }
+  .mock-b-act-ico { width: 22px; height: 22px; border-radius: 6px; background: #e8f4fd; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; }
+  .mock-b-act-text { font-size: 0.62rem; color: #556; font-weight: 600; }
+
+  /* LAYOUT C: Magazine Cover Grid */
+  .mock-c { height: 270px; position: relative; overflow: hidden; background: #f5f0e8; }
+  .mock-c-header { padding: 10px 12px 8px; background: #fff; border-bottom: 1px solid #e8e0d4; display: flex; justify-content: space-between; align-items: center; }
+  .mock-c-logo { font-size: 0.7rem; font-weight: 900; color: #1a2c45; letter-spacing: -0.3px; }
+  .mock-c-logo span { color: #1a7abf; }
+  .mock-c-phase { font-size: 0.5rem; color: #c4622d; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .mock-c-grid { display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; padding: 6px 8px; height: calc(100% - 42px); }
+  .mock-c-item { border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; }
+  .mock-c-item-1 { grid-row: span 2; background: linear-gradient(160deg, #5bb8f5, #1a7abf, #0a3050); }
+  .mock-c-item-2 { background: linear-gradient(135deg, #c4622d, #e8855a); }
+  .mock-c-item-3 { background: linear-gradient(135deg, #5c7a3e, #8ab55a); }
+  .mock-c-item-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 6px 8px; background: linear-gradient(0deg, rgba(0,0,0,0.6), transparent); }
+  .mock-c-item-tag { font-size: 0.45rem; color: rgba(255,255,255,0.7); letter-spacing: 2px; text-transform: uppercase; }
+  .mock-c-item-title { font-size: 0.62rem; font-weight: 800; color: #fff; }
+  .mock-c-icon { position: absolute; top: 8px; right: 8px; font-size: 1rem; }
+  .mock-c-num { position: absolute; top: 7px; left: 8px; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); font-size: 0.55rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: center; }
+
+  .card-body { padding: 16px 18px; background: #141418; }
+  .card-name { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+  .card-desc { font-size: 0.77rem; color: #888; line-height: 1.5; margin-bottom: 10px; }
+  .keywords { display: flex; gap: 5px; flex-wrap: wrap; }
+  .kw { font-size: 0.62rem; padding: 3px 8px; border-radius: 20px; background: rgba(26,122,191,0.15); color: #5bb8f5; letter-spacing: 0.5px; }
+
+  .bottom-note { text-align: center; margin-top: 28px; color: #555; font-size: 0.78rem; }
+</style>
+
+<h2>Wie erlebst du jeden Tag?</h2>
+<p class="subtitle">Drei verschiedene Arten, einen Urlaubstag als immersives Erlebnis darzustellen</p>
+
+<div class="cards">
+
+  <!-- A: Full-Screen Story -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="mock-a">
+      <div class="mock-a-bg"></div>
+      <div class="mock-a-sun"></div>
+      <div class="mock-a-wave1"></div>
+      <div class="mock-a-wave2"></div>
+      <div class="mock-a-sea"></div>
+      <div class="mock-a-overlay"></div>
+      <div class="mock-a-progress">
+        <div class="mock-a-dot active"></div>
+        <div class="mock-a-dot active"></div>
+        <div class="mock-a-dot active"></div>
+        <div class="mock-a-dot"></div>
+        <div class="mock-a-dot"></div>
+      </div>
+      <div class="mock-a-content">
+        <div class="mock-a-eyebrow">Mo · 20. Juli · Tag 3</div>
+        <div class="mock-a-title">Paleokastritsa —<br>Meereshöhlen</div>
+        <div class="mock-a-pills">
+          <span class="mock-a-pill">⛵ Bootstour</span>
+          <span class="mock-a-pill">🤿 Schnorcheln</span>
+          <span class="mock-a-pill">📸 La Grotta</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">A — Cinematic Story</div>
+      <div class="card-desc">Jeder Tag öffnet sich als Vollbild-Erlebnis mit animiertem Hero. Scrollen enthüllt den Plan. Navigation über Story-Dots wie ein Film-Kapitel.</div>
+      <div class="keywords">
+        <span class="kw">Vollbild</span><span class="kw">Cinematic</span><span class="kw">Tiefenwirkung</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Timeline + Card -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="mock-b">
+      <div class="mock-b-timeline">
+        <div class="mock-b-day"><div class="mock-b-day-num">19</div><div class="mock-b-day-wd">So</div></div>
+        <div class="mock-b-day active"><div class="mock-b-day-num">20</div><div class="mock-b-day-wd">Mo</div></div>
+        <div class="mock-b-day"><div class="mock-b-day-num">21</div><div class="mock-b-day-wd">Di</div></div>
+        <div class="mock-b-day"><div class="mock-b-day-num">22</div><div class="mock-b-day-wd">Mi</div></div>
+        <div class="mock-b-day"><div class="mock-b-day-num">23</div><div class="mock-b-day-wd">Do</div></div>
+        <div class="mock-b-day"><div class="mock-b-day-num">24</div><div class="mock-b-day-wd">Fr</div></div>
+      </div>
+      <div class="mock-b-card">
+        <div class="mock-b-hero">
+          <div class="mock-b-hero-sun"></div>
+          <div class="mock-b-hero-wave"></div>
+        </div>
+        <div class="mock-b-card-body">
+          <div class="mock-b-card-tag">Etappe 1 · Agios Gordios</div>
+          <div class="mock-b-card-title">Paleokastritsa & Meereshöhlen</div>
+          <div class="mock-b-card-acts">
+            <div class="mock-b-act"><div class="mock-b-act-ico">⛵</div><div class="mock-b-act-text">Bootstour zu den Meereshöhlen</div></div>
+            <div class="mock-b-act"><div class="mock-b-act-ico">🤿</div><div class="mock-b-act-text">Schnorcheln in den Buchten</div></div>
+            <div class="mock-b-act"><div class="mock-b-act-ico">🍹</div><div class="mock-b-act-text">Café La Grotta</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">B — Timeline + Deep Card</div>
+      <div class="card-desc">Horizontale Datums-Timeline oben, Klick öffnet die vollständige Tageskarte darunter. Übersichtlich und schnell navigierbar, trotzdem reich an Detail.</div>
+      <div class="keywords">
+        <span class="kw">Navigation</span><span class="kw">Übersicht</span><span class="kw">Schnell</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Magazine Grid -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="mock-c">
+      <div class="mock-c-header">
+        <div class="mock-c-logo">Korfu <span>&amp;</span> Ksamil</div>
+        <div class="mock-c-phase">● Etappe 1 · Agios Gordios</div>
+      </div>
+      <div class="mock-c-grid">
+        <div class="mock-c-item mock-c-item-1">
+          <div class="mock-c-num">5</div>
+          <div class="mock-c-icon">🌊</div>
+          <div class="mock-c-item-label">
+            <div class="mock-c-item-tag">Mo · 20. Juli</div>
+            <div class="mock-c-item-title">Paleokastritsa</div>
+          </div>
+        </div>
+        <div class="mock-c-item mock-c-item-2">
+          <div class="mock-c-num">6</div>
+          <div class="mock-c-icon">🏛</div>
+          <div class="mock-c-item-label">
+            <div class="mock-c-item-tag">Di · 21. Juli</div>
+            <div class="mock-c-item-title">Korfu-Stadt</div>
+          </div>
+        </div>
+        <div class="mock-c-item mock-c-item-3">
+          <div class="mock-c-num">7</div>
+          <div class="mock-c-icon">🎢</div>
+          <div class="mock-c-item-label">
+            <div class="mock-c-item-tag">Mi · 22. Juli</div>
+            <div class="mock-c-item-title">Aqualand</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">C — Editorial Magazine Grid</div>
+      <div class="card-desc">Alle Tage als visuelle Kacheln, wie ein Reisemagazin-Cover. Klick öffnet den Tag als Vollbild-Story. Perfekter Überblick und trotzdem visuell spektakulär.</div>
+      <div class="keywords">
+        <span class="kw">Editorial</span><span class="kw">Visuell</span><span class="kw">Magazin</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="bottom-note">Klick auf eine Karte — oder kombiniere ("A + C" ist auch möglich)</p>

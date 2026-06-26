@@ -1,0 +1,235 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a10; color: #f0f0f0; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 28px 18px; }
+
+  h2 { font-size: 1.35rem; font-weight: 700; text-align: center; margin-bottom: 5px; color: #fff; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 32px; font-size: 0.85rem; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1080px; margin: 0 auto; }
+  .card {
+    border-radius: 18px; overflow: hidden; cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.06);
+    transition: all 0.3s ease; background: #13131a;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.18); }
+  .card.selected { border-color: #1a7abf !important; box-shadow: 0 0 0 1px #1a7abf, 0 16px 50px rgba(26,122,191,0.3); }
+
+  /* === OPTION A: PHASE HERO === */
+  .mock-a { height: 280px; position: relative; overflow: hidden; }
+  /* Pre-trip state */
+  .mock-a-bg { position: absolute; inset: 0; background: linear-gradient(160deg, #f8f4ee 0%, #dceeff 50%, #a8d8f5 100%); }
+  .mock-a-sun { position: absolute; top: -10px; right: -10px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #ffe566, #ffc200 50%, rgba(255,180,0,0) 100%); opacity: 0.7; }
+  .mock-a-countdown { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); text-align: center; white-space: nowrap; }
+  .mock-a-label { font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; color: #1a7abf; font-weight: 700; margin-bottom: 4px; }
+  .mock-a-big { font-size: 3.2rem; font-weight: 900; color: #1a2c45; line-height: 1; letter-spacing: -2px; }
+  .mock-a-unit { font-size: 0.7rem; color: #5a7a9a; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+  .mock-a-divider { position: absolute; top: 48%; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(26,122,191,0.3), transparent); }
+  /* Today state strip at bottom */
+  .mock-a-today { position: absolute; bottom: 0; left: 0; right: 0; height: 130px; background: linear-gradient(170deg, #1a7abf, #0a3d6b); padding: 14px 16px; }
+  .mock-a-today-label { font-size: 0.5rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+  .mock-a-today-title { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .mock-a-today-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .mock-a-pill { font-size: 0.52rem; padding: 2px 7px; border-radius: 12px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+  .mock-a-lock-row { display: flex; gap: 4px; margin-top: 10px; }
+  .mock-a-lock { width: 24px; height: 24px; border-radius: 6px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); }
+  .mock-a-lock.done { background: rgba(255,255,255,0.2); color: #fff; }
+  .mock-a-lock.today-dot { background: #fff; color: #1a7abf; font-weight: 800; }
+
+  /* === OPTION B: UNLOCK REVEAL === */
+  .mock-b { height: 280px; background: #f7f2ea; position: relative; overflow: hidden; }
+  .mock-b-header { padding: 10px 12px; background: #fff; border-bottom: 1px solid #e8e0d4; display: flex; align-items: center; justify-content: space-between; }
+  .mock-b-logo { font-size: 0.65rem; font-weight: 900; color: #1a2c45; }
+  .mock-b-logo span { color: #1a7abf; }
+  .mock-b-date { font-size: 0.55rem; color: #c4622d; font-weight: 700; letter-spacing: 1px; }
+  .mock-b-timeline { padding: 6px 8px; display: flex; gap: 4px; overflow: hidden; background: #fff; border-bottom: 1px solid #e8e0d4; }
+  .mock-b-dp { width: 28px; height: 32px; border-radius: 7px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+  .mock-b-dp.past { background: #e8f5e8; }
+  .mock-b-dp.past::after { content: '✓'; position: absolute; top: -3px; right: -3px; width: 10px; height: 10px; border-radius: 50%; background: #5c7a3e; color: #fff; font-size: 0.35rem; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .mock-b-dp.today-active { background: #1a7abf; box-shadow: 0 3px 12px rgba(26,122,191,0.5); }
+  .mock-b-dp.locked { background: #f0ece4; }
+  .mock-b-dp-n { font-size: 0.6rem; font-weight: 800; color: #1a2c45; line-height: 1; }
+  .mock-b-dp.past .mock-b-dp-n { color: #5c7a3e; }
+  .mock-b-dp.today-active .mock-b-dp-n { color: #fff; }
+  .mock-b-dp.locked .mock-b-dp-n { color: #bbb; }
+  .mock-b-dp-w { font-size: 0.38rem; color: #999; text-transform: uppercase; }
+  .mock-b-dp.today-active .mock-b-dp-w { color: rgba(255,255,255,0.7); }
+  .mock-b-dp.locked .mock-b-dp-w { color: #ccc; }
+
+  /* Today's unlocked card */
+  .mock-b-unlock { margin: 8px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .mock-b-unlock-hero { height: 80px; background: linear-gradient(135deg, #5bb8f5, #1a7abf); position: relative; display: flex; align-items: flex-end; padding: 10px; }
+  .mock-b-unlock-badge { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 2px 8px; font-size: 0.5rem; color: #fff; font-weight: 700; letter-spacing: 1px; }
+  .mock-b-unlock-sun { position: absolute; top: 8px; right: 12px; width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, #ffe566, #ffc200); }
+  .mock-b-unlock-wave { position: absolute; bottom: -1px; left: 0; right: 0; height: 14px; background: #fff; border-radius: 80% 80% 0 0; }
+  .mock-b-unlock-body { padding: 8px 12px 10px; }
+  .mock-b-unlock-title { font-size: 0.82rem; font-weight: 800; color: #1a2c45; margin-bottom: 5px; }
+  .mock-b-unlock-row { display: flex; gap: 5px; }
+  .mock-b-unlock-chip { font-size: 0.5rem; padding: 2px 7px; border-radius: 10px; background: #e8f4fd; color: #1a7abf; font-weight: 700; }
+  /* Locked card preview */
+  .mock-b-locked { margin: 0 8px 0; border-radius: 12px; overflow: hidden; background: rgba(240,236,228,0.8); border: 1px dashed #d0c8b8; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+  .mock-b-lock-ico { font-size: 1.1rem; opacity: 0.4; }
+  .mock-b-lock-text { font-size: 0.65rem; color: #aaa; font-weight: 600; }
+  .mock-b-lock-date { font-size: 0.5rem; color: #bbb; }
+
+  /* === OPTION C: LIVING MOODBOARD === */
+  .mock-c { height: 280px; position: relative; overflow: hidden; }
+  .mock-c-bg { position: absolute; inset: 0; background: linear-gradient(160deg, #f8f4ee 0%, #e4f0fa 100%); }
+  .mock-c-top { position: absolute; top: 0; left: 0; right: 0; padding: 10px 14px; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #e8e0d4; display: flex; justify-content: space-between; align-items: center; }
+  .mock-c-greeting { font-size: 0.78rem; font-weight: 800; color: #1a2c45; }
+  .mock-c-greeting span { color: #1a7abf; }
+  .mock-c-temp { font-size: 0.65rem; color: #c4622d; font-weight: 700; }
+  .mock-c-hero { position: absolute; top: 36px; left: 0; right: 0; bottom: 0; }
+  .mock-c-sky { position: absolute; inset: 0; background: linear-gradient(180deg, #c4e8ff 0%, #5bb8f5 55%, #1a7abf 100%); }
+  .mock-c-sun-big { position: absolute; top: 20px; right: 30px; width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #fff5a0, #ffe566 40%, #ffc200 70%, rgba(255,150,0,0) 100%); box-shadow: 0 0 30px rgba(255,200,0,0.4); }
+  .mock-c-sea-line { position: absolute; bottom: 65px; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.4); }
+  .mock-c-sea { position: absolute; bottom: 0; left: 0; right: 0; height: 65px; background: linear-gradient(180deg, #1a5f9e, #0d3a70); }
+  .mock-c-island-l { position: absolute; bottom: 63px; left: 20px; width: 40px; height: 20px; background: #5c7a3e; border-radius: 50% 50% 0 0; }
+  .mock-c-island-r { position: absolute; bottom: 63px; right: 40px; width: 28px; height: 14px; background: #4a6630; border-radius: 50% 50% 0 0; }
+  .mock-c-boat { position: absolute; bottom: 70px; left: 45%; font-size: 0.9rem; }
+  .mock-c-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,25,50,0.75) 0%, rgba(10,25,50,0.1) 55%, transparent 100%); }
+  .mock-c-content { position: absolute; bottom: 12px; left: 14px; right: 14px; }
+  .mock-c-day-tag { font-size: 0.5rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 3px; }
+  .mock-c-day-title { font-size: 1.05rem; font-weight: 900; color: #fff; margin-bottom: 5px; line-height: 1.15; }
+  .mock-c-mood { font-size: 0.6rem; color: rgba(255,200,150,0.9); font-style: italic; margin-bottom: 8px; }
+  .mock-c-chips { display: flex; gap: 4px; }
+  .mock-c-chip { font-size: 0.5rem; padding: 2px 7px; border-radius: 10px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); backdrop-filter: blur(4px); }
+
+  .card-body { padding: 16px 18px; background: #13131a; }
+  .card-name { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+  .card-desc { font-size: 0.76rem; color: #777; line-height: 1.55; margin-bottom: 10px; }
+  .keywords { display: flex; gap: 5px; flex-wrap: wrap; }
+  .kw { font-size: 0.6rem; padding: 3px 7px; border-radius: 20px; background: rgba(26,122,191,0.12); color: #5bb8f5; }
+
+  .bottom-note { text-align: center; margin-top: 26px; color: #555; font-size: 0.78rem; }
+</style>
+
+<h2>Das tägliche Erlebnis — was passiert wenn du die Seite öffnest?</h2>
+<p class="subtitle">Was macht sie morgens zum ersten Ort, den du aufrufen willst?</p>
+
+<div class="cards">
+
+  <!-- A: Phase Hero + Countdown -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="mock-a">
+      <div class="mock-a-bg"></div>
+      <div class="mock-a-sun"></div>
+      <div class="mock-a-countdown">
+        <div class="mock-a-label">Noch</div>
+        <div class="mock-a-big">22</div>
+        <div class="mock-a-unit">Tage bis Korfu</div>
+      </div>
+      <div class="mock-a-divider"></div>
+      <div class="mock-a-today">
+        <div class="mock-a-today-label">Nächste Station · Etappe 1</div>
+        <div class="mock-a-today-title">Agios Gordios · Poseidon Suites</div>
+        <div class="mock-a-today-pills">
+          <span class="mock-a-pill">18. Juli · Anreise</span>
+          <span class="mock-a-pill">Graz → Wien → Korfu</span>
+        </div>
+        <div class="mock-a-lock-row">
+          <div class="mock-a-lock done">✓</div>
+          <div class="mock-a-lock done">✓</div>
+          <div class="mock-a-lock today-dot">!</div>
+          <div class="mock-a-lock">🔒</div>
+          <div class="mock-a-lock">🔒</div>
+          <div class="mock-a-lock">🔒</div>
+          <div class="mock-a-lock">🔒</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">A — Countdown Hero</div>
+      <div class="card-desc">Vor dem Urlaub: großer animierter Countdown mit Vorschau der nächsten Station. Jeden Tag kleiner werdend, mehr Inhalt freigeschaltet. Aufbauende Vorfreude.</div>
+      <div class="keywords">
+        <span class="kw">Countdown</span><span class="kw">Freischalten</span><span class="kw">Vorfreude</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Day Unlocking -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="mock-b">
+      <div class="mock-b-header">
+        <div class="mock-b-logo">Korfu <span>&amp;</span> Ksamil <span style="color:#888;font-weight:400">2026</span></div>
+        <div class="mock-b-date">Fr · 20. Juli</div>
+      </div>
+      <div class="mock-b-timeline">
+        <div class="mock-b-dp past"><div class="mock-b-dp-n">18</div><div class="mock-b-dp-w">Sa</div></div>
+        <div class="mock-b-dp past"><div class="mock-b-dp-n">19</div><div class="mock-b-dp-w">So</div></div>
+        <div class="mock-b-dp today-active"><div class="mock-b-dp-n">20</div><div class="mock-b-dp-w">Mo</div></div>
+        <div class="mock-b-dp locked"><div class="mock-b-dp-n">21</div><div class="mock-b-dp-w">Di</div></div>
+        <div class="mock-b-dp locked"><div class="mock-b-dp-n">22</div><div class="mock-b-dp-w">Mi</div></div>
+        <div class="mock-b-dp locked"><div class="mock-b-dp-n">23</div><div class="mock-b-dp-w">Do</div></div>
+      </div>
+      <div class="mock-b-unlock">
+        <div class="mock-b-unlock-hero">
+          <div class="mock-b-unlock-sun"></div>
+          <div class="mock-b-unlock-wave"></div>
+          <div class="mock-b-unlock-badge">✨ HEUTE FREIGESCHALTET</div>
+        </div>
+        <div class="mock-b-unlock-body">
+          <div class="mock-b-unlock-title">Paleokastritsa — Meereshöhlen & Café La Grotta</div>
+          <div class="mock-b-unlock-row">
+            <span class="mock-b-unlock-chip">⛵ Bootstour</span>
+            <span class="mock-b-unlock-chip">🤿 Schnorcheln</span>
+            <span class="mock-b-unlock-chip">🍹 Felsbar</span>
+          </div>
+        </div>
+      </div>
+      <div class="mock-b-locked">
+        <div class="mock-b-lock-ico">🔒</div>
+        <div>
+          <div class="mock-b-lock-text">Korfu-Stadt · Tag 4</div>
+          <div class="mock-b-lock-date">Verfügbar ab Di, 21. Juli</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">B — Tägliches Freischalten</div>
+      <div class="card-desc">Vergangene Tage mit ✓, heute mit Glow hervorgehoben und „freigeschaltet", zukünftige Tage gesperrt. Jeden Morgen wartet eine neue Enthüllung.</div>
+      <div class="keywords">
+        <span class="kw">Tagesritual</span><span class="kw">Enthüllung</span><span class="kw">Timeline</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Living Moodboard -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="mock-c">
+      <div class="mock-c-bg"></div>
+      <div class="mock-c-top">
+        <div class="mock-c-greeting">Guten Morgen, <span>Michael</span> ☀️</div>
+        <div class="mock-c-temp">32°C · Paleokastritsa</div>
+      </div>
+      <div class="mock-c-hero">
+        <div class="mock-c-sky"></div>
+        <div class="mock-c-sun-big"></div>
+        <div class="mock-c-sea-line"></div>
+        <div class="mock-c-island-l"></div>
+        <div class="mock-c-island-r"></div>
+        <div class="mock-c-boat">⛵</div>
+        <div class="mock-c-overlay"></div>
+        <div class="mock-c-content">
+          <div class="mock-c-day-tag">Tag 3 von 17 · Mo, 20. Juli</div>
+          <div class="mock-c-day-title">Meereshöhlen &<br>türkise Buchten</div>
+          <div class="mock-c-mood">„Das kristallklare Wasser von Paleokastritsa gehört zum Schönsten der Welt."</div>
+          <div class="mock-c-chips">
+            <span class="mock-c-chip">⛵ Bootstour 9:00</span>
+            <span class="mock-c-chip">🤿 Schnorcheln</span>
+            <span class="mock-c-chip">🍹 La Grotta 17:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">C — Living Moodboard</div>
+      <div class="card-desc">Jeden Morgen empfängt dich eine persönliche Ansicht — generierte Naturszene passend zum heutigen Ziel, Wetter, Tageszeit-Aktivitäten und ein Zitat zum Ort.</div>
+      <div class="keywords">
+        <span class="kw">Persönlich</span><span class="kw">Morgenritual</span><span class="kw">Stimmungsbild</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="bottom-note">Was willst du morgens als erstes sehen wenn du die Seite öffnest?</p>

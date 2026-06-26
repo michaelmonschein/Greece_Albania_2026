@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌊 Korfu &amp; Ksamil 2026 — Familie Monschein</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --sea:#1B6CA8;--sea2:#3A8DC4;--turq:#00B4B4;
+  --olive:#5C7A3E;--terra:#C4622D;--sand:#F2E4C4;
+  --lemon:#F5C518;--chalk:#FAFDF8;--dark:#1E2B3C;--muted:#6B7A8D;
+  --r:12px;--sh:0 4px 24px rgba(27,108,168,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--chalk);color:var(--dark);overflow-x:hidden}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#083560 0%,#1B6CA8 40%,#00B4B4 75%,#2EC4A4 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
+  transition:opacity .8s ease}
+#splash.out{opacity:0;pointer-events:none}
+
+.s-sun{position:absolute;top:36px;right:48px;width:72px;height:72px;
+  background:var(--lemon);border-radius:50%;
+  box-shadow:0 0 0 14px rgba(245,197,24,.18),0 0 0 28px rgba(245,197,24,.08);
+  animation:sunP 3s ease-in-out infinite}
+@keyframes sunP{50%{box-shadow:0 0 0 20px rgba(245,197,24,.28),0 0 0 40px rgba(245,197,24,.12)}}
+
+.s-title{font-family:'Playfair Display',serif;color:#fff;text-align:center;z-index:10;
+  margin-bottom:28px;text-shadow:0 2px 20px rgba(0,0,0,.3)}
+.s-title h1{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:900;letter-spacing:-.5px}
+.s-title p{font-family:'Nunito',sans-serif;font-size:clamp(.8rem,2vw,1.1rem);
+  color:rgba(255,255,255,.8);margin-top:6px;letter-spacing:2px;text-transform:uppercase}
+
+.avrow{display:flex;gap:clamp(12px,3vw,28px);z-index:10;margin-top:16px;flex-wrap:nowrap}
+.avcard{display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;transform:translateY(28px)}
+.avcard.show{animation:avIn .55s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes avIn{to{opacity:1;transform:translateY(0)}}
+.avname{font-family:'Nunito',sans-serif;color:#fff;font-weight:800;
+  font-size:.8rem;letter-spacing:1px;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+
+.s-waves{position:absolute;bottom:0;left:0;width:100%;height:90px;overflow:hidden}
+.s-waves svg{width:200%;animation:waveM 6s linear infinite}
+@keyframes waveM{to{transform:translateX(-50%)}}
+
+#skip-btn{position:absolute;top:14px;right:14px;
+  background:rgba(255,255,255,.18);color:#fff;
+  border:1px solid rgba(255,255,255,.4);border-radius:20px;
+  padding:5px 14px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;
+  cursor:pointer;z-index:10001;backdrop-filter:blur(4px);transition:background .2s}
+#skip-btn:hover{background:rgba(255,255,255,.32)}
+
+/* ── APP ── */
+#app{min-height:100vh;opacity:0;transition:opacity .5s ease}
+#app.vis{opacity:1}
+
+.app-hdr{background:linear-gradient(135deg,var(--sea) 0%,#0A3D6B 100%);
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(27,108,168,.3)}
+.app-hdr h1{font-family:'Playfair Display',serif;color:#fff;
+  font-size:clamp(1rem,2.5vw,1.4rem);font-weight:700}
+.app-hdr h1 span{color:var(--lemon)}
+.hdr-btns{display:flex;gap:6px}
+.hbtn{background:rgba(255,255,255,.15);color:#fff;
+  border:1px solid rgba(255,255,255,.3);border-radius:8px;
+  padding:7px 12px;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:800;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+.hbtn:hover{background:rgba(255,255,255,.28);transform:translateY(-1px)}
+
+/* ── TABS ── */
+.tabs-wrap{background:#fff;border-bottom:2px solid var(--sand);
+  position:sticky;top:49px;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.etappe-bar{display:flex;background:var(--sand);overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none;padding:0 8px}
+.etappe-bar::-webkit-scrollbar{display:none}
+.etag{font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.8px;
+  padding:3px 10px;white-space:nowrap;color:var(--muted)}
+.etag.e1{color:var(--sea)}.etag.e2{color:var(--terra)}.etag.e3{color:var(--olive)}
+
+.tabs-scroll{overflow-x:auto;white-space:nowrap;scrollbar-width:none;
+  -ms-overflow-style:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+.tabs-scroll::-webkit-scrollbar{display:none}
+.tabs-inner{display:inline-flex;gap:3px;padding:5px 8px}
+.tbtn{background:none;border:2px solid transparent;border-radius:8px;
+  padding:5px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;
+  cursor:pointer;white-space:nowrap;color:var(--muted);transition:all .18s}
+.tbtn:hover{background:var(--sand)}
+.tbtn.all.active{background:var(--dark);border-color:var(--dark);color:#fff}
+.tbtn.e1.active{background:var(--sea);border-color:var(--sea);color:#fff}
+.tbtn.e2.active{background:var(--terra);border-color:var(--terra);color:#fff}
+.tbtn.e3.active{background:var(--olive);border-color:var(--olive);color:#fff}
+.tbtn.tv.active{background:#4A5568;border-color:#4A5568;color:#fff}
+
+/* ── LAYOUT ── */
+.main-lay{display:grid;grid-template-columns:1fr 400px;min-height:calc(100vh - 100px)}
+.map-panel{position:sticky;top:100px;height:calc(100vh - 100px)}
+#map{width:100%;height:100%}
+.content{padding:16px;overflow-y:auto;max-height:calc(100vh - 100px)}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--sand);border-radius:2px}
+
+/* ── DAY CARDS ── */
+.dcard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);
+  margin-bottom:18px;overflow:hidden;
+  opacity:0;transform:translateY(16px);transition:all .4s cubic-bezier(.34,1.2,.64,1)}
+.dcard.vis{opacity:1;transform:translateY(0)}
+.dcard-hdr{padding:14px 18px;display:flex;align-items:flex-start;gap:10px}
+.dcard-hdr.e1{background:linear-gradient(135deg,var(--sea),var(--sea2))}
+.dcard-hdr.e2{background:linear-gradient(135deg,var(--terra),#E07A50)}
+.dcard-hdr.e3{background:linear-gradient(135deg,var(--olive),#7CA85A)}
+.dcard-hdr.tv{background:linear-gradient(135deg,#4A5568,#718096)}
+.dtag{background:rgba(255,255,255,.22);color:#fff;border-radius:6px;
+  padding:3px 8px;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;white-space:nowrap}
+.dcard-hdr h2{color:#fff;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700}
+.dcard-hdr p{color:rgba(255,255,255,.8);font-size:.76rem;margin-top:2px}
+.dbody{padding:14px 18px}
+
+/* activities */
+.alist{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.aitem{display:flex;gap:8px;align-items:flex-start}
+.aico{font-size:1rem;flex-shrink:0;margin-top:1px}
+.atxt strong{display:block;font-size:.88rem;font-weight:700;color:var(--dark)}
+.atxt span{font-size:.78rem;color:var(--muted)}
+
+/* selfie spots */
+.sbox{background:linear-gradient(135deg,#FFFBE6,#FFF5CC);border-radius:8px;
+  padding:10px 13px;margin-bottom:12px;border-left:3px solid var(--lemon)}
+.sbox h4{font-size:.74rem;font-weight:900;color:#7A6000;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:6px}
+.sitem{font-size:.78rem;color:#5A4500;margin-bottom:3px}
+
+/* evening */
+.ebox{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:8px;
+  padding:10px 13px;border-left:3px solid var(--sea)}
+.ebox h4{font-size:.74rem;font-weight:900;color:var(--sea);text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:5px}
+.ebox p{font-size:.8rem;color:var(--dark)}
+
+/* photos */
+.photos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px}
+.photo-wrap{border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:var(--sand);position:relative}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.photo-wrap:hover img{transform:scale(1.06)}
+.photo-cap{position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.55));
+  color:#fff;font-size:.65rem;padding:8px 6px 4px;font-weight:700}
+
+/* restaurant */
+.rcard{background:linear-gradient(135deg,#FFF5EF,#FFF0E8);border-radius:8px;
+  padding:10px 13px;margin-bottom:7px;border-left:3px solid var(--terra)}
+.rcard h4{font-size:.88rem;font-weight:800;color:var(--terra)}
+.rcard p{font-size:.78rem;color:var(--muted);margin-top:4px}
+.rtags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.rtag{background:rgba(196,98,45,.12);color:var(--terra);border-radius:4px;
+  padding:2px 6px;font-size:.68rem;font-weight:800}
+
+/* tips */
+.tips-box{background:#F0FFF4;border-radius:8px;padding:10px 13px;margin-top:12px;
+  border-left:3px solid var(--olive)}
+.tips-box h4{font-size:.74rem;font-weight:900;color:var(--olive);text-transform:uppercase;margin-bottom:6px}
+.tip-item{font-size:.78rem;color:#2D5016;margin-bottom:3px;padding-left:12px;position:relative}
+.tip-item::before{content:'→';position:absolute;left:0;color:var(--olive)}
+
+/* alert boxes */
+.alert-box{border-radius:8px;padding:10px 13px;margin-bottom:12px;font-size:.8rem}
+.alert-box.warn{background:#FFF3E0;border-left:3px solid var(--terra);color:#5A3000}
+.alert-box.info{background:#E8F4FF;border-left:3px solid var(--turq);color:#003A5A}
+.alert-box strong{display:block;font-weight:800;margin-bottom:4px}
+
+/* section label */
+.slabel{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.slabel::after{content:'';flex:1;height:1px;background:var(--sand)}
+
+/* weather box */
+.weather-wrap{background:linear-gradient(135deg,#FFF8E1,#FFE082);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:18px;border:2px solid var(--lemon);
+  display:flex;gap:12px;align-items:flex-start}
+.weather-ico{font-size:2rem;flex-shrink:0}
+.weather-txt h3{font-size:.88rem;font-weight:900;color:#6B4000;margin-bottom:6px}
+.weather-txt ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+.weather-txt li{font-size:.78rem;color:#5A3500;padding-left:12px;position:relative}
+.weather-txt li::before{content:'☀️';position:absolute;left:0;font-size:.6rem;top:2px}
+
+/* ferry box */
+.ferry-box{background:linear-gradient(135deg,#E0F2FE,#BAE6FD);border-radius:8px;
+  padding:10px 13px;margin-bottom:12px;border-left:3px solid var(--turq)}
+.ferry-box h4{font-size:.8rem;font-weight:900;color:#0369A1;margin-bottom:5px}
+.ferry-box p{font-size:.78rem;color:#0C4A6E}
+
+/* ── MODALS ── */
+.moverlay{position:fixed;inset:0;background:rgba(10,20,40,.72);z-index:1000;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s}
+.moverlay.open{opacity:1;pointer-events:all}
+.msheet{background:var(--chalk);border-radius:22px 22px 0 0;width:100%;max-width:720px;
+  max-height:88vh;overflow-y:auto;padding:22px 18px 36px;
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.34,1.2,.64,1)}
+.moverlay.open .msheet{transform:translateY(0)}
+.mhandle{width:38px;height:4px;background:var(--sand);border-radius:2px;margin:0 auto 18px}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mhdr h2{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--dark)}
+.mclose{background:var(--sand);border:none;border-radius:50%;width:30px;height:30px;
+  font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.mclose:hover{background:#E0CCA0}
+
+/* route modal */
+.rseg{margin-bottom:22px}
+.rseg h3{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--sea);
+  margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid var(--sand)}
+.rstep{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;position:relative}
+.rstep:not(:last-child)::after{content:'';position:absolute;left:16px;top:36px;bottom:-6px;
+  width:2px;background:var(--sand)}
+.rbullet{width:32px;height:32px;border-radius:50%;background:var(--sea);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.rbullet.tv{background:#4A5568}
+.rbullet.e2{background:var(--terra)}
+.rcon strong{display:block;font-size:.88rem;font-weight:700}
+.rcon span{font-size:.77rem;color:var(--muted)}
+
+/* todo modal */
+.tgroup{margin-bottom:18px}
+.tgroup-hdr{font-size:.72rem;font-weight:900;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.titem{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;
+  background:#fff;border-radius:8px;margin-bottom:5px;cursor:pointer;
+  transition:all .18s;border:2px solid transparent}
+.titem:hover{border-color:var(--sand)}
+.titem.done{background:#F0FFF4;border-color:#A8E6B8}
+.titem input[type=checkbox]{width:17px;height:17px;accent-color:var(--olive);
+  cursor:pointer;flex-shrink:0;margin-top:2px}
+.titem .tlabel{font-size:.83rem;font-weight:700}
+.titem.done .tlabel{text-decoration:line-through;color:var(--muted)}
+.titem .tnote{font-size:.72rem;color:var(--muted);margin-top:2px}
+.titem.urgent .tlabel::after{content:' ⚠️'}
+.todo-prog{background:var(--sand);border-radius:4px;height:5px;margin-bottom:14px;overflow:hidden}
+.todo-bar{background:linear-gradient(90deg,var(--olive),var(--turq));
+  height:100%;border-radius:4px;transition:width .4s ease}
+.todo-stat{font-size:.78rem;color:var(--muted);margin-bottom:6px}
+
+/* Leaflet markers */
+.cmarker{border:2.5px solid #fff;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.68rem;font-weight:800;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .main-lay{grid-template-columns:1fr;grid-template-rows:260px auto}
+  .map-panel{position:relative;top:auto;height:260px;order:-1}
+  #map{height:260px}
+  .content{max-height:none;overflow-y:visible}
+  .photos-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .map-panel{height:210px}
+  #map{height:210px}
+  .main-lay{grid-template-rows:210px auto}
+  .avrow{gap:10px}
+}
+</style>
+<body>
+
+<!-- ═══ SPLASH ═══ -->
+<div id="splash">
+  <div class="s-sun"></div>
+  <button id="skip-btn" onclick="endSplash()">Überspringen ✕</button>
+
+  <div class="s-title">
+    <h1>Korfu &amp; Ksamil</h1>
+    <p>Sommer 2026 · Familie Monschein</p>
+  </div>
+
+  <div class="avrow" id="avrow">
+    <!-- Michael -->
+    <div class="avcard" id="av0">
+      <svg viewBox="0 0 90 110" width="78" height="95">
+        <path d="M10,72 L5,105 L85,105 L80,72 Q65,80 45,80 Q25,80 10,72Z" fill="#1B6CA8"/>
+        <rect x="37" y="62" width="16" height="13" fill="#F2B48A"/>
+        <ellipse cx="45" cy="42" rx="28" ry="26" fill="#F2B48A"/>
+        <!-- shaved head shadow -->
+        <ellipse cx="45" cy="23" rx="28" ry="11" fill="#8B6050" opacity=".5"/>
+        <!-- blue wraparound sunglasses -->
+        <rect x="18" y="34" width="22" height="12" rx="6" fill="#1A5FA8" opacity=".92"/>
+        <rect x="50" y="34" width="22" height="12" rx="6" fill="#1A5FA8" opacity=".92"/>
+        <rect x="38" y="38" width="14" height="4" fill="#0D3A6B"/>
+        <ellipse cx="29" cy="40" rx="9" ry="5" fill="#2472CC" opacity=".4"/>
+        <ellipse cx="61" cy="40" rx="9" ry="5" fill="#2472CC" opacity=".4"/>
+        <!-- smile -->
+        <path d="M28,54 Q45,64 62,54" stroke="#C47A50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- cheeks -->
+        <circle cx="28" cy="53" r="5" fill="#FFB0A0" opacity=".35"/>
+        <circle cx="62" cy="53" r="5" fill="#FFB0A0" opacity=".35"/>
+      </svg>
+      <span class="avname">Michael</span>
+    </div>
+    <!-- Nina -->
+    <div class="avcard" id="av1">
+      <svg viewBox="0 0 90 110" width="78" height="95">
+        <path d="M12,70 L7,105 L83,105 L78,70 Q64,79 45,79 Q26,79 12,70Z" fill="#E8E4E0"/>
+        <rect x="38" y="60" width="14" height="13" fill="#F2B48A"/>
+        <ellipse cx="45" cy="41" rx="25" ry="24" fill="#F2B48A"/>
+        <!-- dark hair sides -->
+        <rect x="18" y="30" width="9" height="46" rx="4" fill="#160808"/>
+        <rect x="63" y="30" width="9" height="46" rx="4" fill="#160808"/>
+        <!-- hair top -->
+        <path d="M20,38 Q22,16 45,15 Q68,16 70,38 Q62,23 45,23 Q28,23 20,38" fill="#160808"/>
+        <!-- red square glasses -->
+        <rect x="19" y="34" width="20" height="13" rx="3" fill="none" stroke="#CC2222" stroke-width="2.8"/>
+        <rect x="51" y="34" width="20" height="13" rx="3" fill="none" stroke="#CC2222" stroke-width="2.8"/>
+        <line x1="39" y1="40" x2="51" y2="40" stroke="#CC2222" stroke-width="2.2"/>
+        <rect x="19" y="34" width="20" height="13" rx="3" fill="#FFE8E8" opacity=".25"/>
+        <rect x="51" y="34" width="20" height="13" rx="3" fill="#FFE8E8" opacity=".25"/>
+        <!-- smile -->
+        <path d="M30,51 Q45,61 60,51" stroke="#C47A50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="29" cy="50" r="5" fill="#FFB0A0" opacity=".4"/>
+        <circle cx="61" cy="50" r="5" fill="#FFB0A0" opacity=".4"/>
+      </svg>
+      <span class="avname">Nina</span>
+    </div>
+    <!-- Leah -->
+    <div class="avcard" id="av2">
+      <svg viewBox="0 0 90 110" width="78" height="95">
+        <path d="M13,70 L8,105 L82,105 L77,70 Q63,79 45,79 Q27,79 13,70Z" fill="#7B2D8B"/>
+        <rect x="38" y="60" width="14" height="12" fill="#F2B48A"/>
+        <ellipse cx="45" cy="41" rx="24" ry="23" fill="#F2B48A"/>
+        <!-- long straight hair -->
+        <rect x="17" y="25" width="11" height="62" rx="5" fill="#2A1408"/>
+        <rect x="62" y="25" width="11" height="62" rx="5" fill="#2A1408"/>
+        <!-- hair top -->
+        <path d="M20,37 Q21,16 45,15 Q69,16 70,37 Q63,22 45,22 Q27,22 20,37" fill="#2A1408"/>
+        <!-- eyes -->
+        <ellipse cx="35" cy="39" rx="4" ry="3.5" fill="#2A1000"/>
+        <ellipse cx="55" cy="39" rx="4" ry="3.5" fill="#2A1000"/>
+        <ellipse cx="36" cy="38" rx="1.5" ry="1" fill="#fff"/>
+        <ellipse cx="56" cy="38" rx="1.5" ry="1" fill="#fff"/>
+        <!-- smile -->
+        <path d="M32,51 Q45,61 58,51" stroke="#C47A50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="31" cy="50" r="5" fill="#FFB0A0" opacity=".35"/>
+        <circle cx="59" cy="50" r="5" fill="#FFB0A0" opacity=".35"/>
+        <!-- silver watch hint -->
+        <rect x="63" y="68" width="7" height="3" rx="1" fill="#C0C0C0" opacity=".7"/>
+      </svg>
+      <span class="avname">Leah</span>
+    </div>
+    <!-- Maxi -->
+    <div class="avcard" id="av3">
+      <svg viewBox="0 0 90 110" width="78" height="95">
+        <path d="M11,71 L6,105 L84,105 L79,71 Q65,79 45,79 Q25,79 11,71Z" fill="#2A2A2A"/>
+        <rect x="37" y="61" width="16" height="13" fill="#F2B48A"/>
+        <circle cx="45" cy="42" r="26" fill="#F2B48A"/>
+        <!-- dark curly hair -->
+        <path d="M19,40 Q20,15 45,14 Q70,15 71,40 Q65,23 45,23 Q25,23 19,40" fill="#160808"/>
+        <circle cx="23" cy="37" r="7" fill="#160808"/>
+        <circle cx="67" cy="37" r="7" fill="#160808"/>
+        <circle cx="35" cy="17" r="6" fill="#160808"/>
+        <circle cx="55" cy="17" r="6" fill="#160808"/>
+        <!-- eyes big (young face) -->
+        <circle cx="36" cy="41" r="4.5" fill="#2A1000"/>
+        <circle cx="54" cy="41" r="4.5" fill="#2A1000"/>
+        <circle cx="37.5" cy="39.5" r="1.8" fill="#fff"/>
+        <circle cx="55.5" cy="39.5" r="1.8" fill="#fff"/>
+        <!-- big smile -->
+        <path d="M29,55 Q45,67 61,55" stroke="#C47A50" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <circle cx="28" cy="53" r="6" fill="#FFB0A0" opacity=".4"/>
+        <circle cx="62" cy="53" r="6" fill="#FFB0A0" opacity=".4"/>
+      </svg>
+      <span class="avname">Maxi</span>
+    </div>
+  </div>
+
+  <div class="s-waves">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 90" preserveAspectRatio="none" height="90">
+      <path fill="rgba(255,255,255,0.18)" d="M0,45 C180,80 360,10 540,45 C720,80 900,10 1080,45 C1260,80 1350,30 1440,45 L1440,90 L0,90Z"/>
+      <path fill="rgba(255,255,255,0.28)" d="M0,60 C200,30 400,80 600,55 C800,30 1000,80 1200,55 C1300,40 1380,65 1440,60 L1440,90 L0,90Z"/>
+      <path fill="rgba(0,180,180,0.18)" d="M0,45 C180,80 360,10 540,45 C720,80 900,10 1080,45 C1260,80 1350,30 1440,45 L1440,90 L0,90Z" transform="translate(720,0)"/>
+      <path fill="rgba(0,180,180,0.28)" d="M0,60 C200,30 400,80 600,55 C800,30 1000,80 1200,55 C1300,40 1380,65 1440,60 L1440,90 L0,90Z" transform="translate(720,0)"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <header class="app-hdr">
+    <h1>🌊 Korfu &amp; Ksamil <span>2026</span></h1>
+    <div class="hdr-btns">
+      <button class="hbtn" onclick="openModal('route')">🗺 Route</button>
+      <button class="hbtn" onclick="openModal('todo')">✅ Checkliste</button>
+    </div>
+  </header>
+
+  <div class="tabs-wrap">
+    <div class="etappe-bar" id="etag-bar"></div>
+    <div class="tabs-scroll"><div class="tabs-inner" id="tabs-inner"></div></div>
+  </div>
+
+  <div class="main-lay">
+    <div class="content" id="content"></div>
+    <div class="map-panel"><div id="map"></div></div>
+  </div>
+</div>
+
+<!-- ═══ ROUTE MODAL ═══ -->
+<div class="moverlay" id="modal-route">
+  <div class="msheet">
+    <div class="mhandle"></div>
+    <div class="mhdr">
+      <h2>🗺 Reiseroute Guide</h2>
+      <button class="mclose" onclick="closeModal('route')">✕</button>
+    </div>
+    <div id="route-content"></div>
+  </div>
+</div>
+
+<!-- ═══ TODO MODAL ═══ -->
+<div class="moverlay" id="modal-todo">
+  <div class="msheet">
+    <div class="mhandle"></div>
+    <div class="mhdr">
+      <h2>✅ Reise-Checkliste</h2>
+      <button class="mclose" onclick="closeModal('todo')">✕</button>
+    </div>
+    <div class="todo-stat" id="todo-stat"></div>
+    <div class="todo-prog"><div class="todo-bar" id="todo-bar"></div></div>
+    <div id="todo-content"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   VERIFIED IMAGE URLs (all HTTP 200)
+══════════════════════════════════════ */
+const IMG = {
+  agiosGordios:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=600",
+  korfuAerial:"https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Corfu%20town%20aerial%2002.jpg?width=600",
+  alteFestung:"https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=600",
+  paleokastritsa:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=600",
+  paleokastritsa2:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=600",
+  achilleion:"https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=600",
+  pontikonisi:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=600",
+  kanoni:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=600",
+  oldFortress:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=600",
+  ksamil:"https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=600",
+  ksamilRiviera:"https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=600",
+  butrint:"https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=600",
+  blueEye:"https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=600",
+};
+function imgTag(key,cap){
+  return`<div class="photo-wrap"><img src="${IMG[key]}" alt="${cap}" loading="lazy" onerror="this.parentElement.style.display='none'"><span class="photo-cap">${cap}</span></div>`;
+}
+
+/* ══════════════════════════════════════
+   MAP LOCATIONS
+══════════════════════════════════════ */
+const LOCS={
+  airport:{ll:[39.6015,19.9117],name:"✈️ Flughafen Korfu (CFU)",type:"tv"},
+  korfuPort:{ll:[39.6230,19.9168],name:"⛴ Neuer Hafen Korfu",type:"ferry"},
+  poseidon:{ll:[39.5558,19.8695],name:"🏨 Poseidon Suites · Agios Gordios",type:"hotel"},
+  agiosBeach:{ll:[39.5520,19.8660],name:"🏖 Agios Gordios Beach",type:"e1"},
+  korfuTown:{ll:[39.6243,19.9217],name:"🏛 Korfu-Stadt Altstadt (UNESCO)",type:"e1"},
+  alteFestung:{ll:[39.6235,19.9318],name:"📸 Alte Festung Korfu",type:"selfie"},
+  liston:{ll:[39.6238,19.9200],name:"🌆 Liston Promenade",type:"e1"},
+  paleo:{ll:[39.6683,19.7046],name:"📸 Paleokastritsa Bucht",type:"selfie"},
+  achilleion:{ll:[39.5778,19.9129],name:"🏛 Achilleion Palast",type:"e1"},
+  pontikonisi:{ll:[39.6057,19.9159],name:"📸 Pontikonisi (Mauseinsel)",type:"selfie"},
+  kanoni:{ll:[39.6048,19.9130],name:"📸 Kanoni Aussichtspunkt",type:"selfie"},
+  aqualand:{ll:[39.6325,19.8380],name:"🎢 Aqualand Corfu",type:"e1"},
+  yannis:{ll:[39.6850,19.8735],name:"🏨 Hotel Yannis Corfu · Ýpsos",type:"hotel"},
+  ypsosBeach:{ll:[39.6835,19.8715],name:"🏖 Ýpsos Beach",type:"e3"},
+  saranda:{ll:[39.8756,20.0053],name:"⛴ Saranda Hafen (Albanien)",type:"ferry"},
+  muze:{ll:[39.7703,20.0027],name:"🏨 Muze Hotel · Ksamil",type:"hotel"},
+  ksamilBeach:{ll:[39.7685,20.0010],name:"📸 Ksamil Beach",type:"selfie"},
+  ksamilIslands:{ll:[39.7640,19.9958],name:"📸 Ksamil Inseln",type:"selfie"},
+  butrint:{ll:[39.7481,20.0214],name:"🏛 Butrint (UNESCO)",type:"e2"},
+  blueEye:{ll:[39.9063,20.2327],name:"📸 Blaues Auge · Syri i Kaltër",type:"selfie"},
+};
+
+/* ══════════════════════════════════════
+   17 TAGE REISEDATEN
+══════════════════════════════════════ */
+const DAYS=[
+{id:"T1",date:"18.07",wd:"Sa",et:"tv",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
+  center:[39.6015,19.9117,10],marks:["airport","poseidon"],
+  acts:[
+    {i:"🚗",t:"Abfahrt Plankenwarth",d:"Fahrt zum Grazer Hauptbahnhof, ca. 20 Min"},
+    {i:"🚆",t:"Zug OS3588 · Ab 14:00 Graz Hbf",d:"Ankunft Wien Hbf 16:57 · ca. 2h 57 Min · AUA-Codeshare"},
+    {i:"✈️",t:"Flug OS863 · Ab 19:30 Wien (VIE)",d:"Ankunft Korfu (CFU) ca. 21:15 Uhr Ortszeit · 1h 45 Min"},
+    {i:"🚕",t:"Transfer Flughafen → Poseidon Suites",d:"Agios Gordios · ca. 30 Min · Taxi vorab buchen (ca. 25 €)"},
+    {i:"🏨",t:"Check-in Poseidon Suites by CorfuEscapes",d:"Agios Gordios · Ankunft ca. 22:00 Uhr"},
+  ],
+  selfie:[],photos:[],
+  tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
+  eve:null,rests:[],alerts:[{t:"info",text:"Tag 1 ist reiner Anreisetag — keine Aktivitäten geplant. Ankunft abends, einrichten, Nachtschlaf genießen."}]},
+
+{id:"T2",date:"19.07",wd:"So",et:"e1",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
+  center:[39.553,19.868,13],marks:["poseidon","agiosBeach"],
+  acts:[
+    {i:"🌅",t:"Erstes Frühstück auf Korfu",d:"Hotelfühstück, Terrassenmeerblick genießen"},
+    {i:"🏖",t:"Agios Gordios Beach erkunden",d:"Langer Sandstrand, ruhige Bucht — perfekt zum Eingewöhnen"},
+    {i:"🛒",t:"Supermarkt & Basics",d:"Sonnencreme, Wasser, Snacks, lokale Köstlichkeiten kaufen"},
+    {i:"🏊",t:"Schwimmen & Pool",d:"Nachmittags chillen, Pool oder Meer, erste Sonnenstunden"},
+  ],
+  selfie:[{t:"Agios Gordios Bucht",tip:"Panorama von der Südklippe — beste Zeit: Sonnenuntergang (ca. 20:30)"}],
+  photos:["agiosGordios"],
+  tips:["Mittagspause 13–16 Uhr! Bei 35°C+ kein Aufenthalt in voller Sonne","LSF 50+ für die ganze Familie, besonders Maxi & Leah","Klares, flaches Wasser — ideal für erste Schnorchelabenteuer"],
+  eve:"Spaziergang durch das Dorf Agios Gordios, Eis & lokale Taverne",
+  rests:[{n:"Panorama Restaurant",d:"Griechische Küche mit fantastischem Meerblick, direkt am Strand",tags:["Meerblick","Griechisch","€€"]},{n:"Pink Panther Beach Bar",d:"Locker-lässige Strandbar, beliebt bei Teens & jungen Familien, gute Burger",tags:["Strandbar","Burger","€"]}],alerts:[]},
+
+{id:"T3",date:"20.07",wd:"Mo",et:"e1",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
+  center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
+  acts:[
+    {i:"🚤",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
+    {i:"🏄",t:"Stand-Up-Paddle (SUP)",d:"Verleih am Strand · entspannte Erkundung der Bucht"},
+    {i:"🤿",t:"Schnorcheln in der Bucht",d:"Klares Wasser, Fische, Ausrüstung leihbar · Bucht südlich ideal"},
+    {i:"⛵",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
+  ],
+  selfie:[{t:"Jetski-Actionfoto",tip:"Jemanden ans Ufer stellen zum Fotografieren — beste Hintergrundbucht!"}],
+  photos:["agiosGordios"],
+  tips:["Früh am Strand (9 Uhr), bevor Warteschlangen entstehen","Wassersport-Preise sind verhandelbar — mehrere Aktivitäten als Paket fragen","Ausreichend Wasser trinken — Wassersport kostet Energie!"],
+  eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
+  rests:[{n:"The Rock Bar",d:"Iconic Felsbar am Strand, Cocktails & Snacks, Sonnenuntergang-Pflichtprogramm",tags:["Strandbar","Cocktails","€€"]},{n:"Agios Gordios Taverna",d:"Frischer Fisch, Souvlaki, Moussaka — authentisch griechisch",tags:["Griechisch","Fisch","€€"]}],alerts:[]},
+
+{id:"T4",date:"21.07",wd:"Di",et:"e1",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
+  center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
+  acts:[
+    {i:"🚗",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
+    {i:"🏛",t:"Altstadt-Bummel (UNESCO)",d:"Venezianische Gassen, Kirchen, Spianada-Platz — Europas zweitgrößte Piazza"},
+    {i:"⚔️",t:"Alte Festung (Palaio Frourio)",d:"Toller Panoramablick über die Stadt & Meer · Eintritt ca. 6 € · lohnt sich!"},
+    {i:"🛡",t:"Neue Festung (Neo Frourio)",d:"Weniger voll als die Alte, interessante Stadtmauer-Perspektive"},
+    {i:"🛍",t:"Shopping in der Altstadt",d:"Olivenöl, Kumquat-Likör, griechische Keramik — tolle Souvenirs"},
+  ],
+  selfie:[{t:"Alte Festung Panorama",tip:"Aussichtsplattform oben — Meerblick und Stadtpanorama. Beste Fotos am Nachmittag (Licht)."},{t:"Liston Arkaden",tip:"Venezianische Bogengänge — wunderbar fotogen, besonders abends mit Beleuchtung."}],
+  photos:["alteFestung","korfuAerial"],
+  tips:["Hochsaison: Festung morgens früh besuchen (kühler, weniger voll)","Altstadt-Gassen sind eng & verschachtelt — absichtlich verirren!","Kumquat-Likör ist Korfu-Spezialität — als Souvenir perfekt"],
+  eve:"Liston-Promenade abends: Cafés unter den venezianischen Bögen, Gelato, Flanieren",
+  rests:[{n:"La Famiglia",d:"Authentische Pizzeria in der Altstadt, günstig & lecker, Teenagers mögen's",tags:["Pizza","€","Altstadt"]},{n:"Liston Restaurant",d:"Direkt an der Promenade, griechische Küche, tolle Atmosphäre abends",tags:["Griechisch","Liston","€€"]},{n:"Gelateria Paradiso",d:"Handgemachtes Gelato, Liston-Nähe, Abend-Pflichtprogramm",tags:["Gelato","€","Dessert"]}],alerts:[]},
+
+{id:"T5",date:"22.07",wd:"Mi",et:"e1",title:"Paleokastritsa",sub:"Meereshöhlen, türkise Buchten & Café La Grotta",
+  center:[39.668,19.705,13],marks:["paleo"],
+  acts:[
+    {i:"🚗",t:"Fahrt nach Paleokastritsa",d:"ca. 45 Min von Agios Gordios · spektakuläre Küstenstraße"},
+    {i:"⛵",t:"Bootstour zu Meereshöhlen",d:"Ca. 45 Min, ab Hauptstrand · beleuchte Höhlen, türkise Buchten — unvergesslich!"},
+    {i:"🤿",t:"Schnorcheln in den Buchten",d:"Kristallklares Wasser, viele Fische — Snorkel lohnt sich sehr"},
+    {i:"⛪",t:"Moni Paleokastritsa",d:"Kleines Kloster auf dem Fels — atemberaubender Ausblick (20 Min Fußweg)"},
+    {i:"🍹",t:"Café La Grotta",d:"Legendäre Bar direkt in den Felsen gebaut — Cocktails über dem Meer!"},
+  ],
+  selfie:[{t:"Paleokastritsa Klippen",tip:"Von der Bella Vista Aussicht — beste Sicht auf die türkisen Buchten. Früh hingehen!"},{t:"Café La Grotta",tip:"Einzigartige Felsbar-Perspektive — TikTok & Instagram Pflicht. Mittags weniger voll."}],
+  photos:["paleokastritsa","paleokastritsa2"],
+  tips:["Hochsaison: VOR 10 Uhr ankommen — nachmittags brechend voll","Gutes Schuhwerk für Klippen und Kloster-Weg","Bootstouren: Direkt am Hauptstrand buchen, ca. 10 €/Person","La Grotta: Freischwimmen von den Felsen möglich!"],
+  eve:"Sonnenuntergang von der Bella Vista Terrasse über Paleokastritsa — eines der schönsten Abendpanoramen Korfu's",
+  rests:[{n:"Café La Grotta",d:"Felsbar über dem Meer, Cocktails & Snacks, absolutes Highlight für Teens",tags:["Felsbar","Cocktails","€€","Selfie-Spot"]},{n:"Taverne Paleokastritsa",d:"Frischer Fisch direkt am Hauptstrand, mittelpreisig",tags:["Fisch","Griechisch","€€"]}],alerts:[]},
+
+{id:"T6",date:"23.07",wd:"Do",et:"e1",title:"Achilleion + Pontikonisi",sub:"Palast, Mauseinsel & der ikonische Kanoni-Blick",
+  center:[39.603,19.926,12],marks:["achilleion","pontikonisi","kanoni"],
+  acts:[
+    {i:"🏛",t:"Achilleion Palast",d:"Kaiserin Sisis Sommerresidenz · prächtige Gartenanlage & Statuen · Eintritt ca. 7 €"},
+    {i:"🚗",t:"Fahrt nach Kanoni",d:"Südl. Korfu-Stadt, ca. 25 Min vom Achilleion"},
+    {i:"📸",t:"Kanoni Aussichtspunkt",d:"Ikonisches Foto: Lagune + Vlacherna Kloster + Pontikonisi — und Flugzeuge im Tiefflug!"},
+    {i:"⛵",t:"Fähre zu Pontikonisi",d:"Kleine Fähre zur Mauseinsel (Pontikonisi) · kleines Kloster, traumhafter Blick"},
+  ],
+  selfie:[{t:"Kanoni mit Flugzeug",tip:"Flugzeuge landen über der Lagune — ca. 10–20 Min Wartezeit. Abends traumhaftes Licht!"},{t:"Pontikonisi von oben",tip:"Von der Felsplattform neben der Fähranlegestelle — Weitwinkel empfohlen"}],
+  photos:["achilleion","pontikonisi"],
+  tips:["Achilleion: Morgens früh (kühler & weniger voll)","Kanoni: Flugzeug-Timing per Korfu Airport-Webcam prüfen","Pontikonisi Fähre: ca. 2–3 € / Person, fährt regelmäßig"],
+  eve:"Abendessen in der Korfu-Altstadt, danach Liston Promenade bummeln",
+  rests:[{n:"Kanoni Restaurant",d:"Direkt am Aussichtspunkt, Meerblick auf Pontikonisi, griechische Küche",tags:["Meerblick","€€","Kanoni"]},{n:"Christo's Korfu Town",d:"Beliebt bei Einheimischen, nahe Liston, gutes Preis-Leistungs-Verhältnis",tags:["Griechisch","€€","Altstadt"]}],alerts:[]},
+
+{id:"T7",date:"24.07",wd:"Fr",et:"e1",title:"Aqualand Corfu",sub:"Wasserpark-Tag — Rutschbahnen, Wellen & Action!",
+  center:[39.632,19.838,12],marks:["aqualand"],
+  acts:[
+    {i:"🎢",t:"Aqualand Corfu — Ganztages-Ausflug",d:"Griechenlands größter Wasserpark · Rutschbahnen für alle Altersgruppen"},
+    {i:"🌊",t:"Black Hole, Kamikaze & Lazy River",d:"Adrenalin-Rutsche für Leah & Maxi · Lazy River für entspannte Pausen"},
+    {i:"🏊",t:"Wellenbad & Kinderbecken",d:"Wellenbad regelmäßig aktiv · auch für Erwachsene riesiger Spaß"},
+    {i:"🍕",t:"Mittagessen im Park",d:"Restaurant & Food-Court im Park · oder Lunchbox mitbringen (erlaubt)"},
+  ],
+  selfie:[{t:"Rutschenstart Action-Foto",tip:"Jemanden unten positionieren für Splash-Foto — Wasserkamera/Hülle empfohlen!"}],
+  photos:["agiosGordios"],
+  tips:["Tickets ONLINE kaufen (günstiger, ca. 30–35 € Erwachsene)","VOR 11 Uhr ankommen — Rutschbahnen-Warteschlangen nachmittags lang","Wasserschuhe & Wechselkleidung einpacken","Schrank/Locker vor Ort mietbar"],
+  eve:"Entspannter Abend in Agios Gordios nach dem Action-Tag",
+  rests:[{n:"Aqualand Food Court",d:"Im Park — Burger, Pizza, Gyros · praktisch für den ganzen Tag",tags:["Im Park","Fast Food","€€"]}],alerts:[]},
+
+{id:"T8",date:"25.07",wd:"Sa",et:"e1",title:"Quad-/Buggy-Tour",sub:"Abenteuer auf Korfus Bergstraßen + letzter Abend Agios Gordios",
+  center:[39.570,19.880,11],marks:["poseidon","agiosBeach"],
+  acts:[
+    {i:"🏍",t:"Quad- oder Buggy-Tour",d:"2–3h geführte Tour durch Olivenhaine & Berge · Buchung VORAB nötig!"},
+    {i:"🌿",t:"Panoramaaussichten der Insel",d:"Inoffizielle Aussichtspunkte auf Tour — Leah & Maxi werden begeistert sein"},
+    {i:"🏖",t:"Letztes Schwimmen Agios Gordios",d:"Nachmittags: letztes Bad in der vertrauten Bucht"},
+    {i:"🌇",t:"Kofferpacken für morgen",d:"Transfer nach Ksamil am nächsten Tag — rechtzeitig vorbereiten"},
+  ],
+  selfie:[{t:"Quad auf Bergpfad",tip:"Actionbild auf Schotterweg mit Meerblick im Hintergrund — lohnt sich!"}],
+  photos:["agiosGordios"],
+  tips:["Quad-Buchung VORAB: Hochsaison = schnell ausgebucht (lokal oder online buchen)","Mindestalter für Fahrer meist 18 Jahre — Teens als Beifahrer","Sicherheitshelm tragen — Pflicht und wichtig auf Bergstraßen","Abends: Agios Gordios Abschied, Lieblingsrestaurant nochmal besuchen"],
+  eve:"Abschluss-Cocktail beim Sonnenuntergang am Strand von Agios Gordios 🌅",
+  rests:[{n:"Panorama Restaurant (Abschlussabend)",d:"Zum Abschied von Agios Gordios nochmal der beste Meerblick-Tisch",tags:["Meerblick","Griechisch","€€"]}],alerts:[]},
+
+{id:"T9",date:"26.07",wd:"So",et:"e2",title:"Transfer → Ksamil",sub:"Fähre Korfu → Saranda → Check-in Muze Hotel",
+  center:[39.770,20.003,12],marks:["korfuPort","saranda","muze"],
+  acts:[
+    {i:"🏨",t:"Check-out Poseidon Suites",d:"Koffer früh gepackt, Frühstück, Schlüssel abgeben"},
+    {i:"🚗",t:"Fahrt → Neuer Hafen Korfu",d:"ca. 35 Min · Parkplatz am Neo Limani"},
+    {i:"⛴",t:"Fähre Korfu → Saranda",d:"Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB buchen! (ca. 15–20 €/P)"},
+    {i:"🛂",t:"Albanien Einreise Saranda",d:"REISEPASS PFLICHT (kein EU-Schengen!) · Grenzkontrolle am Hafen"},
+    {i:"🚕",t:"Transfer Saranda → Ksamil",d:"ca. 20 Min, ca. 8–12 € Taxi oder Minibus"},
+    {i:"🏨",t:"Check-in Muze Hotel Ksamil",d:"Ksamil Village · Lage direkt nahe den besten Stränden"},
+    {i:"🏖",t:"Erster Ksamil-Strand",d:"Nachmittags: Eingewöhnen, erstes Bad im türkisen albanischen Wasser"},
+  ],
+  selfie:[{t:"Ksamil Strandblick",tip:"Blick von der Strandbar auf die vorgelagerten Inseln — Nachmittag mit tief stehender Sonne ideal"}],
+  photos:["ksamil"],
+  tips:["REISEPASS nicht vergessen — Albanien ist KEIN EU/Schengen-Land!","Roaming in Albanien: KEIN EU-Roaming-Schutz → Datenvolumen prüfen!","Albanische Lek am ATM in Saranda abheben (Euro wird auch akzeptiert, aber Lek besser)","Fähre: Tickets idealerweise 1–2 Tage vorher online buchen"],
+  eve:"Erster albanischer Sonnenuntergang am Ksamil-Strand — sehr fotogen",
+  rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails, perfekt zum Ankommen",tags:["Strandbar","€€","Inseln-Blick"]}],
+  alerts:[{t:"warn",text:"⚠️ WICHTIG: Albanien ist kein EU-Mitglied. Reisepass für alle Familienmitglieder nötig. EU-Roaming gilt NICHT — Datenkosten prüfen!"}]},
+
+{id:"T10",date:"27.07",wd:"Mo",et:"e2",title:"Ksamil · Strände & Inseln",sub:"Bootstour zu den 4 Ksamil-Inseln + Schnorcheln",
+  center:[39.765,19.998,13],marks:["ksamilBeach","ksamilIslands","muze"],
+  acts:[
+    {i:"⛵",t:"Bootstour zu den Ksamil-Inseln",d:"4 kleine Inseln mit türkisem Wasser & weißem Sand · ab ca. 10 €/P · direkt am Strand buchen"},
+    {i:"🤿",t:"Schnorcheln & Schwimmen",d:"Wasserqualität und -klarheit hier überragend ★★★★★ — besser als überall auf Korfu"},
+    {i:"🪨",t:"Cliff Jumping",d:"Sichere Sprungfelsen bei den Inseln — Leah & Maxi werden lieben. Vor dem Springen Tiefe prüfen!"},
+    {i:"🏖",t:"Strandbar-Nachmittag",d:"Liegen am Hauptstrand, kühle Drinks, Inseln-Panorama genießen"},
+  ],
+  selfie:[{t:"Ksamil-Inseln aus dem Boot",tip:"Drohnenperspektive-Look: Bootfahrer bitten kurz anzuhalten, türkises Wasser als Hintergrund"},{t:"Strandbar Inseln-Blick",tip:"Bekanntester Instagram-Spot Ksamils: Strandliege mit den kleinen Inseln dahinter"}],
+  photos:["ksamil","ksamilRiviera"],
+  tips:["Bootstour morgens früh (ruhiges Wasser, weniger voll)","Schwimmweste für Maxi auf offener See empfohlen","Die kleinen Inseln haben eigene Strandabschnitte — Picknick möglich","Wassertemperatur ca. 25–27°C — perfekt!"],
+  eve:"Sonnenuntergang-Strandbar am Hauptstrand Ksamil — sehr romantisch, tolle Stimmung",
+  rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Silis Ksamil",d:"Beliebt bei Jugendlichen, gute Burger & Pizza, locker-lässig",tags:["Burger","Pizza","€"]}],alerts:[]},
+
+{id:"T11",date:"28.07",wd:"Di",et:"e2",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
+  center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
+  acts:[
+    {i:"🏛",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
+    {i:"🏺",t:"Butrint Museum",d:"Funde aus der Ausgrabung · kurz aber informativ · Eintritt ca. 10 €"},
+    {i:"🥘",t:"Mittagspause in Saranda",d:"Hafenpromenade Saranda · Restaurants mit Meerblick · ca. 35 Min von Butrint"},
+    {i:"👁",t:"Blaues Auge (Syri i Kaltër)",d:"ca. 23 km von Saranda · mystischer Quellsee mit glasklarem, tiefblauem Wasser — WOW-Faktor!"},
+  ],
+  selfie:[{t:"Butrint Amphitheater",tip:"Antikes griechisches Theater — Stufen als Fotokulisse. Früh morgens kaum Touristen."},{t:"Blaues Auge von oben",tip:"Aussichtsplattform am Rande des Quells — bestes Foto von oben. Tiefblau garantiert!"}],
+  photos:["butrint","blueEye"],
+  tips:["Butrint: Morgens starten (Hitze & Menschenmassen nachmittags schlimmer)","Gutes Schuhwerk für Butrint — unebene Ausgrabungswege","Blaues Auge: Das Wasser hat ca. 10°C — Schwimmen möglich aber kalt! Maxi wird es wagen...","Rückfahrt: ca. 20 Min von Blaues Auge → Ksamil"],
+  eve:"Abendessen in Ksamil — letzter Abend am albanischen Meer genießen",
+  rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
+
+{id:"T12",date:"29.07",wd:"Mi",et:"e2",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
+  center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
+  acts:[
+    {i:"🏖",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
+    {i:"🏄",t:"Wakeboard / Wasserski",d:"Angeboten am Hauptstrand · Leah & Maxi werden Spaß haben"},
+    {i:"🛶",t:"Kajak bei Sonnenuntergang",d:"Kajak-Verleih am Strand · perfekte Abendstimmung auf dem ruhigen Wasser"},
+    {i:"🍦",t:"Eis & Desserts erkunden",d:"Ksamil-Dorf erkunden, lokale Gelaterie, albanische Süßigkeiten probieren"},
+  ],
+  selfie:[{t:"Strandbar mit Inseln-Blick",tip:"Letzter Ksamil-Sonnenuntergang — wer schöne Bilder will, kommt 30 Min vor Sonnenuntergang"}],
+  photos:["ksamilRiviera"],
+  tips:["Albanische Lek ausgeben (Bargeld wieder zurücktauschen schwierig)","Albanische Souvenirs: Raki, Honig, Handarbeiten aus dem Dorf","Check-out morgen früh — Koffer heute Abend vorbereiten","Fähre Saranda → Korfu VORAB buchen!"],
+  eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
+  rests:[{n:"Era Restaurant (Abschlussabend)",d:"Albanische Spezialitäten zum Abschied: Tave Kosi (Joghurt-Lamm) probieren!",tags:["Albanisch","Lokal","€"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
+
+{id:"T13",date:"30.07",wd:"Do",et:"e3",title:"Transfer → Ýpsos",sub:"Fähre zurück nach Korfu, neue Etappe im Norden",
+  center:[39.685,19.873,12],marks:["saranda","korfuPort","yannis","ypsosBeach"],
+  acts:[
+    {i:"🏨",t:"Check-out Muze Hotel Ksamil",d:"Koffer fertig, Frühstück, Abschied von Ksamil"},
+    {i:"🚕",t:"Transfer → Saranda Hafen",d:"ca. 20 Min Taxi · rechtzeitig am Hafen sein"},
+    {i:"⛴",t:"Fähre Saranda → Korfu",d:"Rückreise ca. 45 Min · Neuer Hafen Korfu (Neo Limani)"},
+    {i:"🚗",t:"Transfer → Ýpsos",d:"Nordosten Korfu · ca. 25 Min vom Hafen · Hotel Yannis Corfu"},
+    {i:"🏨",t:"Check-in Hotel Yannis Corfu",d:"Ýpsos Village · direkte Strandlage"},
+    {i:"🏖",t:"Nachmittag Ýpsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
+  ],
+  selfie:[{t:"Ýpsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
+  photos:["korfuAerial"],
+  tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ýpsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
+  eve:"Erster Abend in Ýpsos: Strandpromenade entlang, lokale Tavernen erkunden",
+  rests:[{n:"Taverna Stamatis Ýpsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ýpsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ýpsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
+
+{id:"T14",date:"31.07",wd:"Fr",et:"e3",title:"Ýpsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
+  center:[39.684,19.872,13],marks:["ypsosBeach","yannis"],
+  acts:[
+    {i:"🪂",t:"Parasailing",d:"Spektakulärer Blick von oben auf Korfu & das ionische Meer — unvergesslich!"},
+    {i:"🤿",t:"Strand Ýpsos — Schwimmen & Schnorcheln",d:"Ruhiger Strandabschnitt, gute Sicht im Wasser"},
+    {i:"🏄",t:"Wakeboard / Wasserski",d:"Angeboten am Ýpsos-Strand · ideal für sportliche Teens"},
+    {i:"🚣",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
+  ],
+  selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
+  photos:["korfuAerial"],
+  tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ýpsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
+  eve:"Beach-Bar-Abend an der Ýpsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
+  rests:[{n:"Ýpsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ýpsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ýpsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
+
+{id:"T15",date:"01.08",wd:"Sa",et:"e3",title:"Ýpsos + Korfu-Stadt Abend",sub:"Strand tagsüber, Altstadt-Shopping & Abendessen im Liston",
+  center:[39.645,19.895,11],marks:["ypsosBeach","korfuTown","alteFestung","liston"],
+  acts:[
+    {i:"🏖",t:"Strandmorgen Ýpsos",d:"Entspannter Morgen, Frühstück am Strand, letztes Schwimmen im Norden"},
+    {i:"🚗",t:"Fahrt nach Korfu-Stadt",d:"ca. 20 Min von Ýpsos · sehr gut erreichbar"},
+    {i:"🛍",t:"Shopping in der Altstadt",d:"Abschluss-Souvenirs: Olivenöl, Kumquat, Keramik, T-Shirts"},
+    {i:"⚔️",t:"Alte Festung im Abendlicht",d:"Nochmal besuchen — das goldene Abendlicht macht Fotos unvergesslich!"},
+  ],
+  selfie:[{t:"Alte Festung im Abendgold",tip:"18–19 Uhr: Goldstunde am Meerblick der Alten Festung — absolut fantastisch!"},{t:"Liston Abendatmosphäre",tip:"Venezianische Bögen beleuchtet, Abendtrubel — tolle Stimmungsfotos"}],
+  photos:["oldFortress","korfuAerial"],
+  tips:["Abendlicht (17–19 Uhr) macht Festungsfotos dramatisch besser","Altstadt abends viel belebter und angenehmer als tagsüber (weniger Hitze)","Liston: Sitzplatz unter den Bögen reservieren oder früh ankommen"],
+  eve:"Abendessen am Liston mit dem ganzen Flair der venezianischen Altstadt — schöner Abschluss-Abend",
+  rests:[{n:"Venetian Well Restaurant",d:"Romantisches Restaurant im Innenhof, toll für besondere Abende",tags:["Mediterran","€€€","Romantisch"]},{n:"Ninos Corfu Town",d:"Lokale Liebling, griechisch-traditionell, gutes Preis-Leistungs-Verhältnis",tags:["Griechisch","€€","Lokal"]}],alerts:[]},
+
+{id:"T16",date:"02.08",wd:"So",et:"e3",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
+  center:[39.684,19.872,12],marks:["ypsosBeach","yannis"],
+  acts:[
+    {i:"🏖",t:"Letzter Strandtag Ýpsos",d:"Vollgas-Strandtag: Schwimmen, Dösen, Meeresluft tanken"},
+    {i:"🪨",t:"Cliff Jumping (optional)",d:"Sichere Stellen bei Barbati/Nissaki erkunden — ca. 10 Min von Ýpsos"},
+    {i:"🧳",t:"Koffer packen",d:"Abends rechtzeitig packen — Flug morgen 10:50 Uhr!"},
+    {i:"🥂",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
+  ],
+  selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ýpsos-Strand — diesen Moment einfrieren!"}],
+  photos:["korfuAerial"],
+  tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ýpsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
+  eve:"Abschluss-Abendessen mit dem besten Meerblick in Ýpsos — Abschied vom ionischen Meer",
+  rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"⚠️ FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
+
+{id:"T17",date:"03.08",wd:"Mo",et:"tv",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
+  center:[39.6015,19.9117,10],marks:["airport","yannis"],
+  acts:[
+    {i:"⏰",t:"Frühzeitig aufstehen & Check-out",d:"Frühstück nur wenn zeitlich möglich · Hotel Yannis Corfu"},
+    {i:"🚕",t:"Transfer → Flughafen Korfu",d:"ca. 25 Min · VORAB gebuchtes Taxi · bis 08:30 Uhr am Flughafen sein"},
+    {i:"✈️",t:"Flug OS862 · 10:50 Uhr Korfu (CFU)",d:"→ Wien (VIE) · Ankunft 12:35 Uhr · Austrian Airlines"},
+    {i:"🏛",t:"Aufenthalt Wien",d:"2h 25 Min Verbindung · Sicherheitscheck, Gate suchen, Mittagssnack"},
+    {i:"✈️",t:"Flug OS117 · 15:00 Uhr Wien (VIE)",d:"→ Graz (GRZ) · Ankunft 15:35 Uhr · ca. 35 Min Flug"},
+    {i:"🚗",t:"Abholung Flughafen Graz",d:"Heimfahrt Plankenwarth 228, 8113 St. Oswald · ca. 20 Min"},
+  ],
+  selfie:[],photos:[],
+  tips:["Online Check-in OS862 vorab erledigen","Gepäck zügig aufgeben — Warteschlangen Hochsaison","Wien Transfer: Gate-Info sofort prüfen (VIE ist groß!)","Zuhause: Koffer auspacken, Fotos sortieren, schon nach nächstem Urlaub suchen 😄"],
+  eve:null,rests:[],alerts:[{t:"info",text:"Letzter Tag! OS862 · 10:50 Korfu → Wien 12:35. Weiter OS117 · 15:00 Wien → Graz 15:35. Welcome home!"}]},
+];
+
+/* ══════════════════════════════════════
+   TODO ITEMS
+══════════════════════════════════════ */
+const TODOS=[
+  {g:"Dokumente & Einreise",items:[
+    {id:"t1",label:"Reisepässe für ALLE 4 Personen prüfen (Albanien!)",note:"Albanien = kein EU-Schengen → Personalausweis reicht NICHT!",urgent:true},
+    {id:"t2",label:"Gültigkeit Reisepässe: mind. 6 Monate über Reisedatum",note:"Ablaufdatum prüfen für alle: Michael, Nina, Leah, Maxi",urgent:true},
+    {id:"t3",label:"Krankenversicherungskarte EHIC/EKVK einpacken",note:"Gilt in Griechenland — in Albanien separate Reisekrankenversicherung empfohlen"},
+  ]},
+  {g:"Flüge & Fähren",items:[
+    {id:"t4",label:"Online Check-in AUA OS863 (Wien → Korfu 18.07.)",note:"Öffnet 48h vor Abflug — rechtzeitig erledigen!",urgent:true},
+    {id:"t5",label:"Online Check-in AUA OS862 (Korfu → Wien 03.08.)",note:"Öffnet 48h vor Abflug"},
+    {id:"t6",label:"Fährticket Korfu → Saranda (Hinfahrt) buchen",note:"Ionian Seaways oder Finikas Lines · online buchbar · Hochsaison = früh buchen!",urgent:true},
+    {id:"t7",label:"Fährticket Saranda → Korfu (Rückfahrt) buchen",note:"Gleiche Anbieter · Rückfahrt nicht vergessen!",urgent:true},
+  ]},
+  {g:"Unterkunft & Transfers",items:[
+    {id:"t8",label:"Poseidon Suites: Check-in-Zeit & Anreise-Info klären",note:"Ankommen ca. 22 Uhr — vorab Bescheid geben"},
+    {id:"t9",label:"Muze Hotel Ksamil: Anreise-Details klären",note:"Fähre-Ankunft in Saranda, Transfer organisieren"},
+    {id:"t10",label:"Hotel Yannis Corfu: Check-in-Zeit klären",note:"Ýpsos, Nordkorfu"},
+    {id:"t11",label:"Taxi Korfu Flughafen → Agios Gordios vorbuchen",note:"Ca. 25 €, Festpreis vereinbaren"},
+    {id:"t12",label:"Taxi Ýpsos → Flughafen Korfu vorbuchen (03.08.!)",note:"Frühflug → Taxi vorab buchen! Ca. 18–22 €, Abfahrt ~08:00"},
+  ]},
+  {g:"Aktivitäten vorbuchen",items:[
+    {id:"t13",label:"Aqualand Corfu Tickets online kaufen (Fr 24.07.)",note:"Online günstiger · aqualand.gr"},
+    {id:"t14",label:"Quad-/Buggy-Tour Agios Gordios buchen (Sa 25.07.)",note:"Hochsaison = schnell ausgebucht — früh buchen!",urgent:true},
+    {id:"t15",label:"Butrint Eintrittskarten prüfen (Di 28.07.)",note:"ca. 10 €/Person, ggf. online buchbar"},
+  ]},
+  {g:"Gesundheit & Sicherheit",items:[
+    {id:"t16",label:"Sonnencreme LSF 50+ (viel davon!)",note:"Hochsommer Griechenland/Albanien: 35°C+, UV-Index 10+",urgent:true},
+    {id:"t17",label:"Sonnenhüte/Caps für alle einpacken",note:"Mittagssonne meiden: 13–16 Uhr Schatten suchen"},
+    {id:"t18",label:"Reiseapotheke packen",note:"Ibuprofen, Pflaster, Sonnenbrand-Gel, Durchfallmittel, Insektenschutz"},
+    {id:"t19",label:"Ausreichend Wasser immer dabei haben",note:"Mind. 2L pro Person täglich in der Hitze"},
+  ]},
+  {g:"Technik & Kommunikation",items:[
+    {id:"t20",label:"Roaming-Tarif Albanien prüfen",note:"Kein EU-Roaming → extra Kosten! eSIM-Tagespaket für Albanien erwägen",urgent:true},
+    {id:"t21",label:"Offline-Karten für Korfu & Albanien herunterladen",note:"Google Maps / Maps.me — funktioniert ohne Internet"},
+    {id:"t22",label:"Powerbank einpacken",note:"Lange Ausflugstage brauchen Akku-Backup"},
+    {id:"t23",label:"Wasserdichte Kamerahülle / GoPro",note:"Für Schnorcheln, Bootstouren, Wasserpark"},
+  ]},
+  {g:"Geld & Pakken",items:[
+    {id:"t24",label:"Euro-Bargeld besorgen (Korfu & Fähre)",note:"Griechenland = Euro; Bargeld für Aktivitäten vor Ort"},
+    {id:"t25",label:"Albanischen Lek am ATM in Saranda holen",note:"Geldautomaten am Saranda Hafen verfügbar · Euro wird auch akzeptiert"},
+    {id:"t26",label:"Schnorchelset einpacken (oder vor Ort leihen)",note:"Eigenes Set spart Leihgebühren über 2+ Wochen"},
+    {id:"t27",label:"Badeschuhe für felsige Strände",note:"Besonders für Ksamil und Paleokastritsa sinnvoll"},
+  ]},
+];
+
+/* ══════════════════════════════════════
+   ROUTE GUIDE CONTENT
+══════════════════════════════════════ */
+const ROUTE_HTML=`
+<div class="rseg">
+  <h3>🚗✈️ Tag 1 · 18.07. — Anreise nach Korfu</h3>
+  <div class="rstep"><div class="rbullet tv">🚗</div><div class="rcon"><strong>Plankenwarth 228 → Graz Hauptbahnhof</strong><span>ca. 20 Min mit dem Auto · Parken am Bahnhof oder mit Taxi</span></div></div>
+  <div class="rstep"><div class="rbullet tv">🚆</div><div class="rcon"><strong>Zug OS3588 · 14:00 Uhr ab Graz Hbf</strong><span>Ankunft Wien Hbf 16:57 · Fahrzeit ca. 2h 57 Min · AUA-Codeshare Zugverbindung</span></div></div>
+  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS863 · 19:30 Uhr Wien (VIE) → Korfu (CFU)</strong><span>Austrian Airlines · Flugzeit ca. 1h 45 Min · Ankunft Korfu ca. 21:15 Uhr Ortszeit</span></div></div>
+  <div class="rstep"><div class="rbullet tv">🚕</div><div class="rcon"><strong>Transfer Flughafen Korfu → Agios Gordios</strong><span>Taxi Festpreis ca. 25 € · Fahrzeit ca. 30 Min · Poseidon Suites by CorfuEscapes</span></div></div>
+</div>
+<div class="rseg">
+  <h3>⛴ Tag 9 · 26.07. — Transfer Korfu → Ksamil (Albanien)</h3>
+  <div class="rstep"><div class="rbullet e2">🚗</div><div class="rcon"><strong>Agios Gordios → Neuer Hafen Korfu (Neo Limani)</strong><span>ca. 35 Min · Parkplatz oder Taxi · rechtzeitig für Fähre da sein</span></div></div>
+  <div class="rstep"><div class="rbullet e2">⛴</div><div class="rcon"><strong>Fähre Korfu → Saranda (Albanien)</strong><span>Ionian Seaways / Finikas Lines · Dauer ca. 45 Min · mehrere Abfahrten täglich · VORAB BUCHEN! ca. 15–20 €/Person</span></div></div>
+  <div class="rstep"><div class="rbullet e2">🛂</div><div class="rcon"><strong>Albanien-Einreise Saranda Hafen</strong><span>REISEPASS PFLICHT · Grenzkontrolle · kurze Wartezeit möglich</span></div></div>
+  <div class="rstep"><div class="rbullet e2">🚕</div><div class="rcon"><strong>Saranda → Ksamil</strong><span>ca. 20 Min · Taxi ca. 8–12 € oder Minibus · direkt am Hafen verfügbar</span></div></div>
+</div>
+<div class="rseg">
+  <h3>⛴ Tag 13 · 30.07. — Rücktransfer Ksamil → Ýpsos (Korfu)</h3>
+  <div class="rstep"><div class="rbullet e3">🚕</div><div class="rcon"><strong>Ksamil → Saranda Hafen</strong><span>ca. 20 Min Taxi · rechtzeitig für Fähre am Hafen sein</span></div></div>
+  <div class="rstep"><div class="rbullet e3">⛴</div><div class="rcon"><strong>Fähre Saranda → Korfu (Neuer Hafen)</strong><span>ca. 45 Min · Rückticket VORAB gebucht! Ankommen in Korfu ca. 1h nach Abfahrt</span></div></div>
+  <div class="rstep"><div class="rbullet e3">🚗</div><div class="rcon"><strong>Korfu Hafen → Ýpsos</strong><span>Nordosten Korfu · ca. 25 Min · Hotel Yannis Corfu in Ýpsos Village</span></div></div>
+</div>
+<div class="rseg">
+  <h3>✈️ Tag 17 · 03.08. — Rückreise nach Hause</h3>
+  <div class="rstep"><div class="rbullet tv">🚕</div><div class="rcon"><strong>Ýpsos → Flughafen Korfu (CFU)</strong><span>ca. 25 Min · Taxi VORAB gebucht · Abfahrt ca. 08:00 Uhr · am Flughafen bis 08:30</span></div></div>
+  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS862 · 10:50 Uhr Korfu (CFU) → Wien (VIE)</strong><span>Austrian Airlines · Ankunft Wien 12:35 Uhr · Flugzeit ca. 1h 45 Min</span></div></div>
+  <div class="rstep"><div class="rbullet tv">🕒</div><div class="rcon"><strong>Aufenthalt Wien (VIE)</strong><span>2h 25 Min · Gate suchen · Mittagssnack · Weiterflug Gate prüfen</span></div></div>
+  <div class="rstep"><div class="rbullet tv">✈️</div><div class="rcon"><strong>Flug OS117 · 15:00 Uhr Wien (VIE) → Graz (GRZ)</strong><span>Ankunft Graz 15:35 Uhr · Flugzeit ca. 35 Min</span></div></div>
+  <div class="rstep"><div class="rbullet tv">🚗</div><div class="rcon"><strong>Abholung Flughafen Graz → Plankenwarth</strong><span>ca. 20 Min Heimfahrt · Plankenwarth 228, 8113 St. Oswald</span></div></div>
+</div>`;
+
+/* ══════════════════════════════════════
+   RENDER FUNCTIONS
+══════════════════════════════════════ */
+function etColor(et){return{e1:'#1B6CA8',e2:'#C4622D',e3:'#5C7A3E',tv:'#4A5568'}[et]||'#888'}
+
+function renderDay(d){
+  let h=`<div class="dcard" id="dc-${d.id}">`;
+  // header
+  h+=`<div class="dcard-hdr ${d.et}"><div><div class="dtag">${d.id} · ${d.date} · ${d.wd}</div><h2>${d.title}</h2><p>${d.sub}</p></div></div>`;
+  h+=`<div class="dbody">`;
+
+  // alerts
+  d.alerts.forEach(a=>h+=`<div class="alert-box ${a.t}"><strong>${a.t==='warn'?'⚠️ Wichtig:':'ℹ️ Info:'}</strong>${a.text}</div>`);
+
+  // activities
+  if(d.acts.length){
+    h+=`<ul class="alist">`;
+    d.acts.forEach(a=>h+=`<li class="aitem"><span class="aico">${a.i}</span><div class="atxt"><strong>${a.t}</strong><span>${a.d}</span></div></li>`);
+    h+=`</ul>`;
+  }
+
+  // photos
+  if(d.photos.length){
+    h+=`<div class="photos-grid">`;
+    d.photos.forEach(p=>{
+      const caps={agiosGordios:'Agios Gordios Beach',korfuAerial:'Korfu-Stadt Panorama',alteFestung:'Alte Festung & Altstadt',paleokastritsa:'Paleokastritsa Panorama',paleokastritsa2:'Paleokastritsa Bucht',achilleion:'Achilleion Palast',pontikonisi:'Pontikonisi Mauseinsel',kanoni:'Kanoni Aussicht',oldFortress:'Alte Festung Korfu',ksamil:'Ksamil Beach',ksamilRiviera:'Ksamil Albanian Riviera',butrint:'Butrint UNESCO',blueEye:'Blaues Auge · Syri i Kaltër'};
+      h+=imgTag(p,caps[p]||p);
+    });
+    h+=`</div>`;
+  }
+
+  // selfie spots
+  if(d.selfie.length){
+    h+=`<div class="sbox"><h4>📸 Selfie & Foto-Spots</h4>`;
+    d.selfie.forEach(s=>h+=`<div class="sitem">📍 <strong>${s.t}</strong> — ${s.tip}</div>`);
+    h+=`</div>`;
+  }
+
+  // restaurants
+  if(d.rests.length){
+    h+=`<div class="slabel">🍴 Restaurants & Cafés</div>`;
+    d.rests.forEach(r=>{
+      h+=`<div class="rcard"><h4>${r.n}</h4><p>${r.d}</p><div class="rtags">${r.tags.map(t=>`<span class="rtag">${t}</span>`).join('')}</div></div>`;
+    });
+  }
+
+  // evening
+  if(d.eve)h+=`<div class="ebox"><h4>🌆 Abendprogramm</h4><p>${d.eve}</p></div>`;
+
+  // tips
+  if(d.tips.length){
+    h+=`<div class="tips-box"><h4>💡 Tipps</h4>`;
+    d.tips.forEach(t=>h+=`<div class="tip-item">${t}</div>`);
+    h+=`</div>`;
+  }
+
+  h+=`</div></div>`;
+  return h;
+}
+
+/* ══════════════════════════════════════
+   TAB SETUP
+══════════════════════════════════════ */
+const ETAPPES=[
+  {label:'🔵 Etappe 1 · Korfu Agios Gordios',cls:'e1',ids:['T1','T2','T3','T4','T5','T6','T7','T8']},
+  {label:'🔴 Etappe 2 · Ksamil · Albanien',cls:'e2',ids:['T9','T10','T11','T12']},
+  {label:'🟢 Etappe 3 · Korfu Ýpsos',cls:'e3',ids:['T13','T14','T15','T16','T17']},
+];
+
+function buildTabs(){
+  const ti=document.getElementById('tabs-inner');
+  const eb=document.getElementById('etag-bar');
+
+  // ALLE
+  const all=document.createElement('button');
+  all.className='tbtn all active';all.textContent='ALLE';all.dataset.id='ALL';
+  all.onclick=()=>switchTab('ALL');ti.appendChild(all);
+
+  ETAPPES.forEach(e=>{
+    const el=document.createElement('span');
+    el.className=`etag ${e.cls}`;el.textContent=e.label;eb.appendChild(el);
+    e.ids.forEach(id=>{
+      const d=DAYS.find(x=>x.id===id);
+      const b=document.createElement('button');
+      b.className=`tbtn ${d.et}`;b.dataset.id=id;
+      b.textContent=`${d.wd} ${d.date}`;
+      b.onclick=()=>switchTab(id);
+      ti.appendChild(b);
+    });
+  });
+}
+
+let activeTab='ALL';
+function switchTab(id){
+  activeTab=id;
+  document.querySelectorAll('.tbtn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.id===id);
+  });
+  renderContent(id);
+  updateMap(id);
+}
+
+function renderContent(id){
+  const ct=document.getElementById('content');
+  if(id==='ALL'){
+    let h=weatherBox();
+    DAYS.forEach(d=>h+=renderDay(d));
+    ct.innerHTML=h;
+  }else{
+    const d=DAYS.find(x=>x.id===id);
+    ct.innerHTML=weatherBox()+renderDay(d);
+  }
+  // animate cards
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.dcard').forEach((c,i)=>{
+      setTimeout(()=>c.classList.add('vis'),i*60);
+    });
+  });
+  ct.scrollTop=0;
+}
+
+function weatherBox(){
+  return`<div class="weather-wrap"><div class="weather-ico">☀️</div><div class="weather-txt"><h3>Hitze-Alarm: Ende Juli/Anfang August in Griechenland & Albanien!</h3><ul><li>Temperaturen 32–38°C — Mittagssonne 13–16 Uhr meiden</li><li>LSF 50+ für alle, alle 2h neu auftragen — besonders Leah & Maxi!</li><li>Mind. 2 Liter Wasser pro Person täglich trinken</li><li>Leichte Kleidung, Sonnenhüte, Sonnenbrillen einpacken</li><li>Aktivitäten am besten vor 12 Uhr oder nach 17 Uhr</li></ul></div></div>`;
+}
+
+/* ══════════════════════════════════════
+   LEAFLET MAP
+══════════════════════════════════════ */
+let map,layerGroup;
+
+function initMap(){
+  map=L.map('map',{zoomControl:true,attributionControl:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+  layerGroup=L.layerGroup().addTo(map);
+  L.control.attribution({prefix:'© OpenStreetMap'}).addTo(map);
+  updateMap('ALL');
+}
+
+function makeIcon(type,label){
+  const colors={e1:'#1B6CA8',e2:'#C4622D',e3:'#5C7A3E',tv:'#4A5568',
+    hotel:'#5C7A3E',selfie:'#F5C518',ferry:'#00B4B4'};
+  const c=colors[type]||'#888';
+  const tc=type==='selfie'?'#5A4000':'#fff';
+  return L.divIcon({
+    html:`<div class="cmarker" style="background:${c};color:${tc};width:28px;height:28px">${label}</div>`,
+    className:'',iconSize:[28,28],iconAnchor:[14,14],popupAnchor:[0,-14]
+  });
+}
+
+function addRoute(pts,color){
+  if(pts.length<2)return;
+  L.polyline(pts,{color,weight:3,opacity:.7,dashArray:'6,4'}).addTo(layerGroup);
+}
+
+function updateMap(id){
+  if(!map)return;
+  layerGroup.clearLayers();
+
+  const allMarkers=[];
+
+  if(id==='ALL'){
+    // Draw etappe routes
+    const r1=DAYS.filter(d=>d.et==='e1').map(d=>LOCS[d.marks[0]]).filter(Boolean).map(l=>l.ll);
+    const r2=DAYS.filter(d=>d.et==='e2').map(d=>LOCS[d.marks[0]]).filter(Boolean).map(l=>l.ll);
+    const r3=DAYS.filter(d=>d.et==='e3').map(d=>LOCS[d.marks[0]]).filter(Boolean).map(l=>l.ll);
+    addRoute([...new Set(r1.map(JSON.stringify))].map(JSON.parse),'#1B6CA8');
+    addRoute([...new Set(r2.map(JSON.stringify))].map(JSON.parse),'#C4622D');
+    addRoute([...new Set(r3.map(JSON.stringify))].map(JSON.parse),'#5C7A3E');
+
+    // Ferry route
+    addRoute([LOCS.korfuPort.ll,LOCS.saranda.ll],'#00B4B4');
+
+    // All locations
+    Object.entries(LOCS).forEach(([k,loc])=>{
+      const lbl=loc.type==='selfie'?'📸':loc.type==='hotel'?'🏨':loc.type==='ferry'?'⛴':'●';
+      const m=L.marker(loc.ll,{icon:makeIcon(loc.type,lbl)})
+        .addTo(layerGroup).bindPopup(`<div class="popup-content"><strong>${loc.name}</strong></div>`);
+      allMarkers.push(loc.ll);
+    });
+    map.fitBounds([[39.45,19.60],[39.95,20.40]],{padding:[20,20]});
+  }else{
+    const d=DAYS.find(x=>x.id===id);
+    const pts=d.marks.map(k=>LOCS[k]).filter(Boolean);
+    const lls=pts.map(l=>l.ll);
+    if(lls.length>1)addRoute(lls,etColor(d.et));
+    pts.forEach((loc,i)=>{
+      const lbl=loc.type==='selfie'?'📸':loc.type==='hotel'?'🏨':loc.type==='ferry'?'⛴':`${i+1}`;
+      L.marker(loc.ll,{icon:makeIcon(loc.type,lbl)})
+        .addTo(layerGroup)
+        .bindPopup(`<div class="popup-content"><strong>${loc.name}</strong><br><span>${d.title}</span></div>`)
+        .openPopup();
+      allMarkers.push(loc.ll);
+    });
+    if(allMarkers.length===1){
+      map.setView(allMarkers[0],d.center[2]||13);
+    }else if(allMarkers.length>1){
+      map.fitBounds(allMarkers,{padding:[40,40]});
+    }else{
+      map.setView([d.center[0],d.center[1]],d.center[2]||12);
+    }
+  }
+}
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+function openModal(id){
+  if(id==='route'){
+    document.getElementById('route-content').innerHTML=ROUTE_HTML;
+  }else if(id==='todo'){
+    renderTodo();
+  }
+  document.getElementById('modal-'+id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById('modal-'+id).classList.remove('open');
+  document.body.style.overflow='';
+}
+// Close on overlay click
+document.querySelectorAll('.moverlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id.replace('modal-',''))});
+});
+
+/* ══════════════════════════════════════
+   TODO + LOCALSTORAGE
+══════════════════════════════════════ */
+function getTodoState(){
+  try{return JSON.parse(localStorage.getItem('korfu26_todo')||'{}')}catch{return{}}
+}
+function saveTodoState(s){
+  localStorage.setItem('korfu26_todo',JSON.stringify(s));
+}
+
+function renderTodo(){
+  const state=getTodoState();
+  const allIds=TODOS.flatMap(g=>g.items.map(i=>i.id));
+  const done=allIds.filter(id=>state[id]).length;
+  const pct=Math.round(done/allIds.length*100);
+
+  document.getElementById('todo-stat').textContent=`${done} von ${allIds.length} erledigt`;
+  document.getElementById('todo-bar').style.width=pct+'%';
+
+  let h='';
+  TODOS.forEach(g=>{
+    h+=`<div class="tgroup"><div class="tgroup-hdr">${g.g}</div>`;
+    g.items.forEach(item=>{
+      const chk=!!state[item.id];
+      h+=`<div class="titem${chk?' done':''}${item.urgent?' urgent':''}" onclick="toggleTodo('${item.id}')">
+        <input type="checkbox" id="cb_${item.id}" ${chk?'checked':''} onclick="event.stopPropagation()">
+        <div><div class="tlabel">${item.label}</div>${item.note?`<div class="tnote">${item.note}</div>`:''}
+        </div></div>`;
+    });
+    h+=`</div>`;
+  });
+  document.getElementById('todo-content').innerHTML=h;
+}
+
+function toggleTodo(id){
+  const s=getTodoState();
+  s[id]=!s[id];
+  saveTodoState(s);
+  renderTodo();
+}
+
+/* ══════════════════════════════════════
+   SPLASH SEQUENCE
+══════════════════════════════════════ */
+function endSplash(){
+  document.getElementById('splash').classList.add('out');
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    const app=document.getElementById('app');
+    app.classList.add('vis');
+    initMap();
+    buildTabs();
+    renderContent('ALL');
+  },800);
+}
+
+(function initSplash(){
+  const delays=[0,700,1400,2100];
+  delays.forEach((d,i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById('av'+i);
+      if(el)el.classList.add('show');
+    },d+400);
+  });
+  // Auto-advance after 10s
+  setTimeout(endSplash,10000);
+})();
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

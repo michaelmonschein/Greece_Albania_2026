@@ -1,0 +1,231 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a0f; color: #f0f0f0; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 32px 24px; }
+
+  h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 6px; color: #fff; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 40px; font-size: 0.95rem; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
+
+  .card {
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    background: #111;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.3); }
+  .card.selected { border-color: #fff !important; box-shadow: 0 0 0 1px #fff, 0 20px 60px rgba(255,255,255,0.15); }
+
+  /* STYLE A: Dark Cinematic */
+  .mockup-a {
+    background: linear-gradient(160deg, #050a18 0%, #0b1a35 40%, #071428 100%);
+    padding: 0;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mockup-a::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 30%, rgba(0,180,255,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(100,60,255,0.14) 0%, transparent 50%);
+  }
+  .mockup-a-stars {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                      radial-gradient(1px 1px at 60% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                      radial-gradient(1px 1px at 45% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  }
+  .mockup-a-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
+  .mockup-a-tag { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: #00c8ff; margin-bottom: 8px; }
+  .mockup-a-title { font-size: 1.2rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+  .mockup-a-sub { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+  .mockup-a-line { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #00c8ff, #7040ff, transparent); }
+  .mockup-a-orb { position: absolute; top: 20px; right: 20px; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #1af, #0066cc, #003380); box-shadow: 0 0 40px rgba(0,180,255,0.4); }
+  .mockup-a-horizon { position: absolute; bottom: 90px; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,255,0.3), transparent); }
+
+  /* STYLE B: Mediterranean Light */
+  .mockup-b {
+    background: linear-gradient(170deg, #f8f4ee 0%, #e8f4fd 50%, #d4ecff 100%);
+    padding: 0;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mockup-b-sun {
+    position: absolute; top: -30px; right: -20px;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe066 0%, #ffc200 60%, rgba(255,180,0,0) 100%);
+    opacity: 0.85;
+  }
+  .mockup-b-sea {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 110px;
+    background: linear-gradient(180deg, #5bb8f5 0%, #1a7abf 60%, #0d5fa0 100%);
+    border-radius: 60% 60% 0 0 / 30% 30% 0 0;
+  }
+  .mockup-b-wave {
+    position: absolute; bottom: 100px; left: -10%; right: -10%;
+    height: 20px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 50%;
+    transform: scaleX(1.2);
+  }
+  .mockup-b-content { position: absolute; top: 28px; left: 22px; }
+  .mockup-b-tag { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: #c4622d; margin-bottom: 6px; font-weight: 700; }
+  .mockup-b-title { font-size: 1.15rem; font-weight: 800; color: #1a2c45; margin-bottom: 4px; }
+  .mockup-b-sub { font-size: 0.72rem; color: #5a7a9a; }
+  .mockup-b-island { position: absolute; bottom: 108px; left: 30px; width: 40px; height: 22px; background: #5c7a3e; border-radius: 50% 50% 0 0; }
+  .mockup-b-boat { position: absolute; bottom: 116px; right: 50px; font-size: 1.2rem; }
+
+  /* STYLE C: Sunset & Golden Hour */
+  .mockup-c {
+    background: linear-gradient(160deg, #1a0a2e 0%, #3d1155 25%, #8b1a4a 55%, #d4391f 80%, #f5900a 100%);
+    padding: 0;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mockup-c::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+    background: linear-gradient(0deg, rgba(20,5,40,0.85) 0%, transparent 100%);
+  }
+  .mockup-c-glow {
+    position: absolute; top: 40px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,200,0,0.9) 0%, rgba(255,100,0,0.5) 40%, transparent 70%);
+  }
+  .mockup-c-horizon {
+    position: absolute; bottom: 80px; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,150,50,0.8), rgba(255,200,100,1), rgba(255,150,50,0.8), transparent);
+  }
+  .mockup-c-sea {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(180deg, #2d0a35 0%, #150520 100%);
+    opacity: 0.9;
+  }
+  .mockup-c-reflection {
+    position: absolute; bottom: 0; left: 35%; right: 35%; height: 80px;
+    background: linear-gradient(180deg, rgba(255,160,20,0.4) 0%, transparent 100%);
+  }
+  .mockup-c-content { position: absolute; bottom: 18px; left: 22px; right: 22px; z-index: 2; }
+  .mockup-c-tag { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: #f5c518; margin-bottom: 6px; }
+  .mockup-c-title { font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .mockup-c-sub { font-size: 0.72rem; color: rgba(255,200,150,0.8); }
+
+  .card-body { padding: 20px; background: #111; }
+  .card-name { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .card-desc { font-size: 0.8rem; color: #888; line-height: 1.5; margin-bottom: 12px; }
+  .palette { display: flex; gap: 6px; }
+  .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.12); }
+  .keywords { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+  .kw { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,0.07); color: #aaa; letter-spacing: 0.5px; }
+
+  .bottom-note { text-align: center; margin-top: 32px; color: #555; font-size: 0.8rem; }
+</style>
+
+<h2>Welches Erlebnisdesign passt zu deiner Reise?</h2>
+<p class="subtitle">Alle drei Stile sind Apple-Level — der Unterschied liegt in der Stimmung</p>
+
+<div class="cards">
+
+  <!-- A: Dark Cinematic -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="mockup-a">
+      <div class="mockup-a-stars"></div>
+      <div class="mockup-a-orb"></div>
+      <div class="mockup-a-horizon"></div>
+      <div class="mockup-a-content">
+        <div class="mockup-a-tag">Tag 5 · Paleokastritsa</div>
+        <div class="mockup-a-title">Meereshöhlen &amp;<br>türkise Buchten</div>
+        <div class="mockup-a-sub">Bootstouren · Cliff Jumping · La Grotta</div>
+      </div>
+      <div class="mockup-a-line"></div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">A — Dark Cinematic</div>
+      <div class="card-desc">Tief, dunkel, episch. Jeder Tag fühlt sich an wie der Trailer zu einem Film über deine Reise. Starke Kontraste, leuchtende Akzente, dramatische Übergänge.</div>
+      <div class="palette">
+        <div class="swatch" style="background:#050a18"></div>
+        <div class="swatch" style="background:#0b1a35"></div>
+        <div class="swatch" style="background:#00c8ff"></div>
+        <div class="swatch" style="background:#7040ff"></div>
+        <div class="swatch" style="background:#f5c518"></div>
+      </div>
+      <div class="keywords">
+        <span class="kw">Episch</span><span class="kw">Dramatisch</span><span class="kw">Premium</span><span class="kw">Apple-Style</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Mediterranean Bright -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="mockup-b">
+      <div class="mockup-b-sun"></div>
+      <div class="mockup-b-sea"></div>
+      <div class="mockup-b-wave"></div>
+      <div class="mockup-b-island"></div>
+      <div class="mockup-b-boat">⛵</div>
+      <div class="mockup-b-content">
+        <div class="mockup-b-tag">Tag 5 · Paleokastritsa</div>
+        <div class="mockup-b-title">Meereshöhlen &amp;<br>türkise Buchten</div>
+        <div class="mockup-b-sub">Bootstouren · Cliff Jumping · La Grotta</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">B — Mediterranean Bright</div>
+      <div class="card-desc">Hell, warm, lebendig. Editorial-Magazin trifft griechisches Sommer-Feeling. Sonne, Wellen, Terrakotta. Wirkt luxuriös ohne zu schwer zu werden.</div>
+      <div class="palette">
+        <div class="swatch" style="background:#f8f4ee"></div>
+        <div class="swatch" style="background:#1a7abf"></div>
+        <div class="swatch" style="background:#c4622d"></div>
+        <div class="swatch" style="background:#5c7a3e"></div>
+        <div class="swatch" style="background:#ffe066"></div>
+      </div>
+      <div class="keywords">
+        <span class="kw">Lebendig</span><span class="kw">Sommer</span><span class="kw">Editorial</span><span class="kw">Warm</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Sunset Drama -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="mockup-c">
+      <div class="mockup-c-glow"></div>
+      <div class="mockup-c-horizon"></div>
+      <div class="mockup-c-sea"></div>
+      <div class="mockup-c-reflection"></div>
+      <div class="mockup-c-content">
+        <div class="mockup-c-tag">Tag 5 · Paleokastritsa</div>
+        <div class="mockup-c-title">Meereshöhlen &amp;<br>türkise Buchten</div>
+        <div class="mockup-c-sub">Bootstouren · Cliff Jumping · La Grotta</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">C — Sunset Drama</div>
+      <div class="card-desc">Die goldene Stunde als permanente Stimmung. Warme Purpur-zu-Gold-Verläufe, magisches Licht. Romantisch und intensiv — wie der perfekte Urlaubssonnenuntergang.</div>
+      <div class="palette">
+        <div class="swatch" style="background:#1a0a2e"></div>
+        <div class="swatch" style="background:#8b1a4a"></div>
+        <div class="swatch" style="background:#d4391f"></div>
+        <div class="swatch" style="background:#f5900a"></div>
+        <div class="swatch" style="background:#f5c518"></div>
+      </div>
+      <div class="keywords">
+        <span class="kw">Romantisch</span><span class="kw">Magisch</span><span class="kw">Golden Hour</span><span class="kw">Intensiv</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="bottom-note">Klick auf eine Karte zum Auswählen — oder sag mir einfach A, B oder C</p>
