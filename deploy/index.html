@@ -79,6 +79,113 @@ ul { list-style: none; }
 /* ── APP WRAPPER ── */
 #app { opacity: 0; transition: opacity .6s var(--ease-out); min-height: 100vh; }
 #app.vis { opacity: 1; }
+
+/* ══ SPLASH ══ */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(175deg, #f0f8ff 0%, #c4e8ff 35%, #5bb8f5 65%, #1a7abf 85%, #0a3d6b 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; transition: opacity .9s var(--ease-out);
+}
+#splash.out { opacity: 0; pointer-events: none; }
+
+/* Sonne */
+.sp-sun {
+  position: absolute; top: 6vh; left: 50%; transform: translateX(-50%);
+  width: clamp(70px,12vw,110px); height: clamp(70px,12vw,110px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #fff9c4, #ffe566 35%, #ffc200 65%, rgba(255,150,0,0) 100%);
+  box-shadow: 0 0 0 clamp(12px,2vw,24px) rgba(255,220,50,.18), 0 0 0 clamp(24px,4vw,48px) rgba(255,200,0,.09);
+  animation: sunPulse 4s ease-in-out infinite;
+}
+@keyframes sunPulse {
+  50% { box-shadow: 0 0 0 clamp(18px,3vw,36px) rgba(255,220,50,.25), 0 0 0 clamp(36px,6vw,72px) rgba(255,200,0,.12); }
+}
+
+/* Inseln */
+.sp-island {
+  position: absolute; border-radius: 50% 50% 0 0;
+  background: linear-gradient(180deg, #6a9a4a, #4a7a2e);
+}
+.sp-island-l { width: 90px; height: 42px; bottom: 22%; left: 12%; }
+.sp-island-r { width: 60px; height: 28px; bottom: 22%; right: 18%; }
+.sp-island-sm { width: 38px; height: 18px; bottom: calc(22% + 20px); right: 30%; }
+
+/* Meer */
+.sp-sea {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 22%;
+  background: linear-gradient(180deg, #1a7abf 0%, #0a3d6b 100%);
+}
+.sp-wave {
+  position: absolute; left: -5%; right: -5%; border-radius: 50%;
+  background: rgba(255,255,255,.22);
+}
+.sp-wave-1 { height: 28px; bottom: calc(22% + 14px); animation: waveFloat 5s ease-in-out infinite; }
+.sp-wave-2 { height: 20px; bottom: calc(22% + 28px); animation: waveFloat 6.5s ease-in-out infinite reverse; }
+@keyframes waveFloat {
+  0%,100% { transform: scaleX(1) translateY(0); }
+  50%      { transform: scaleX(1.04) translateY(-5px); }
+}
+
+/* Segelboot */
+.sp-boat {
+  position: absolute; bottom: calc(22% + 6px); left: 55%;
+  opacity: 0; animation: boatAppear 1s var(--ease-spring) 2.8s forwards;
+}
+.sp-boat svg { width: 42px; height: 42px; }
+@keyframes boatAppear { to { opacity: 1; } }
+
+/* Titel */
+.sp-title {
+  position: relative; z-index: 10; text-align: center;
+  opacity: 0; animation: fadeUp .7s var(--ease-spring) .3s forwards;
+  margin-bottom: 10px;
+}
+.sp-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900;
+  color: #fff; text-shadow: 0 2px 24px rgba(10,40,80,.35);
+  letter-spacing: -.5px;
+}
+.sp-title p {
+  font-size: clamp(.75rem,2vw,1rem); color: rgba(255,255,255,.8);
+  letter-spacing: 2.5px; text-transform: uppercase; margin-top: 5px;
+  font-weight: 700;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Avatar-Reihe */
+.sp-avatars {
+  display: flex; gap: clamp(10px,3vw,28px);
+  position: relative; z-index: 10; margin-top: 18px;
+}
+.sp-av {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: 0; transform: translateY(24px) scale(.9);
+}
+.sp-av.show {
+  animation: avPop .55s var(--ease-spring) forwards;
+}
+@keyframes avPop {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.sp-av-name {
+  font-weight: 800; font-size: .75rem; color: #fff;
+  letter-spacing: 1px; text-shadow: 0 1px 8px rgba(0,0,0,.3);
+}
+
+/* Skip-Button */
+#skip-btn {
+  position: absolute; top: 14px; right: 14px; z-index: 10001;
+  background: rgba(255,255,255,.18); color: #fff;
+  border: 1.5px solid rgba(255,255,255,.4); border-radius: 20px;
+  padding: 5px 14px; font-size: .75rem; font-weight: 800;
+  backdrop-filter: blur(6px); transition: background .2s;
+}
+#skip-btn:hover { background: rgba(255,255,255,.32); }
 </style>
 </head>
 <body>
@@ -89,7 +196,155 @@ ul { list-style: none; }
 </div>
 
 <!-- Splash -->
-<div id="splash"></div>
+<div id="splash">
+  <button id="skip-btn" onclick="endSplash()">Überspringen ✕</button>
+
+  <!-- Sonne -->
+  <div class="sp-sun"></div>
+
+  <!-- Inseln -->
+  <div class="sp-island sp-island-l"></div>
+  <div class="sp-island sp-island-r"></div>
+  <div class="sp-island sp-island-sm"></div>
+
+  <!-- Meer & Wellen -->
+  <div class="sp-wave sp-wave-1"></div>
+  <div class="sp-wave sp-wave-2"></div>
+  <div class="sp-sea"></div>
+
+  <!-- Segelboot -->
+  <div class="sp-boat">
+    <svg viewBox="0 0 42 42" fill="none">
+      <polygon points="21,4 21,34 6,34" fill="rgba(255,255,255,0.9)"/>
+      <polygon points="21,8 21,34 34,34" fill="rgba(255,255,255,0.6)"/>
+      <rect x="9" y="34" width="24" height="4" rx="2" fill="#0a3d6b"/>
+    </svg>
+  </div>
+
+  <!-- Titel -->
+  <div class="sp-title">
+    <h1>Korfu &amp; Ksamil</h1>
+    <p>Sommer 2026 · Familie Monschein</p>
+  </div>
+
+  <!-- Avatare -->
+  <div class="sp-avatars" id="sp-avatars">
+    <!-- Michael -->
+    <div class="sp-av" id="sp-av-0">
+      <svg viewBox="0 0 90 110" width="72" height="88">
+        <!-- Körper / Shirt (blau) -->
+        <path d="M10,75 L5,108 L85,108 L80,75 Q65,84 45,84 Q25,84 10,75Z" fill="#1a7abf"/>
+        <!-- Hals -->
+        <rect x="37" y="64" width="16" height="14" fill="#f0b48a"/>
+        <!-- Kopf -->
+        <ellipse cx="45" cy="43" rx="27" ry="26" fill="#f0b48a"/>
+        <!-- Kurzes Haar / sehr kurzer Haarschatten -->
+        <ellipse cx="45" cy="22" rx="27" ry="10" fill="#6a4030" opacity=".55"/>
+        <!-- Sonnenbrille (verspiegelt, blau) -->
+        <rect x="17" y="35" width="21" height="12" rx="6" fill="#1a5fa8" opacity=".95"/>
+        <rect x="52" y="35" width="21" height="12" rx="6" fill="#1a5fa8" opacity=".95"/>
+        <rect x="37" y="39" width="16" height="4" fill="#0d3a6b"/>
+        <ellipse cx="27" cy="41" rx="8" ry="4.5" fill="rgba(90,180,255,.35)"/>
+        <ellipse cx="62" cy="41" rx="8" ry="4.5" fill="rgba(90,180,255,.35)"/>
+        <!-- Lächeln -->
+        <path d="M30,56 Q45,67 60,56" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Wangen -->
+        <circle cx="29" cy="54" r="5" fill="#ffb0a0" opacity=".35"/>
+        <circle cx="61" cy="54" r="5" fill="#ffb0a0" opacity=".35"/>
+      </svg>
+      <span class="sp-av-name">Michael</span>
+    </div>
+
+    <!-- Nina -->
+    <div class="sp-av" id="sp-av-1">
+      <svg viewBox="0 0 90 110" width="72" height="88">
+        <!-- Körper / helles Oberteil -->
+        <path d="M12,73 L7,108 L83,108 L78,73 Q64,82 45,82 Q26,82 12,73Z" fill="#e8e4e0"/>
+        <!-- Hals -->
+        <rect x="38" y="62" width="14" height="13" fill="#f0b48a"/>
+        <!-- Kopf -->
+        <ellipse cx="45" cy="42" rx="25" ry="24" fill="#f0b48a"/>
+        <!-- Schwarzes Haar (schulterlang, Seiten) -->
+        <rect x="17" y="28" width="10" height="52" rx="5" fill="#0f0505"/>
+        <rect x="63" y="28" width="10" height="52" rx="5" fill="#0f0505"/>
+        <!-- Haar oben -->
+        <path d="M19,38 Q21,14 45,13 Q69,14 71,38 Q63,21 45,21 Q27,21 19,38" fill="#0f0505"/>
+        <!-- Rote eckige Brille -->
+        <rect x="18" y="34" width="21" height="13" rx="3" fill="none" stroke="#cc1a1a" stroke-width="3"/>
+        <rect x="51" y="34" width="21" height="13" rx="3" fill="none" stroke="#cc1a1a" stroke-width="3"/>
+        <line x1="39" y1="40" x2="51" y2="40" stroke="#cc1a1a" stroke-width="2.2"/>
+        <rect x="18" y="34" width="21" height="13" rx="3" fill="#ffe8e8" opacity=".2"/>
+        <rect x="51" y="34" width="21" height="13" rx="3" fill="#ffe8e8" opacity=".2"/>
+        <!-- Silberne Uhr-Andeutung -->
+        <rect x="14" y="70" width="8" height="4" rx="1.5" fill="#c0c0c0" opacity=".8"/>
+        <!-- Lächeln -->
+        <path d="M30,52 Q45,63 60,52" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="29" cy="51" r="5" fill="#ffb0a0" opacity=".4"/>
+        <circle cx="61" cy="51" r="5" fill="#ffb0a0" opacity=".4"/>
+      </svg>
+      <span class="sp-av-name">Nina</span>
+    </div>
+
+    <!-- Maxi -->
+    <div class="sp-av" id="sp-av-2">
+      <svg viewBox="0 0 90 110" width="72" height="88">
+        <!-- Körper / schwarzes T-Shirt -->
+        <path d="M11,74 L6,108 L84,108 L79,74 Q65,83 45,83 Q25,83 11,74Z" fill="#1a1a1a"/>
+        <!-- Hals -->
+        <rect x="37" y="63" width="16" height="12" fill="#f0b48a"/>
+        <!-- Kopf (runder, jünger) -->
+        <circle cx="45" cy="43" r="27" fill="#f0b48a"/>
+        <!-- Lockiges dunkles Haar -->
+        <path d="M18,42 Q19,14 45,13 Q71,14 72,42 Q66,22 45,22 Q24,22 18,42" fill="#100808"/>
+        <circle cx="22" cy="38" r="8" fill="#100808"/>
+        <circle cx="68" cy="38" r="8" fill="#100808"/>
+        <circle cx="33" cy="15" r="7" fill="#100808"/>
+        <circle cx="57" cy="15" r="7" fill="#100808"/>
+        <circle cx="45" cy="13" r="6" fill="#100808"/>
+        <!-- Große Augen (junge Gesicht) -->
+        <circle cx="35" cy="42" r="5" fill="#1a0800"/>
+        <circle cx="55" cy="42" r="5" fill="#1a0800"/>
+        <circle cx="36.5" cy="40.5" r="2" fill="#fff"/>
+        <circle cx="56.5" cy="40.5" r="2" fill="#fff"/>
+        <!-- Breites Grinsen -->
+        <path d="M28,56 Q45,70 62,56" stroke="#c47a50" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="27" cy="54" r="6" fill="#ffb0a0" opacity=".4"/>
+        <circle cx="63" cy="54" r="6" fill="#ffb0a0" opacity=".4"/>
+      </svg>
+      <span class="sp-av-name">Maxi</span>
+    </div>
+
+    <!-- Leah -->
+    <div class="sp-av" id="sp-av-3">
+      <svg viewBox="0 0 90 110" width="72" height="88">
+        <!-- Körper / lila/farbiges Oberteil -->
+        <path d="M12,72 L7,108 L83,108 L78,72 Q64,81 45,81 Q26,81 12,72Z" fill="#7b2d8b"/>
+        <!-- Hals -->
+        <rect x="38" y="61" width="14" height="13" fill="#f0b48a"/>
+        <!-- Kopf -->
+        <ellipse cx="45" cy="42" rx="25" ry="24" fill="#f0b48a"/>
+        <!-- Langes glattes dunkles Haar -->
+        <rect x="16" y="24" width="12" height="68" rx="6" fill="#150808"/>
+        <rect x="62" y="24" width="12" height="68" rx="6" fill="#150808"/>
+        <path d="M19,38 Q20,14 45,13 Q70,14 71,38 Q64,21 45,21 Q26,21 19,38" fill="#150808"/>
+        <!-- Sonnenbrille auf dem Kopf -->
+        <rect x="22" y="17" width="18" height="9" rx="4" fill="#1a1a1a" opacity=".85"/>
+        <rect x="50" y="17" width="18" height="9" rx="4" fill="#1a1a1a" opacity=".85"/>
+        <rect x="39" y="20" width="12" height="3" fill="#333"/>
+        <!-- Augen -->
+        <ellipse cx="35" cy="40" rx="4.5" ry="3.5" fill="#150800"/>
+        <ellipse cx="55" cy="40" rx="4.5" ry="3.5" fill="#150800"/>
+        <ellipse cx="36.5" cy="38.5" rx="1.8" ry="1.2" fill="#fff"/>
+        <ellipse cx="56.5" cy="38.5" rx="1.8" ry="1.2" fill="#fff"/>
+        <!-- Lächeln -->
+        <path d="M31,52 Q45,63 59,52" stroke="#c47a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="30" cy="51" r="5" fill="#ffb0a0" opacity=".35"/>
+        <circle cx="60" cy="51" r="5" fill="#ffb0a0" opacity=".35"/>
+      </svg>
+      <span class="sp-av-name">Leah</span>
+    </div>
+  </div>
+</div>
 
 <!-- App -->
 <div id="app">
@@ -545,6 +800,28 @@ function getDayState(dayIndex) {
 if (IS_PREVIEW) {
   document.getElementById('preview-banner').classList.add('show');
 }
+
+/* ══ SPLASH ══ */
+function endSplash() {
+  const splash = document.getElementById('splash');
+  splash.classList.add('out');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    document.getElementById('app').classList.add('vis');
+    initApp(); // wird in Task 4 definiert
+  }, 900);
+}
+
+(function initSplash() {
+  const delays = [400, 950, 1500, 2050];
+  delays.forEach((d, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('sp-av-' + i);
+      if (el) el.classList.add('show');
+    }, d);
+  });
+  setTimeout(endSplash, 10000);
+})();
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
