@@ -624,6 +624,37 @@ ul { list-style: none; }
 .wc-edge svg { width: 100%; height: 100%; display: block; }
 
 /* ══ iOS / TOUCH OPTIMIERUNGEN ══ */
+/* ── FOTO-AVATARE ── */
+.av-photo {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background-image: url('family.jpg');
+  background-size: 540px auto;
+  background-repeat: no-repeat;
+  border: 3px solid rgba(255,255,255,0.88);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+/* Gesichtspositionen: bg-size 540px bei 900px Original = 60% Zoom */
+.av-photo-michael { background-position: -273px -267px; }
+.av-photo-nina    { background-position: -72px  -567px; }
+.av-photo-maxi    { background-position: -183px -429px; }
+.av-photo-leah    { background-position: -297px -75px;  }
+
+/* Header Mini-Avatare mit echtem Foto */
+.hdr-av {
+  width: 28px; height: 28px; border-radius: 50%; overflow: hidden;
+  border: 2px solid rgba(255,255,255,.4);
+  background-image: url('family.jpg');
+  background-size: 168px auto;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+.hdr-av-michael { background-position: -85px -83px; }
+.hdr-av-nina    { background-position: -22px -177px; }
+.hdr-av-maxi    { background-position: -57px -134px; }
+.hdr-av-leah    { background-position: -93px -23px;  }
+
 /* iOS Safe Area */
 #app-hdr {
   padding-top: max(11px, env(safe-area-inset-top));
@@ -693,200 +724,26 @@ body { -webkit-text-size-adjust: 100%; }
   <div class="sp-avatars" id="sp-avatars">
     <!-- Michael -->
     <div class="sp-av" id="sp-av-0">
-      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="m-skin" cx="45%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#f5c5a0"/>
-            <stop offset="60%" stop-color="#e8a87c"/>
-            <stop offset="100%" stop-color="#c97a45"/>
-          </radialGradient>
-          <radialGradient id="m-hair" cx="50%" cy="30%" r="60%">
-            <stop offset="0%" stop-color="#8a6a4a"/>
-            <stop offset="100%" stop-color="#3d2810"/>
-          </radialGradient>
-          <linearGradient id="m-lens" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#5bb8f5" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#1a7abf" stop-opacity="0.95"/>
-          </linearGradient>
-          <filter id="m-shadow">
-            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0a3d6b" flood-opacity="0.25"/>
-          </filter>
-        </defs>
-        <ellipse cx="45" cy="50" rx="28" ry="32" fill="url(#m-skin)" filter="url(#m-shadow)"/>
-        <path d="M20,36 Q22,18 45,16 Q68,18 70,36 Q65,24 45,22 Q25,24 20,36 Z" fill="url(#m-hair)"/>
-        <ellipse cx="17" cy="50" rx="5" ry="7" fill="#d9956a"/>
-        <ellipse cx="73" cy="50" rx="5" ry="7" fill="#d9956a"/>
-        <rect x="24" y="40" width="42" height="14" rx="7" fill="#1a2c45" opacity="0.95"/>
-        <rect x="26" y="42" width="16" height="10" rx="5" fill="url(#m-lens)" opacity="0.85"/>
-        <rect x="48" y="42" width="16" height="10" rx="5" fill="url(#m-lens)" opacity="0.85"/>
-        <rect x="41" y="44" width="8" height="3" rx="1.5" fill="#0a3d6b"/>
-        <path d="M29,44 Q32,43 36,44" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M51,44 Q54,43 58,44" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M42,54 Q40,60 44,63 Q48,64 50,61 Q52,58 50,54" fill="none" stroke="#c07040" stroke-width="1.2"/>
-        <path d="M37,70 Q45,76 53,70" stroke="#c07040" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M37,70 Q45,73 53,70" stroke="#e8856a" stroke-width="1.5" fill="none"/>
-        <ellipse cx="45" cy="78" rx="18" ry="6" fill="rgba(180,100,50,0.12)"/>
-        <ellipse cx="38" cy="38" rx="8" ry="6" fill="rgba(255,255,255,0.18)"/>
-      </svg>
+      <div class="av-photo av-photo-michael"></div>
       <span class="sp-av-name">Michael</span>
     </div>
 
     <!-- Nina -->
     <div class="sp-av" id="sp-av-1">
-      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="n-skin" cx="45%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#f8d0b0"/>
-            <stop offset="60%" stop-color="#f0b88a"/>
-            <stop offset="100%" stop-color="#d4855a"/>
-          </radialGradient>
-          <radialGradient id="n-hair" cx="50%" cy="20%" r="65%">
-            <stop offset="0%" stop-color="#3a2828"/>
-            <stop offset="50%" stop-color="#1a1010"/>
-            <stop offset="100%" stop-color="#0d0808"/>
-          </radialGradient>
-          <radialGradient id="n-iris" cx="35%" cy="35%" r="60%">
-            <stop offset="0%" stop-color="#6a5a4a"/>
-            <stop offset="100%" stop-color="#3a2820"/>
-          </radialGradient>
-        </defs>
-        <ellipse cx="45" cy="52" rx="26" ry="30" fill="url(#n-skin)"/>
-        <path d="M19,45 Q18,22 45,18 Q72,22 71,45 Q68,28 45,24 Q22,28 19,45 Z" fill="url(#n-hair)"/>
-        <path d="M19,45 Q16,50 17,62 Q19,55 22,52 Q20,48 19,45 Z" fill="#1a1010"/>
-        <path d="M71,45 Q74,50 73,62 Q71,55 68,52 Q70,48 71,45 Z" fill="#1a1010"/>
-        <ellipse cx="18" cy="52" rx="4" ry="6" fill="#d4906a"/>
-        <circle cx="18" cy="58" r="2.5" fill="none" stroke="#c0c0c0" stroke-width="1.5"/>
-        <ellipse cx="72" cy="52" rx="4" ry="6" fill="#d4906a"/>
-        <rect x="24" y="44" width="17" height="11" rx="2" fill="none" stroke="#c4200a" stroke-width="2.5"/>
-        <rect x="49" y="44" width="17" height="11" rx="2" fill="none" stroke="#c4200a" stroke-width="2.5"/>
-        <line x1="41" y1="49" x2="49" y2="49" stroke="#c4200a" stroke-width="2"/>
-        <rect x="25.5" y="45.5" width="14" height="8" rx="1.5" fill="rgba(180,220,255,0.2)"/>
-        <rect x="50.5" y="45.5" width="14" height="8" rx="1.5" fill="rgba(180,220,255,0.2)"/>
-        <ellipse cx="33" cy="50" rx="5" ry="3.5" fill="white"/>
-        <circle cx="33" cy="50" r="2.5" fill="url(#n-iris)"/>
-        <circle cx="33" cy="50" r="1.2" fill="#1a0808"/>
-        <circle cx="34" cy="48.5" r="1" fill="white" opacity="0.9"/>
-        <ellipse cx="57" cy="50" rx="5" ry="3.5" fill="white"/>
-        <circle cx="57" cy="50" r="2.5" fill="url(#n-iris)"/>
-        <circle cx="57" cy="50" r="1.2" fill="#1a0808"/>
-        <circle cx="58" cy="48.5" r="1" fill="white" opacity="0.9"/>
-        <path d="M28,47 Q33,44 38,47" stroke="#1a0808" stroke-width="1" fill="none"/>
-        <path d="M52,47 Q57,44 62,47" stroke="#1a0808" stroke-width="1" fill="none"/>
-        <path d="M42,57 Q40,62 44,65 Q48,65 50,62 Q50,59 48,57" fill="none" stroke="#c07050" stroke-width="1.2"/>
-        <path d="M36,72 Q45,77 54,72" stroke="#d4605a" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M38,72 Q45,74 52,72" stroke="#e8856a" stroke-width="1" fill="none"/>
-        <ellipse cx="38" cy="40" rx="7" ry="5" fill="rgba(255,255,255,0.2)"/>
-        <rect x="15" y="65" width="6" height="4" rx="1" fill="none" stroke="#c0c0c0" stroke-width="1"/>
-      </svg>
+      <div class="av-photo av-photo-nina"></div>
       <span class="sp-av-name">Nina</span>
     </div>
 
     <!-- Maxi -->
     <div class="sp-av" id="sp-av-2">
-      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="mx-skin" cx="45%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#f8c890"/>
-            <stop offset="60%" stop-color="#e8a870"/>
-            <stop offset="100%" stop-color="#c87840"/>
-          </radialGradient>
-          <radialGradient id="mx-iris" cx="35%" cy="35%" r="60%">
-            <stop offset="0%" stop-color="#6a7a5a"/>
-            <stop offset="100%" stop-color="#283820"/>
-          </radialGradient>
-        </defs>
-        <ellipse cx="45" cy="52" rx="26" ry="29" fill="url(#mx-skin)"/>
-        <path d="M20,44 Q22,20 45,18 Q68,20 70,44 Q65,26 45,22 Q25,26 20,44 Z" fill="#2a1808"/>
-        <path d="M22,42 Q18,34 24,30 Q26,38 22,42 Z" fill="#3a2010"/>
-        <path d="M68,42 Q72,34 66,30 Q64,38 68,42 Z" fill="#3a2010"/>
-        <path d="M30,26 Q28,18 36,20 Q34,26 30,26 Z" fill="#2a1808"/>
-        <path d="M60,26 Q62,18 54,20 Q56,26 60,26 Z" fill="#2a1808"/>
-        <path d="M40,22 Q38,14 46,16 Q44,22 40,22 Z" fill="#2a1808"/>
-        <path d="M28,28 Q30,24 34,26" stroke="#6a4020" stroke-width="1.5" fill="none"/>
-        <path d="M56,26 Q60,22 64,26" stroke="#6a4020" stroke-width="1.5" fill="none"/>
-        <ellipse cx="18" cy="52" rx="5" ry="7" fill="#d49060"/>
-        <ellipse cx="72" cy="52" rx="5" ry="7" fill="#d49060"/>
-        <ellipse cx="33" cy="49" rx="6.5" ry="5" fill="white"/>
-        <circle cx="33" cy="50" r="3.5" fill="url(#mx-iris)"/>
-        <circle cx="33" cy="50" r="1.8" fill="#161008"/>
-        <circle cx="34.5" cy="48" r="1.2" fill="white" opacity="0.95"/>
-        <ellipse cx="57" cy="49" rx="6.5" ry="5" fill="white"/>
-        <circle cx="57" cy="50" r="3.5" fill="url(#mx-iris)"/>
-        <circle cx="57" cy="50" r="1.8" fill="#161008"/>
-        <circle cx="58.5" cy="48" r="1.2" fill="white" opacity="0.95"/>
-        <path d="M27,44 Q33,41 39,44" stroke="#2a1808" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M51,44 Q57,41 63,44" stroke="#2a1808" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M41,57 Q38,63 44,65 Q48,65 52,63 Q54,57 51,57" fill="none" stroke="#b87040" stroke-width="1.5"/>
-        <path d="M31,70 Q45,80 59,70 Q55,75 45,77 Q35,75 31,70 Z" fill="white"/>
-        <path d="M31,70 Q45,80 59,70" stroke="#c07040" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <line x1="38" y1="70" x2="38" y2="76" stroke="#e0c0a0" stroke-width="0.8"/>
-        <line x1="45" y1="70" x2="45" y2="77" stroke="#e0c0a0" stroke-width="0.8"/>
-        <line x1="52" y1="70" x2="52" y2="76" stroke="#e0c0a0" stroke-width="0.8"/>
-        <circle cx="31" cy="66" r="3" fill="rgba(200,120,80,0.2)"/>
-        <circle cx="59" cy="66" r="3" fill="rgba(200,120,80,0.2)"/>
-        <ellipse cx="37" cy="40" rx="8" ry="5" fill="rgba(255,255,255,0.22)"/>
-      </svg>
+      <div class="av-photo av-photo-maxi"></div>
       <span class="sp-av-name">Maxi</span>
     </div>
 
+
     <!-- Leah -->
     <div class="sp-av" id="sp-av-3">
-      <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="l-skin" cx="45%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#fad8b8"/>
-            <stop offset="60%" stop-color="#f0b890"/>
-            <stop offset="100%" stop-color="#d88858"/>
-          </radialGradient>
-          <radialGradient id="l-hair" cx="50%" cy="15%" r="70%">
-            <stop offset="0%" stop-color="#4a3020"/>
-            <stop offset="50%" stop-color="#2a1810"/>
-            <stop offset="100%" stop-color="#180e08"/>
-          </radialGradient>
-          <radialGradient id="l-iris" cx="35%" cy="35%" r="60%">
-            <stop offset="0%" stop-color="#7a6050"/>
-            <stop offset="100%" stop-color="#3a2010"/>
-          </radialGradient>
-        </defs>
-        <path d="M20,48 Q16,55 15,75 Q18,65 22,60 Q20,54 20,48 Z" fill="url(#l-hair)"/>
-        <path d="M70,48 Q74,55 75,75 Q72,65 68,60 Q70,54 70,48 Z" fill="url(#l-hair)"/>
-        <path d="M20,48 Q22,22 45,20 Q68,22 70,48 Q65,30 45,26 Q25,30 20,48 Z" fill="url(#l-hair)"/>
-        <path d="M25,30 Q30,24 36,26" stroke="#6a4820" stroke-width="1.5" fill="none"/>
-        <path d="M54,26 Q60,22 66,28" stroke="#6a4820" stroke-width="1.5" fill="none"/>
-        <rect x="26" y="20" width="38" height="8" rx="4" fill="#2a1808" opacity="0.9"/>
-        <rect x="27.5" y="21" width="14" height="6" rx="3" fill="rgba(100,180,220,0.4)"/>
-        <rect x="48.5" y="21" width="14" height="6" rx="3" fill="rgba(100,180,220,0.4)"/>
-        <line x1="41.5" y1="24" x2="48.5" y2="24" stroke="#2a1808" stroke-width="2"/>
-        <path d="M29,22 Q34,21 38,22" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none"/>
-        <ellipse cx="45" cy="54" rx="25" ry="28" fill="url(#l-skin)"/>
-        <ellipse cx="19" cy="54" rx="4" ry="6" fill="#e09870"/>
-        <ellipse cx="71" cy="54" rx="4" ry="6" fill="#e09870"/>
-        <path d="M27,50 Q33,46 39,50 Q33,54 27,50 Z" fill="white"/>
-        <circle cx="33" cy="50" r="2.8" fill="url(#l-iris)"/>
-        <circle cx="33" cy="50" r="1.4" fill="#1a0808"/>
-        <circle cx="34" cy="48.5" r="1" fill="white" opacity="0.9"/>
-        <path d="M51,50 Q57,46 63,50 Q57,54 51,50 Z" fill="white"/>
-        <circle cx="57" cy="50" r="2.8" fill="url(#l-iris)"/>
-        <circle cx="57" cy="50" r="1.4" fill="#1a0808"/>
-        <circle cx="58" cy="48.5" r="1" fill="white" opacity="0.9"/>
-        <path d="M27,50 Q33,46 39,50" stroke="#1a0808" stroke-width="1.5" fill="none"/>
-        <path d="M51,50 Q57,46 63,50" stroke="#1a0808" stroke-width="1.5" fill="none"/>
-        <line x1="29" y1="49" x2="27" y2="46" stroke="#1a0808" stroke-width="1"/>
-        <line x1="33" y1="47" x2="33" y2="44" stroke="#1a0808" stroke-width="1"/>
-        <line x1="37" y1="49" x2="39" y2="46" stroke="#1a0808" stroke-width="1"/>
-        <line x1="53" y1="49" x2="51" y2="46" stroke="#1a0808" stroke-width="1"/>
-        <line x1="57" y1="47" x2="57" y2="44" stroke="#1a0808" stroke-width="1"/>
-        <line x1="61" y1="49" x2="63" y2="46" stroke="#1a0808" stroke-width="1"/>
-        <path d="M26,46 Q33,43 40,46" stroke="#2a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M50,46 Q57,43 64,46" stroke="#2a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M42,58 Q40,63 44,65 Q48,64 50,62 Q50,59 48,58" fill="none" stroke="#c08060" stroke-width="1.2"/>
-        <path d="M36,72 Q45,78 54,72" stroke="#c87060" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M38,72 Q45,75 52,72" stroke="#e89080" stroke-width="1.2" fill="none"/>
-        <path d="M39,72 Q45,71 51,72" stroke="rgba(255,200,180,0.6)" stroke-width="1" fill="none"/>
-        <ellipse cx="30" cy="62" rx="7" ry="4" fill="rgba(220,120,100,0.15)"/>
-        <ellipse cx="60" cy="62" rx="7" ry="4" fill="rgba(220,120,100,0.15)"/>
-        <ellipse cx="39" cy="43" rx="7" ry="4" fill="rgba(255,255,255,0.22)"/>
-      </svg>
+      <div class="av-photo av-photo-leah"></div>
       <span class="sp-av-name">Leah</span>
     </div>
   </div>
@@ -1519,17 +1376,13 @@ function endSplash() {
 
 /* ══ HEADER ══ */
 function renderHeader() {
-  const MINI_AVATARS = [
-    // Verkleinerte Kopf-SVGs (nur Kreis + Merkmal)
-    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="9" width="9" height="5" rx="2.5" fill="#1a5fa8" opacity=".9"/><rect x="15" y="9" width="9" height="5" rx="2.5" fill="#1a5fa8" opacity=".9"/></svg>`,
-    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="9" width="8" height="6" rx="2" fill="none" stroke="#cc1a1a" stroke-width="1.8"/><rect x="16" y="9" width="8" height="6" rx="2" fill="none" stroke="#cc1a1a" stroke-width="1.8"/></svg>`,
-    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><circle cx="7" cy="11" r="4" fill="#100808"/><circle cx="21" cy="11" r="4" fill="#100808"/><circle cx="14" cy="7" r="4" fill="#100808"/></svg>`,
-    `<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="#f0b48a"/><rect x="4" y="5" width="7" height="4" rx="2" fill="#1a1a1a" opacity=".85"/><rect x="17" y="5" width="7" height="4" rx="2" fill="#1a1a1a" opacity=".85"/></svg>`,
-  ];
   document.getElementById('app-hdr').innerHTML = `
     <div class="hdr-logo">🌊 Korfu &amp; <span>Ksamil</span></div>
     <div class="hdr-avs">
-      ${MINI_AVATARS.map(s => `<div class="hdr-av">${s}</div>`).join('')}
+      <div class="hdr-av hdr-av-michael" title="Michael"></div>
+      <div class="hdr-av hdr-av-nina"    title="Nina"></div>
+      <div class="hdr-av hdr-av-maxi"    title="Maxi"></div>
+      <div class="hdr-av hdr-av-leah"    title="Leah"></div>
     </div>
     <div class="hdr-btns">
       <button class="hbtn" onclick="openModal('route')">🗺 Route</button>
