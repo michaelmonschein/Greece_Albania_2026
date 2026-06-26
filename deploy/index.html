@@ -376,6 +376,142 @@ ul { list-style: none; }
 .tbtn.e2.active   { background: var(--e2);   border-color: var(--e2);   color: #fff; }
 .tbtn.e3.active   { background: var(--e3);   border-color: var(--e3);   color: #fff; }
 .tbtn.tv.active   { background: var(--tv);   border-color: var(--tv);   color: #fff; }
+
+/* ══ MAIN LAYOUT (Task 6) ══ */
+.main-lay { display: grid; grid-template-columns: 1fr 400px; min-height: calc(100vh - 150px); }
+.map-panel { position: sticky; top: 150px; height: calc(100vh - 150px); }
+#map { width: 100%; height: 100%; }
+.content { padding: 18px; overflow-y: auto; max-height: calc(100vh - 150px); }
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--sand2); border-radius: 2px; }
+
+/* ══ DAY CARD ══ */
+.dcard {
+  background: #fff; border-radius: var(--r2);
+  box-shadow: var(--sh2); margin-bottom: 22px; overflow: hidden;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .45s var(--ease-spring), transform .45s var(--ease-spring);
+}
+.dcard.vis { opacity: 1; transform: translateY(0); }
+
+/* Karten-Hero */
+.dcard-hero {
+  height: 160px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 16px 20px;
+}
+.dcard-hero-scene { position: absolute; inset: 0; }
+.dcard-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(10,30,60,.82) 0%, rgba(10,30,60,.1) 60%, transparent 100%);
+}
+.dcard-hero-content { position: relative; z-index: 2; }
+.dtag {
+  font-family: 'Space Mono', monospace;
+  font-size: .62rem; color: rgba(255,255,255,.75); margin-bottom: 5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.detag {
+  font-size: .55rem; padding: 2px 8px; border-radius: 10px;
+  background: rgba(255,255,255,.18); color: #fff; font-weight: 700;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.dcard-hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-weight: 900; color: #fff; line-height: 1.15;
+}
+.dcard-hero p { font-size: .75rem; color: rgba(255,255,255,.65); margin-top: 3px; }
+
+/* Scene-Farben für Karten — diagonal für schönen Karten-Look */
+.scene-beach  { background: linear-gradient(160deg, #c4e8ff 0%, #5bb8f5 45%, #1a7abf 75%, #0a3d6b 100%); }
+.scene-ksamil { background: linear-gradient(160deg, #d4f8f5 0%, #4dd8cc 45%, #1aaba0 70%, #0a5550 100%); }
+.scene-city   { background: linear-gradient(160deg, #f5c890 0%, #e8885a 45%, #c4622d 70%, #5a2010 100%); }
+.scene-travel { background: linear-gradient(160deg, #d0ddf0 0%, #8aaad0 55%, #4a6a9a 100%); }
+
+/* Karten-Body */
+.dbody { padding: 16px 20px; }
+
+/* Freischalt-Animation */
+.unlock-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--lemon); color: var(--dark);
+  font-size: .58rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
+  border-radius: 20px; padding: 3px 10px; margin-bottom: 8px;
+  animation: unlockPop .6s var(--ease-spring);
+}
+@keyframes unlockPop {
+  from { transform: scale(.5); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+/* Aktivitätenliste */
+.alist { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
+.aitem { display: flex; gap: 10px; align-items: flex-start; }
+.aico  { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.atxt strong { display: block; font-size: .88rem; font-weight: 800; color: var(--dark); }
+.atxt span   { font-size: .78rem; color: var(--muted); }
+
+/* Selfie-Spots */
+.sbox {
+  background: linear-gradient(135deg, #fffbe6, #fff5cc);
+  border-radius: 10px; padding: 11px 14px; margin-bottom: 13px;
+  border-left: 3px solid var(--lemon2);
+}
+.sbox h4 { font-size: .68rem; font-weight: 900; color: #7a6000; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 7px; }
+.sitem   { font-size: .78rem; color: #5a4500; margin-bottom: 4px; }
+
+/* Abendprogramm */
+.ebox {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 10px; padding: 11px 14px;
+  border-left: 3px solid var(--sea); margin-bottom: 13px;
+}
+.ebox h4 { font-size: .68rem; font-weight: 900; color: var(--sea); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.ebox p  { font-size: .82rem; color: var(--dark); }
+
+/* Fotos */
+.photos-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
+.photo-wrap  { border-radius: 9px; overflow: hidden; aspect-ratio: 4/3; background: var(--sand); position: relative; }
+.photo-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+.photo-wrap:hover img { transform: scale(1.07); }
+.photo-cap  { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.55)); color: #fff; font-size: .62rem; padding: 8px 7px 5px; font-weight: 700; }
+
+/* Restaurants */
+.slabel { font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted2); margin: 14px 0 8px; display: flex; align-items: center; gap: 8px; }
+.slabel::after { content: ''; flex: 1; height: 1px; background: var(--sand2); }
+.rcard { background: linear-gradient(135deg,#fff5ef,#fff0e8); border-radius: 9px; padding: 11px 14px; margin-bottom: 8px; border-left: 3px solid var(--terra); }
+.rcard h4 { font-size: .88rem; font-weight: 800; color: var(--terra); }
+.rcard p  { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.rtags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+.rtag  { background: rgba(196,98,45,.1); color: var(--terra); border-radius: 5px; padding: 2px 7px; font-size: .65rem; font-weight: 800; }
+
+/* Tipps */
+.tips-box { background: #f0fff4; border-radius: 9px; padding: 11px 14px; margin-top: 13px; border-left: 3px solid var(--olive); }
+.tips-box h4 { font-size: .68rem; font-weight: 900; color: var(--olive); text-transform: uppercase; margin-bottom: 7px; }
+.tip-item { font-size: .78rem; color: #2d5016; margin-bottom: 4px; padding-left: 13px; position: relative; }
+.tip-item::before { content: '→'; position: absolute; left: 0; color: var(--olive); }
+
+/* Alerts */
+.alert-box { border-radius: 9px; padding: 11px 14px; margin-bottom: 13px; font-size: .8rem; }
+.alert-box.warn { background: #fff3e0; border-left: 3px solid var(--terra); color: #5a3000; }
+.alert-box.info { background: #e8f4ff; border-left: 3px solid var(--sea2); color: #003a5a; }
+.alert-box strong { display: block; font-weight: 800; margin-bottom: 4px; }
+
+/* Wetter-Box */
+.weather-wrap {
+  background: linear-gradient(135deg, #fff8e1, #ffe082);
+  border-radius: var(--r); padding: 14px 18px; margin-bottom: 20px;
+  border: 2px solid var(--lemon2);
+  display: flex; gap: 13px; align-items: flex-start;
+}
+.weather-ico { font-size: 2rem; flex-shrink: 0; }
+.weather-txt h3 { font-size: .88rem; font-weight: 900; color: #6b4000; margin-bottom: 7px; }
+.weather-txt li { font-size: .78rem; color: #5a3500; padding-left: 13px; position: relative; list-style: none; margin-bottom: 3px; }
+.weather-txt li::before { content: '☀️'; position: absolute; left: 0; font-size: .55rem; top: 3px; }
+
+/* Fähren-Box */
+.ferry-box { background: linear-gradient(135deg,#e0f2fe,#bae6fd); border-radius: 9px; padding: 11px 14px; margin-bottom: 13px; border-left: 3px solid var(--sea2); }
+.ferry-box h4 { font-size: .8rem; font-weight: 900; color: #0369a1; margin-bottom: 5px; }
+.ferry-box p  { font-size: .78rem; color: #0c4a6e; }
 </style>
 </head>
 <body>
@@ -593,6 +729,147 @@ const IMG = {
 };
 function imgTag(key,cap){
   return`<div class="photo-wrap"><img src="${IMG[key]}" alt="${cap}" loading="lazy" onerror="this.parentElement.style.display='none'"><span class="photo-cap">${cap}</span></div>`;
+}
+
+/* ══════════════════════════════════════
+   CONTENT RENDERING (Task 6)
+══════════════════════════════════════ */
+const IMG_CAPS = {
+  agiosGordios:'Agios Gordios Beach', korfuAerial:'Korfu-Stadt Panorama',
+  alteFestung:'Alte Festung & Altstadt', paleokastritsa:'Paleokastritsa Panorama',
+  paleokastritsa2:'Paleokastritsa Bucht', achilleion:'Achilleion Palast',
+  pontikonisi:'Pontikonisi Mauseinsel', kanoni:'Kanoni Aussicht',
+  oldFortress:'Alte Festung Korfu', ksamil:'Ksamil Beach',
+  ksamilRiviera:'Ksamil Albanian Riviera', butrint:'Butrint UNESCO',
+  blueEye:'Blaues Auge · Syri i Kaltër',
+};
+
+function weatherBox() {
+  return `<div class="weather-wrap">
+    <div class="weather-ico">☀️</div>
+    <div class="weather-txt">
+      <h3>Hitze-Alarm: Ende Juli / Anfang August!</h3>
+      <ul>
+        <li>32–38°C — Mittagssonne 13–16 Uhr meiden</li>
+        <li>LSF 50+ für alle, alle 2h neu auftragen</li>
+        <li>Mind. 2 Liter Wasser pro Person täglich</li>
+        <li>Aktivitäten vor 12 Uhr oder nach 17 Uhr</li>
+        <li>Leichte Kleidung, Hüte, Sonnenbrillen nicht vergessen</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+function renderDay(d, idx) {
+  const state      = getDayState(idx);
+  const sceneClass = getDayScene(d);
+  const etLabels   = { e1:'Etappe 1 · Agios Gordios', e2:'Etappe 2 · Ksamil', e3:'Etappe 3 · Ýpsos', tv:'Transfer' };
+  const isToday    = state === 'today';
+  const isLocked   = state === 'locked';
+
+  let h = `<div class="dcard" id="dc-${d.id}">`;
+
+  // Karten-Hero mit animiertem Szenen-Hintergrund
+  h += `<div class="dcard-hero">
+    <div class="dcard-hero-scene ${sceneClass}"></div>
+    <div class="dcard-hero-overlay"></div>
+    <div class="dcard-hero-content">
+      <div class="dtag">
+        <span>${d.id} · ${d.date} · ${d.wd}</span>
+        <span class="detag">${etLabels[d.et] || ''}</span>
+      </div>
+      <h2>${d.title}</h2>
+      <p>${d.sub}</p>
+    </div>
+  </div>`;
+
+  h += `<div class="dbody">`;
+
+  // Freischalt-Badge beim heutigen Tag (animiert eingeblendet)
+  if (isToday) h += `<div class="unlock-badge">✨ Heute freigeschaltet</div>`;
+
+  // Gesperrte Tage: nur 🔒 + Datum zeigen, kein Inhalt dahinter
+  if (isLocked) {
+    h += `<div style="text-align:center;padding:24px 0;color:var(--muted2)">
+      <div style="font-size:1.8rem;margin-bottom:8px">🔒</div>
+      <div style="font-size:.82rem;font-weight:700">Verfügbar ab ${d.date}</div>
+    </div>`;
+    h += `</div></div>`;
+    return h;
+  }
+
+  // Alerts (Warnungen & Info-Boxen)
+  d.alerts.forEach(a => h += `<div class="alert-box ${a.t}"><strong>${a.t==='warn'?'⚠️ Wichtig:':'ℹ️ Info:'}</strong>${a.text}</div>`);
+
+  // Aktivitätenliste
+  if (d.acts.length) {
+    h += `<ul class="alist">`;
+    d.acts.forEach(a => h += `<li class="aitem"><span class="aico">${a.i}</span><div class="atxt"><strong>${a.t}</strong><span>${a.d}</span></div></li>`);
+    h += `</ul>`;
+  }
+
+  // Fotos im 2-Spalten-Grid
+  if (d.photos.length) {
+    h += `<div class="photos-grid">`;
+    d.photos.forEach(p => h += imgTag(p, IMG_CAPS[p] || p));
+    h += `</div>`;
+  }
+
+  // Selfie & Foto-Spots
+  if (d.selfie.length) {
+    h += `<div class="sbox"><h4>📸 Selfie & Foto-Spots</h4>`;
+    d.selfie.forEach(s => h += `<div class="sitem">📍 <strong>${s.t}</strong> — ${s.tip}</div>`);
+    h += `</div>`;
+  }
+
+  // Restaurants & Cafés
+  if (d.rests.length) {
+    h += `<div class="slabel">🍴 Restaurants & Cafés</div>`;
+    d.rests.forEach(r => h += `<div class="rcard"><h4>${r.n}</h4><p>${r.d}</p><div class="rtags">${r.tags.map(t=>`<span class="rtag">${t}</span>`).join('')}</div></div>`);
+  }
+
+  // Abendprogramm
+  if (d.eve) h += `<div class="ebox"><h4>🌆 Abendprogramm</h4><p>${d.eve}</p></div>`;
+
+  // Insider-Tipps
+  if (d.tips.length) {
+    h += `<div class="tips-box"><h4>💡 Tipps</h4>`;
+    d.tips.forEach(t => h += `<div class="tip-item">${t}</div>`);
+    h += `</div>`;
+  }
+
+  // Fähren-Infobox (automatisch für T9 und T13)
+  if (d.id === 'T9')  h += `<div class="ferry-box"><h4>⛴ Fähre Korfu → Saranda</h4><p>Ionian Seaways / Finikas Lines · ca. 45 Min · VORAB buchen! ca. 15–20 €/P</p></div>`;
+  if (d.id === 'T13') h += `<div class="ferry-box"><h4>⛴ Fähre Saranda → Korfu</h4><p>Rückticket · gleiche Anbieter · ca. 45 Min</p></div>`;
+
+  h += `</div></div>`;
+  return h;
+}
+
+function renderContent(id) {
+  const ct = document.getElementById('content');
+  if (!ct) return; // Guard: DOM noch nicht bereit
+
+  if (id === 'ALL') {
+    // Alle 17 Tage + Wetter-Box anzeigen
+    let h = weatherBox();
+    DAYS.forEach((d, idx) => h += renderDay(d, idx));
+    ct.innerHTML = h;
+  } else {
+    // Einzelnen Tag anzeigen
+    const idx = DAYS.findIndex(x => x.id === id);
+    if (idx < 0) return;
+    ct.innerHTML = weatherBox() + renderDay(DAYS[idx], idx);
+  }
+
+  // Karten gestaffelt einblenden (stagger animation)
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.dcard').forEach((c, i) => {
+      setTimeout(() => c.classList.add('vis'), i * 55);
+    });
+  });
+
+  ct.scrollTop = 0;
 }
 
 /* ══════════════════════════════════════
