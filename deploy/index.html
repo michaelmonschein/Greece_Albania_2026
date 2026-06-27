@@ -1550,14 +1550,123 @@ function buildCardContent(day, etCol, avtFile) {
     </div>`;
 }
 
-// Task 5: Swipe-Gesten
-function initSwipe() { /* stub */ }
-
 // Task 6: Bottom-Nav rendern
-function renderBottomNav() { /* stub */ }
+function renderBottomNav() {
+  document.querySelectorAll('.nav-tab').forEach(btn => {
+    const tab = btn.dataset.tab;
+    btn.classList.toggle('active', tab === activeTab);
+    btn.addEventListener('click', () => switchTab(tab));
+  });
+  updateEtappeColor();
+}
 
-// Task 7: Dots rendern
-function renderDots() { /* stub */ }
+// Task 6: Tab-Wechsel
+function switchTab(tabId) {
+  if (tabId === activeTab) return;
+  activeTab = tabId;
+  activeDayInTab = 0;
+  document.querySelectorAll('.nav-tab').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === activeTab));
+  updateEtappeColor();
+  renderCards();
+  renderDots();
+}
+
+// Task 6: Etappen-Farbe für Dots aktualisieren
+function updateEtappeColor() {
+  const colors = { e1: 'var(--e1)', e2: 'var(--e2)', e3: 'var(--e3)' };
+  const dots = document.getElementById('tab-dots');
+  if (dots) dots.style.setProperty('--active-etappe', colors[activeTab] || 'var(--tiefsee)');
+}
+
+// Task 6: Dots rendern
+function renderDots() {
+  const count = TAB_DAYS[activeTab].length;
+  const dotsEl = document.getElementById('tab-dots');
+  if (!dotsEl) return;
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('button');
+    d.className = `tab-dot${i === activeDayInTab ? ' active' : ''}`;
+    d.setAttribute('aria-label', `Tag ${i + 1}`);
+    d.addEventListener('click', () => goToDay(i));
+    dotsEl.appendChild(d);
+  }
+}
+
+// Task 6: Zu Tag springen
+function goToDay(idx) {
+  activeDayInTab = idx;
+  updateTrackPosition(true);
+  renderDots();
+  updateHeaderBg();
+}
+
+// Task 6: Header-Hintergrund aktualisieren (wird solid wenn gescrollt)
+function updateHeaderBg() {
+  const cards = document.querySelectorAll('.day-card');
+  const activeCard = cards[activeDayInTab];
+  const solid = activeCard ? activeCard.scrollTop > 20 : false;
+  const header = document.getElementById('app-header');
+  if (header) header.classList.toggle('solid', solid);
+}
+
+// Task 7: Swipe-Navigation (Pointer Events API)
+function initSwipe() {
+  const viewport = document.getElementById('day-viewport');
+  if (!viewport) return;
+  let startX = 0, startY = 0, isDragging = false, isHorizontal = null, currentX = 0;
+
+  viewport.addEventListener('pointerdown', e => {
+    startX = e.clientX;
+    startY = e.clientY;
+    isDragging = true;
+    isHorizontal = null;
+    currentX = 0;
+    viewport.setPointerCapture(e.pointerId);
+  });
+
+  viewport.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (isHorizontal === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      isHorizontal = Math.abs(dx) > Math.abs(dy);
+    }
+    if (!isHorizontal) return;
+
+    e.preventDefault();
+    currentX = dx;
+    const track = document.getElementById('cards-track');
+    if (track) {
+      track.style.transition = 'none';
+      track.style.transform = `translateX(calc(-${activeDayInTab * 100}% + ${dx}px))`;
+    }
+  });
+
+  viewport.addEventListener('pointerup', () => {
+    if (!isDragging || !isHorizontal) { isDragging = false; return; }
+    isDragging = false;
+    const threshold = (viewport.offsetWidth || 375) * 0.25;
+    const count = TAB_DAYS[activeTab].length;
+
+    if (currentX < -threshold && activeDayInTab < count - 1) {
+      activeDayInTab++;
+    } else if (currentX > threshold && activeDayInTab > 0) {
+      activeDayInTab--;
+    }
+    currentX = 0;
+    updateTrackPosition(true);
+    renderDots();
+  });
+
+  viewport.addEventListener('pointercancel', () => {
+    isDragging = false;
+    currentX = 0;
+    updateTrackPosition(true);
+  });
+}
 
 // Task 8: Modals initialisieren
 function initModals() { /* stub */ }
@@ -1577,6 +1686,8 @@ function initApp() {
   initModals();
   initMap();
   initSwipe();
+  // Header-Hintergrund: wird solid wenn Karte nach unten gescrollt
+  document.getElementById('cards-track').addEventListener('scroll', updateHeaderBg, true);
 }
 
 function setInitialTab() {
