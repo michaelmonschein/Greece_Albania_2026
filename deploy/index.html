@@ -1341,11 +1341,214 @@ let activeDayInTab = 0;
    STUB FUNCTIONS — werden in späteren Tasks befüllt
 ══════════════════════════════════════ */
 
-// Task 4: Karten rendern
-function renderCards() { /* stub */ }
+// Task 4: WC_EDGES — SVG-Aquarell-Übergänge je Etappe
+const WC_EDGES = {
+  e1: `<svg viewBox="0 0 400 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C30,20 60,55 100,35 C140,15 160,50 200,38 C240,26 270,52 310,40 C340,30 370,45 400,35 L400,100 L0,100 Z" fill="#fefcf8"/>
+    <path d="M0,55 C40,42 80,65 120,52 C165,38 195,60 240,50 C280,40 320,58 360,48 L400,45 L400,100 L0,100 Z" fill="#fefcf8" opacity="0.7"/>
+  </svg>`,
+  e2: `<svg viewBox="0 0 400 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M-10,50 C20,30 55,65 95,42 C135,20 165,58 215,44 C255,32 285,55 325,42 C358,31 385,50 410,40 L410,100 L-10,100 Z" fill="#fefcf8"/>
+    <path d="M-10,62 C30,50 70,72 115,58 C155,45 185,68 225,56 C265,44 300,65 345,55 L410,52 L410,100 L-10,100 Z" fill="#fefcf8" opacity="0.6"/>
+  </svg>`,
+  e3: `<svg viewBox="0 0 400 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,45 C25,28 58,60 98,44 C138,28 162,54 205,42 C245,30 278,56 318,43 C350,32 378,48 400,38 L400,100 L0,100 Z" fill="#fefcf8"/>
+    <path d="M0,58 C35,45 72,68 115,56 C152,45 182,66 222,55 C260,44 295,62 338,52 L400,48 L400,100 L0,100 Z" fill="#fefcf8" opacity="0.65"/>
+  </svg>`,
+  tv: `<svg viewBox="0 0 400 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,48 C40,35 80,58 120,46 C160,34 195,54 235,44 C270,35 305,52 345,42 C368,36 388,46 400,40 L400,100 L0,100 Z" fill="#fefcf8"/>
+  </svg>`,
+};
 
-// Task 4: Karten-Inhalte aufbauen
-function buildCardContent(day, idx) { /* stub */ return ''; }
+// Task 4: Karten rendern
+function renderCards() {
+  const ids   = TAB_DAYS[activeTab];
+  const track = document.getElementById('cards-track');
+  if (!track) return;
+  track.innerHTML = '';
+
+  const phase = getPhase();
+
+  ids.forEach((dayId, idx) => {
+    const day    = DAYS.find(d => d.id === dayId);
+    if (!day) return;
+    const dayIdx = DAYS.indexOf(day);
+    const state  = getDayState(dayIdx);
+
+    // Foto-URL: erstes Foto aus day.photos, sonst Fallback per Etappe
+    const fallbackKey = day.et === 'e2' ? 'ksamil'
+                      : day.et === 'e3' ? 'korfuAerial'
+                      : 'agiosGordios';
+    const photoKey = (day.photos && day.photos[0]) || fallbackKey;
+    const photoUrl = IMG[photoKey]
+      ? IMG[photoKey].replace('width=600', 'width=800')
+      : '';
+
+    const etCol  = `var(--${day.et})`;
+    const wcEdge = WC_EDGES[day.et] || WC_EDGES.tv;
+    const avtFile = AVT_IMG[day.avt] || 'av-family-casual.png';
+
+    // Countdown (nur erste Karte in e1 bei pre-Phase)
+    const isCountdown = phase === 'pre' && idx === 0 && activeTab === 'e1';
+
+    // Foto-Zone HTML
+    let photoZoneHtml;
+    if (state === 'locked') {
+      photoZoneHtml = `
+        <div class="card-photo-zone locked">
+          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="lazy">
+          <div class="card-photo-overlay"></div>
+          <div class="lock-overlay">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>${day.date} · ${day.wd}</span>
+          </div>
+        </div>`;
+    } else if (isCountdown) {
+      photoZoneHtml = `
+        <div class="card-photo-zone">
+          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="eager">
+          ${buildCountdownOverlay()}
+        </div>`;
+    } else {
+      photoZoneHtml = `
+        <div class="card-photo-zone">
+          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="${idx === 0 ? 'eager' : 'lazy'}">
+          <div class="card-photo-overlay"></div>
+          <div class="watercolor-edge">${wcEdge}</div>
+        </div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = `day-card${state === 'past' ? ' past' : ''}`;
+    card.dataset.id  = dayId;
+    card.dataset.idx = idx;
+    card.innerHTML   = photoZoneHtml
+      + (state !== 'locked' ? buildCardContent(day, etCol, avtFile) : '');
+
+    // Heute-Badge
+    const todayIdx = getTodayIndex();
+    if (phase === 'trip' && todayIdx >= 0 && DAYS[todayIdx].id === dayId) {
+      card.classList.add('today');
+    }
+
+    track.appendChild(card);
+  });
+
+  updateTrackPosition(false);
+}
+
+function buildCountdownOverlay() {
+  const now  = new Date();
+  const diff = Math.ceil((TRIP_START - now) / (1000 * 60 * 60 * 24));
+  return `
+    <div class="countdown-overlay">
+      <div class="countdown-label">Noch</div>
+      <div class="countdown-num">${Math.max(0, diff)}</div>
+      <div class="countdown-unit">Tage bis Korfu</div>
+      <div class="countdown-next">Erste Station: Agios Gordios · 18. Juli</div>
+    </div>
+    <div class="watercolor-edge">${WC_EDGES.e1}</div>`;
+}
+
+function updateTrackPosition(animate = true) {
+  const track = document.getElementById('cards-track');
+  if (!track) return;
+  if (!animate) track.style.transition = 'none';
+  track.style.transform = `translateX(-${activeDayInTab * 100}%)`;
+  if (!animate) requestAnimationFrame(() => { track.style.transition = ''; });
+}
+
+// Task 5: Karten-Inhalte aufbauen — vollständige Content Zone
+function buildCardContent(day, etCol, avtFile) {
+  // Highlights (erste 3 Aktivitäten)
+  const highlights = (day.acts || []).slice(0, 3).map(a => `
+    <div class="highlight-item">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      ${a.t}
+    </div>`).join('');
+
+  // Alerts
+  const alertsHtml = (day.alerts || []).map(al => `
+    <div class="card-alert ${al.t}">${al.text}</div>`).join('');
+
+  // Vollständige Aktivitäten
+  const actsHtml = (day.acts || []).map(a => `
+    <div class="act-item">
+      <div class="act-title">${a.t}</div>
+      <div class="act-desc">${a.d}</div>
+    </div>`).join('');
+
+  // Selfie-Spots
+  const selfieHtml = (day.selfie || []).map(s => `
+    <div class="selfie-item">
+      <div class="selfie-title">${s.t}</div>
+      <div class="selfie-tip">${s.tip}</div>
+    </div>`).join('');
+
+  // Restaurants
+  const restsHtml = (day.rests || []).map(r => `
+    <div class="rest-item">
+      <div class="rest-name">${r.n}</div>
+      <div class="rest-desc">${r.d}</div>
+      <div class="rest-tags">${(r.tags || []).map(t => `<span class="rest-tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+
+  // Tips
+  const tipsHtml = (day.tips || []).map(t => `
+    <div class="tip-item">${t}</div>`).join('');
+
+  // Abend
+  const eveHtml = day.eve ? `
+    <div class="detail-section">
+      <div class="detail-section-label">Abends</div>
+      <div class="card-eve">${day.eve}</div>
+    </div>` : '';
+
+  return `
+    <div class="card-content-zone">
+      ${alertsHtml}
+      <div class="card-meta">
+        <span class="card-etappe-dot" style="background:${etCol}"></span>
+        ${day.wd}, ${day.date}
+      </div>
+      <div class="card-title">${day.title}</div>
+      <div class="card-sub">${day.sub}</div>
+
+      <div class="card-avatar">
+        <img src="${avtFile}" alt="Familie Monschein" loading="lazy">
+      </div>
+
+      ${highlights ? `
+        <div class="card-highlights-label">Heute besonders</div>
+        <div class="card-highlights">${highlights}</div>` : ''}
+
+      <div class="scroll-hint">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+
+      ${actsHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Aktivitäten</div>
+        <div class="act-list">${actsHtml}</div>
+      </div>` : ''}
+
+      ${selfieHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Selfie-Spots</div>
+        <div class="selfie-list">${selfieHtml}</div>
+      </div>` : ''}
+
+      ${restsHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Restaurants</div>
+        <div class="rest-list">${restsHtml}</div>
+      </div>` : ''}
+
+      ${eveHtml}
+
+      ${tipsHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Tipps</div>
+        <div class="tips-list">${tipsHtml}</div>
+      </div>` : ''}
+    </div>`;
+}
 
 // Task 5: Swipe-Gesten
 function initSwipe() { /* stub */ }
