@@ -806,7 +806,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 <!-- ═══ SPLASH ═══ -->
 <div id="splash">
   <button class="sp-skip" id="sp-skip">Überspringen</button>
-  <img src="av-strand.png" class="sp-family" alt="Familie Monschein">
+  <img src="av-family-casual.png" class="sp-family" alt="Familie Monschein">
   <div class="sp-title">
     <h1>Familie Monschein</h1>
     <p>Korfu &amp; Ksamil · Juli 2026</p>
@@ -943,7 +943,7 @@ const LOCS={
 };
 
 const DAYS=[
-{id:"T1",date:"18.07",wd:"Sa",et:"tv",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
+{id:"T1",date:"18.07",wd:"Sa",et:"tv",avt:"airport",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
   center:[39.6015,19.9117,10],marks:["airport","poseidon"],
   acts:[
     {i:"Auto",t:"Abfahrt Plankenwarth",d:"Fahrt zum Grazer Hauptbahnhof, ca. 20 Min"},
@@ -956,7 +956,7 @@ const DAYS=[
   tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
   eve:null,rests:[],alerts:[{t:"info",text:"Tag 1 ist reiner Anreisetag — keine Aktivitäten geplant. Ankunft abends, einrichten, Nachtschlaf genießen."}]},
 
-{id:"T2",date:"19.07",wd:"So",et:"e1",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
+{id:"T2",date:"19.07",wd:"So",et:"e1",avt:"family-casual",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
   center:[39.553,19.868,13],marks:["poseidon","agiosBeach"],
   acts:[
     {i:"Sonne",t:"Erstes Frühstück auf Korfu",d:"Hotelfühstück, Terrassenmeerblick genießen"},
@@ -970,7 +970,7 @@ const DAYS=[
   eve:"Spaziergang durch das Dorf Agios Gordios, Eis & lokale Taverne",
   rests:[{n:"Panorama Restaurant",d:"Griechische Küche mit fantastischem Meerblick, direkt am Strand",tags:["Meerblick","Griechisch","€€"]},{n:"Pink Panther Beach Bar",d:"Locker-lässige Strandbar, beliebt bei Teens & jungen Familien, gute Burger",tags:["Strandbar","Burger","€"]}],alerts:[]},
 
-{id:"T3",date:"20.07",wd:"Mo",et:"e1",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
+{id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"kids-sport",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
   center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
   acts:[
     {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
@@ -984,7 +984,7 @@ const DAYS=[
   eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
   rests:[{n:"The Rock Bar",d:"Iconic Felsbar am Strand, Cocktails & Snacks, Sonnenuntergang-Pflichtprogramm",tags:["Strandbar","Cocktails","€€"]},{n:"Agios Gordios Taverna",d:"Frischer Fisch, Souvlaki, Moussaka — authentisch griechisch",tags:["Griechisch","Fisch","€€"]}],alerts:[]},
 
-{id:"T4",date:"21.07",wd:"Di",et:"e1",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
+{id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"kids-city",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
   center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
   acts:[
     {i:"Auto",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
@@ -999,7 +999,7 @@ const DAYS=[
   eve:"Liston-Promenade abends: Cafés unter den venezianischen Bögen, Gelato, Flanieren",
   rests:[{n:"La Famiglia",d:"Authentische Pizzeria in der Altstadt, günstig & lecker, Teenagers mögen's",tags:["Pizza","€","Altstadt"]},{n:"Liston Restaurant",d:"Direkt an der Promenade, griechische Küche, tolle Atmosphäre abends",tags:["Griechisch","Liston","€€"]},{n:"Gelateria Paradiso",d:"Handgemachtes Gelato, Liston-Nähe, Abend-Pflichtprogramm",tags:["Gelato","€","Dessert"]}],alerts:[]},
 
-{id:"T5",date:"22.07",wd:"Mi",et:"tv",title:"Transfer → Ksamil",sub:"Check-out Poseidon Suites · Fähre Korfu → Saranda · Check-in Muze Hotel",
+{id:"T5",date:"22.07",wd:"Mi",et:"tv",avt:"ferry",title:"Transfer → Ksamil",sub:"Check-out Poseidon Suites · Fähre Korfu → Saranda · Check-in Muze Hotel",
   center:[39.770,20.003,12],marks:["korfuPort","saranda","muze"],
   acts:[
     {i:"Hotel",t:"Check-out Poseidon Suites",d:"Koffer früh gepackt, Frühstück, Schlüssel abgeben"},
@@ -1017,7 +1017,7 @@ const DAYS=[
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails, perfekt zum Ankommen",tags:["Strandbar","€€","Inseln-Blick"]}],
   alerts:[{t:"warn",text:"WICHTIG: Albanien ist kein EU-Mitglied. Reisepass für alle Familienmitglieder nötig. EU-Roaming gilt NICHT — Datenkosten prüfen!"}]},
 
-{id:"T6",date:"23.07",wd:"Do",et:"e2",title:"Ksamil · Erste Strände",sub:"Eingewöhnen, türkises Wasser & Inseln-Panorama entdecken",
+{id:"T6",date:"23.07",wd:"Do",et:"e2",avt:"family-ksamil",title:"Ksamil · Erste Strände",sub:"Eingewöhnen, türkises Wasser & Inseln-Panorama entdecken",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze","ksamilIslands"],
   acts:[
     {i:"Sonne",t:"Frühstück & Strandmorgen",d:"Entspannt starten, Lieblingsplatz am Strand sichern — früh lohnt sich!"},
@@ -1032,7 +1032,7 @@ const DAYS=[
   eve:"Sonnenuntergang am Ksamil-Hauptstrand — die Inseln im Abendlicht sind unvergesslich",
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails",tags:["Strandbar","€€","Inseln-Blick"]}],alerts:[]},
 
-{id:"T7",date:"24.07",wd:"Fr",et:"e2",title:"Ksamil · Inseln & Schnorcheln",sub:"Bootstour zu den 4 Ksamil-Inseln + Cliff Jumping",
+{id:"T7",date:"24.07",wd:"Fr",et:"e2",avt:"kids-swim",title:"Ksamil · Inseln & Schnorcheln",sub:"Bootstour zu den 4 Ksamil-Inseln + Cliff Jumping",
   center:[39.765,19.998,13],marks:["ksamilBeach","ksamilIslands","muze"],
   acts:[
     {i:"Boot",t:"Bootstour zu den Ksamil-Inseln",d:"4 kleine Inseln mit türkisem Wasser & weißem Sand · ab ca. 10 €/P · direkt am Strand buchen"},
@@ -1046,7 +1046,7 @@ const DAYS=[
   eve:"Sonnenuntergang-Strandbar am Hauptstrand Ksamil — sehr romantisch, tolle Stimmung",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Silis Ksamil",d:"Beliebt bei Jugendlichen, gute Burger & Pizza, locker-lässig",tags:["Burger","Pizza","€"]}],alerts:[]},
 
-{id:"T8",date:"25.07",wd:"Sa",et:"e2",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
+{id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"eltern-cafe",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
   center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
   acts:[
     {i:"Museum",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
@@ -1060,7 +1060,7 @@ const DAYS=[
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
   rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
 
-{id:"T9",date:"26.07",wd:"So",et:"e2",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
+{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"kids-abend",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
   acts:[
     {i:"Taxi",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
@@ -1075,7 +1075,7 @@ const DAYS=[
   eve:"Entspannter Abend in Ksamil nach dem Ausflug — Lieblingsrestaurant revisit",
   rests:[{n:"Limani Restaurant Saranda",d:"Direkt am Hafen, frischer Fisch & Meeresfrüchte, toller Meerblick",tags:["Fisch","Hafen","€€"]},{n:"Era Restaurant Ksamil",d:"Abends in Ksamil: lokale albanische Küche, authentisch & günstig",tags:["Albanisch","€","Abend"]}],alerts:[]},
 
-{id:"T10",date:"27.07",wd:"Mo",et:"e2",title:"Ksamil · Wassersport",sub:"Jetski, Wakeboard & Kajak im türkisen albanischen Wasser",
+{id:"T10",date:"27.07",wd:"Mo",et:"e2",avt:"eltern-jetski",title:"Ksamil · Wassersport",sub:"Jetski, Wakeboard & Kajak im türkisen albanischen Wasser",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
     {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Ksamil Hauptstrand buchbar · Adrenalin pur auf türkisem Wasser"},
@@ -1089,7 +1089,7 @@ const DAYS=[
   eve:"Beach-Bar-Abend an der Ksamil-Strandpromenade: Musik, Drinks, Inseln-Silhouette im Abendlicht",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T11",date:"28.07",wd:"Di",et:"e2",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
+{id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"eltern-pool",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
     {i:"Strand",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
@@ -1103,7 +1103,7 @@ const DAYS=[
   eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
   rests:[{n:"Era Restaurant (Abschlussabend)",d:"Albanische Spezialitäten zum Abschied: Tave Kosi (Joghurt-Lamm) probieren!",tags:["Albanisch","Lokal","€"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T12",date:"29.07",wd:"Mi",et:"tv",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
+{id:"T12",date:"29.07",wd:"Mi",et:"tv",avt:"ferry",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
   center:[39.685,19.873,12],marks:["saranda","korfuPort","yannis","ypsosBeach"],
   acts:[
     {i:"Hotel",t:"Check-out Muze Hotel Ksamil",d:"Koffer fertig, Frühstück, Abschied von Ksamil"},
@@ -1119,7 +1119,7 @@ const DAYS=[
   eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
   rests:[{n:"Taverna Stamatis Ypsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ypsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ypsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
 
-{id:"T13",date:"30.07",wd:"Do",et:"e3",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
+{id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-strand",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
   center:[39.668,19.705,13],marks:["paleo"],
   acts:[
     {i:"Auto",t:"Fahrt nach Paleokastritsa",d:"ca. 50 Min von Ypsos · spektakuläre Küstenstraße über den Norden Korfus"},
@@ -1134,7 +1134,7 @@ const DAYS=[
   eve:"Sonnenuntergang von der Bella Vista Terrasse über Paleokastritsa — eines der schönsten Abendpanoramen Korfus",
   rests:[{n:"Café La Grotta",d:"Felsbar über dem Meer, Cocktails & Snacks, absolutes Highlight für Teens",tags:["Felsbar","Cocktails","€€","Selfie-Spot"]},{n:"Taverne Paleokastritsa",d:"Frischer Fisch direkt am Hauptstrand, mittelpreisig",tags:["Fisch","Griechisch","€€"]}],alerts:[]},
 
-{id:"T14",date:"31.07",wd:"Fr",et:"e3",title:"Ypsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
+{id:"T14",date:"31.07",wd:"Fr",et:"e3",avt:"eltern-swim",title:"Ypsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
   center:[39.684,19.872,13],marks:["ypsosBeach","yannis"],
   acts:[
     {i:"Parasailing",t:"Parasailing",d:"Spektakulärer Blick von oben auf Korfu & das ionische Meer — unvergesslich!"},
@@ -1148,7 +1148,7 @@ const DAYS=[
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
   rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
 
-{id:"T15",date:"01.08",wd:"Sa",et:"e3",title:"Achilleion + Korfu-Stadt",sub:"Kaiserin Sisis Palast, Pontikonisi & Liston-Abendessen",
+{id:"T15",date:"01.08",wd:"Sa",et:"e3",avt:"eltern-taverna",title:"Achilleion + Korfu-Stadt",sub:"Kaiserin Sisis Palast, Pontikonisi & Liston-Abendessen",
   center:[39.603,19.921,11],marks:["achilleion","pontikonisi","kanoni","korfuTown","alteFestung","liston"],
   acts:[
     {i:"Palast",t:"Achilleion Palast",d:"Kaiserin Sisis Sommerresidenz · ca. 30 Min von Ypsos · prächtige Gartenanlage & Statuen · Eintritt ca. 7 €"},
@@ -1163,7 +1163,7 @@ const DAYS=[
   eve:"Abendessen am Liston mit dem ganzen Flair der venezianischen Altstadt — schöner Abschluss-Abend",
   rests:[{n:"Venetian Well Restaurant",d:"Romantisches Restaurant im Innenhof, toll für besondere Abende",tags:["Mediterran","€€€","Romantisch"]},{n:"Ninos Corfu Town",d:"Lokale Liebling, griechisch-traditionell, gutes Preis-Leistungs-Verhältnis",tags:["Griechisch","€€","Lokal"]}],alerts:[]},
 
-{id:"T16",date:"02.08",wd:"So",et:"e3",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
+{id:"T16",date:"02.08",wd:"So",et:"e3",avt:"eltern-strand",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
   center:[39.684,19.872,12],marks:["ypsosBeach","yannis"],
   acts:[
     {i:"Quad",t:"Quad-/Buggy-Tour oder Aqualand (optional)",d:"Morgen-Abenteuer: 2–3h Quad-/Buggy-Tour durch Olivenhaine & Berge · ODER Aqualand Corfu (35 Min Fahrt, Griechenlands größter Wasserpark)"},
@@ -1178,7 +1178,7 @@ const DAYS=[
   eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
   rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
 
-{id:"T17",date:"03.08",wd:"Mo",et:"tv",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
+{id:"T17",date:"03.08",wd:"Mo",et:"tv",avt:"airport",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
   center:[39.6015,19.9117,10],marks:["airport","yannis"],
   acts:[
     {i:"Wecker",t:"Frühzeitig aufstehen & Check-out",d:"Frühstück nur wenn zeitlich möglich · Hotel Yannis Corfu"},
@@ -1312,14 +1312,26 @@ const TAB_DAYS = {
 };
 const ETAPPE_COLOR = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)', tv:'var(--tv)' };
 const AVT_IMG = {
-  airport:  'av-airport.png',
-  ferry:    'av-faehre.png',
-  beach:    'av-picknick.png',
-  sport:    'av-sport.png',
-  bar:      'av-bar.png',
-  taverna:  'av-taverna.png',
-  evening:  'av-abend.png',
-  group:    'av-strand.png',
+  // Transfer
+  airport:          'av-airport.png',
+  ferry:            'av-faehre.png',
+  // Ganze Familie
+  'family-casual':  'av-family-casual.png',
+  'family-ksamil':  'av-ksamil-strand.png',
+  'family-water':   'av-aqualand.png',
+  // Kids (Leah + Maxi)
+  'kids-strand':    'av-kids-strand.png',
+  'kids-sport':     'av-kids-sport.png',
+  'kids-swim':      'av-kids-swim.png',
+  'kids-abend':     'av-kids-abend.png',
+  'kids-city':      'av-kids-city.png',
+  // Eltern (Michael + Nina)
+  'eltern-cafe':    'av-eltern-cafe.png',
+  'eltern-taverna': 'av-eltern-taverna.png',
+  'eltern-strand':  'av-eltern-strand.png',
+  'eltern-swim':    'av-eltern-swim.png',
+  'eltern-jetski':  'av-eltern-jetski.png',
+  'eltern-pool':    'av-eltern-pool.png',
 };
 
 let activeTab = 'e1';
@@ -1381,19 +1393,49 @@ function setInitialTab() {
    SPLASH — Initialisierung
 ══════════════════════════════════════ */
 function initSplash() {
-  const splash = document.getElementById('splash');
-  const app    = document.getElementById('app');
-  const skip   = document.getElementById('sp-skip');
+  const seen = localStorage.getItem('korfu26_splash');
+  const forceShow = new URLSearchParams(location.search).has('splash');
+  if (seen && !forceShow) { endSplash(true); return; }
 
-  function endSplash() {
-    splash.classList.add('hidden');
-    app.hidden = false;
-    setTimeout(() => { splash.style.display = 'none'; }, 700);
+  // Routen-SVG in #sp-route einfügen
+  const routeEl = document.getElementById('sp-route');
+  if (routeEl) {
+    routeEl.innerHTML = `
+      <svg viewBox="0 0 380 120" xmlns="http://www.w3.org/2000/svg">
+        <path class="route-path" d="M30,95 C55,85 70,40 110,35 C150,30 160,55 190,50 C215,46 220,75 250,70 C275,66 295,45 335,55 C355,60 365,80 350,95"/>
+        <circle class="route-dot" cx="30"  cy="95" r="4" style="animation-delay:2.1s"/>
+        <circle class="route-dot" cx="110" cy="35" r="4" style="animation-delay:2.5s"/>
+        <circle class="route-dot" cx="190" cy="50" r="4" style="animation-delay:2.9s"/>
+        <circle class="route-dot" cx="250" cy="70" r="4" style="animation-delay:3.1s"/>
+        <circle class="route-dot" cx="335" cy="55" r="4" style="animation-delay:3.3s"/>
+        <text class="route-label" x="18"  y="110" style="opacity:0;animation:dotAppear .3s 2.2s forwards">Graz</text>
+        <text class="route-label" x="96"  y="28"  style="opacity:0;animation:dotAppear .3s 2.6s forwards">Korfu</text>
+        <text class="route-label" x="178" y="42"  style="opacity:0;animation:dotAppear .3s 3.0s forwards">Ksamil</text>
+        <text class="route-label" x="238" y="85"  style="opacity:0;animation:dotAppear .3s 3.2s forwards">Ypsos</text>
+      </svg>`;
   }
 
-  if (skip) skip.addEventListener('click', endSplash);
-  // Automatisch nach 8 Sekunden beenden
-  setTimeout(endSplash, 8000);
+  // Skip-Button
+  const skipBtn = document.getElementById('sp-skip');
+  if (skipBtn) skipBtn.addEventListener('click', () => endSplash());
+
+  // Auto-Ende nach 4.5s
+  setTimeout(endSplash, 4500);
+}
+
+function endSplash(instant = false) {
+  localStorage.setItem('korfu26_splash', '1');
+  const splash = document.getElementById('splash');
+  const app    = document.getElementById('app');
+  if (!splash || !app) return;
+  if (instant) {
+    splash.style.display = 'none';
+    app.hidden = false;
+    return;
+  }
+  splash.classList.add('hidden');
+  app.hidden = false;
+  setTimeout(() => { splash.style.display = 'none'; }, 700);
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
