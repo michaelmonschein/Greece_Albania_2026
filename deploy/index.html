@@ -649,6 +649,22 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   pointer-events: none;
 }
 
+/* Heute-Badge */
+.day-card.today .card-photo-zone::before {
+  content: 'HEUTE';
+  position: absolute;
+  top: calc(var(--header-h) + 12px);
+  left: 16px;
+  z-index: 10;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--warm-white);
+  background: var(--aegaeis);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
 /* ══════════════════════════════════════
    MAP (Leaflet in Modal)
 ══════════════════════════════════════ */
@@ -818,6 +834,13 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
 <!-- ═══ APP ═══ -->
 <div id="app" hidden>
+<div id="preview-banner" hidden
+     style="background:var(--tiefsee);color:rgba(255,255,255,0.85);
+            font-family:var(--font-mono);font-size:0.6rem;
+            letter-spacing:0.1em;text-transform:uppercase;
+            text-align:center;padding:6px;position:relative;z-index:50;">
+  Preview-Modus · Familie sieht die zeitgesteuerte Version
+</div>
   <header id="app-header">
     <span class="header-logo">Korfu 2026</span>
     <div class="header-actions">
@@ -1668,16 +1691,186 @@ function initSwipe() {
   });
 }
 
-// Task 8: Modals initialisieren
-function initModals() { /* stub */ }
+// Task 9: Modal öffnen / schließen
+function openModal(id) {
+  const backdrop = document.getElementById(`modal-${id}-backdrop`);
+  const sheet    = document.getElementById(`modal-${id}`);
+  if (!backdrop || !sheet) return;
+  backdrop.hidden = false;
+  sheet.hidden    = false;
+  requestAnimationFrame(() => {
+    backdrop.classList.add('open');
+    sheet.classList.add('open');
+  });
+  backdrop.addEventListener('click', () => closeModal(id), { once: true });
+}
 
-// Task 9: Karte initialisieren (Leaflet)
-function initMap() { /* stub */ }
+function closeModal(id) {
+  const backdrop = document.getElementById(`modal-${id}-backdrop`);
+  const sheet    = document.getElementById(`modal-${id}`);
+  if (!backdrop || !sheet) return;
+  backdrop.classList.remove('open');
+  sheet.classList.remove('open');
+  setTimeout(() => {
+    backdrop.hidden = true;
+    sheet.hidden    = true;
+  }, 350);
+}
+
+// Task 8: Modals initialisieren
+function initModals() {
+  document.getElementById('btn-todo')?.addEventListener('click', () => {
+    buildTodoContent();
+    openModal('todo');
+  });
+  document.getElementById('btn-route')?.addEventListener('click', () => {
+    buildRouteTimeline();
+    openModal('route');
+    if (window._mapInstance) window._mapInstance.invalidateSize();
+  });
+  document.getElementById('close-todo')?.addEventListener('click', () => closeModal('todo'));
+  document.getElementById('close-route')?.addEventListener('click', () => closeModal('route'));
+
+  // Swipe-down zum Schließen
+  ['todo', 'route'].forEach(id => {
+    const sheet = document.getElementById(`modal-${id}`);
+    if (!sheet) return;
+    let startY = 0;
+    sheet.addEventListener('pointerdown', e => { startY = e.clientY; });
+    sheet.addEventListener('pointerup',   e => {
+      if (e.clientY - startY > 80) closeModal(id);
+    });
+  });
+}
+
+// Task 9: Todo-Helfer
+const TODO_KEY = 'korfu26_todo';
+
+function loadTodoState() {
+  try { return JSON.parse(localStorage.getItem(TODO_KEY) || '{}'); } catch { return {}; }
+}
+function saveTodoState(state) {
+  localStorage.setItem(TODO_KEY, JSON.stringify(state));
+}
+
+// Task 9: Checkliste aufbauen
+function buildTodoContent() {
+  const state   = loadTodoState();
+  const content = document.getElementById('todo-content');
+  if (!content) return;
+
+  const total = TODOS.reduce((s, g) => s + g.items.length, 0);
+  const done  = Object.values(state).filter(Boolean).length;
+
+  const progress = document.getElementById('todo-progress');
+  if (progress) progress.style.width = `${total > 0 ? Math.round(done / total * 100) : 0}%`;
+
+  content.innerHTML = TODOS.map(group => `
+    <div class="todo-group">
+      <div class="todo-group-label">${group.g}</div>
+      ${group.items.map(item => `
+        <div class="todo-item${state[item.id] ? ' done' : ''}${item.urgent ? ' todo-urgent' : ''}"
+             data-id="${item.id}">
+          <div class="todo-check">
+            <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+          </div>
+          <div class="todo-label">
+            ${item.label}
+            ${item.note ? `<span class="todo-note">${item.note}</span>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  content.querySelectorAll('.todo-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const s  = loadTodoState();
+      s[id]    = !s[id];
+      saveTodoState(s);
+      buildTodoContent();
+    });
+  });
+}
+
+// Task 9: Routen-Timeline aufbauen
+function buildRouteTimeline() {
+  const steps = [
+    { title:'Anreise · Graz → Korfu',       detail:'18. Juli · OS863 19:30 Uhr',           color:'var(--tv)' },
+    { title:'Etappe 1 · Agios Gordios',      detail:'19.–22. Juli · Poseidon Suites',        color:'var(--e1)' },
+    { title:'Transfer → Ksamil',             detail:'22. Juli · Fähre Korfu → Saranda',      color:'var(--tv)' },
+    { title:'Etappe 2 · Ksamil',             detail:'22.–29. Juli · Muze Hotel',             color:'var(--e2)' },
+    { title:'Transfer → Ýpsos',              detail:'29. Juli · Fähre Saranda → Korfu',      color:'var(--tv)' },
+    { title:'Etappe 3 · Ýpsos',              detail:'29. Juli–3. Aug · Hotel Yannis',         color:'var(--e3)' },
+    { title:'Rückreise · Korfu → Graz',      detail:'3. August · OS862 10:50 Uhr',           color:'var(--tv)' },
+  ];
+  const timeline = document.getElementById('route-timeline');
+  if (!timeline) return;
+  timeline.innerHTML = steps.map(s => `
+    <div class="route-step">
+      <div class="route-step-dot" style="background:${s.color}"></div>
+      <div class="route-step-text">
+        <div class="route-step-title">${s.title}</div>
+        <div class="route-step-detail">${s.detail}</div>
+      </div>
+    </div>`).join('');
+}
+
+// Task 10: Karte initialisieren (Leaflet) — lazy beim ersten Modal-Öffnen
+function initMap() {
+  // Karte erst beim ersten Öffnen des Route-Modals initialisieren
+  document.getElementById('btn-route')?.addEventListener('click', () => {
+    if (window._mapInstance) return;
+    const container = document.getElementById('map-container');
+    if (!container || typeof L === 'undefined') return;
+
+    const map = L.map('map-container', { zoomControl: false }).setView([39.7, 19.9], 8);
+    window._mapInstance = map;
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 18
+    }).addTo(map);
+
+    const colors = { e1:'#1a6b9a', e2:'#2a9d8f', e3:'#5c7a3e', tv:'#8a9aaa' };
+
+    const hotels = [
+      { name:'Poseidon Suites · Agios Gordios', lat:39.5558, lng:19.8695, et:'e1' },
+      { name:'Muze Hotel · Ksamil',             lat:39.7703, lng:20.0027, et:'e2' },
+      { name:'Hotel Yannis · Ýpsos',            lat:39.6850, lng:19.8735, et:'e3' },
+    ];
+    hotels.forEach(h => {
+      const col = colors[h.et];
+      L.circleMarker([h.lat, h.lng], {
+        radius: 8, color: col, fillColor: col, fillOpacity: 0.9, weight: 2
+      }).bindPopup(`<b>${h.name}</b>`).addTo(map);
+    });
+
+    const routePoints = [
+      [39.5558, 19.8695],  // Agios Gordios
+      [39.6230, 19.9168],  // Korfu Hafen
+      [39.8756, 20.0053],  // Saranda
+      [39.7703, 20.0027],  // Ksamil
+      [39.8756, 20.0053],  // Saranda zurück
+      [39.6230, 19.9168],  // Korfu Hafen
+      [39.6850, 19.8735],  // Ýpsos
+    ];
+    L.polyline(routePoints, {
+      color: '#8a9aaa', weight: 1.5, dashArray: '4,6', opacity: 0.6
+    }).addTo(map);
+
+    map.fitBounds(L.latLngBounds(routePoints), { padding: [30, 30] });
+  }, { once: true });
+}
 
 /* ══════════════════════════════════════
    INIT — wird nach Splash aufgerufen
 ══════════════════════════════════════ */
 function initApp() {
+  if (IS_PREVIEW) {
+    const banner = document.getElementById('preview-banner');
+    if (banner) banner.hidden = false;
+  }
   setInitialTab();
   renderCards();
   renderBottomNav();
@@ -1686,8 +1879,8 @@ function initApp() {
   initModals();
   initMap();
   initSwipe();
-  // Header-Hintergrund: wird solid wenn Karte nach unten gescrollt
-  document.getElementById('cards-track').addEventListener('scroll', updateHeaderBg, true);
+  const track = document.getElementById('cards-track');
+  if (track) track.addEventListener('scroll', updateHeaderBg, true);
 }
 
 function setInitialTab() {
