@@ -38,7 +38,7 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font-mono:    'Space Mono', monospace;
   --font-body:    'Nunito', system-ui, sans-serif;
-  --header-h:   52px;
+  --header-h:   calc(52px + env(safe-area-inset-top));
   --nav-h:      calc(64px + env(safe-area-inset-bottom));
   --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -71,9 +71,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   height: var(--header-h);
   z-index: 100;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 20px 8px;
   background: transparent;
   pointer-events: none;
 }
