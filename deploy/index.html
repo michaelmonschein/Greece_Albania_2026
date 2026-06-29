@@ -230,9 +230,10 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   background: linear-gradient(
     180deg,
     #f7f2eb 0%,
-    #d4eef8 25%,
-    #5ba3c9 55%,
-    #1a6b9a 80%,
+    #e8f5fb 18%,
+    #cce9f8 38%,
+    #9dd2f0 58%,
+    #3a88bc 80%,
     #0d3b5e 100%
   );
   z-index: 999;
@@ -288,6 +289,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   object-fit: contain;
   object-position: center bottom;
   mix-blend-mode: multiply;
+  filter: brightness(1.08) saturate(1.25) contrast(1.05);
   opacity: 0;
   min-height: 0;
   animation: spFadeUp 1s var(--ease-smooth) 0.5s forwards;
@@ -1044,7 +1046,7 @@ const DAYS=[
   tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
   eve:null,rests:[],alerts:[{t:"info",text:"Tag 1 ist reiner Anreisetag — keine Aktivitäten geplant. Ankunft abends, einrichten, Nachtschlaf genießen."}]},
 
-{id:"T2",date:"19.07",wd:"So",et:"e1",avt:"family-casual",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
+{id:"T2",date:"19.07",wd:"So",et:"e1",avt:"strand-fam",title:"Agios Gordios · Ankommen",sub:"Erster Korfu-Tag: Strand & Eingewöhnen",
   center:[39.553,19.868,13],marks:["poseidon","agiosBeach"],
   acts:[
     {i:"Sonne",t:"Erstes Frühstück auf Korfu",d:"Hotelfühstück, Terrassenmeerblick genießen"},
@@ -1058,7 +1060,7 @@ const DAYS=[
   eve:"Spaziergang durch das Dorf Agios Gordios, Eis & lokale Taverne",
   rests:[{n:"Panorama Restaurant",d:"Griechische Küche mit fantastischem Meerblick, direkt am Strand",tags:["Meerblick","Griechisch","€€"]},{n:"Pink Panther Beach Bar",d:"Locker-lässige Strandbar, beliebt bei Teens & jungen Familien, gute Burger",tags:["Strandbar","Burger","€"]}],alerts:[]},
 
-{id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"kids-sport",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
+{id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"sport-fam",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
   center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
   acts:[
     {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
@@ -1134,7 +1136,7 @@ const DAYS=[
   eve:"Sonnenuntergang-Strandbar am Hauptstrand Ksamil — sehr romantisch, tolle Stimmung",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Silis Ksamil",d:"Beliebt bei Jugendlichen, gute Burger & Pizza, locker-lässig",tags:["Burger","Pizza","€"]}],alerts:[]},
 
-{id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"kids-strand",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
+{id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"taverna-fam",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
   center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
   acts:[
     {i:"Museum",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
@@ -1148,7 +1150,7 @@ const DAYS=[
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
   rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
 
-{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"family-casual",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
+{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"abend-fam",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
   acts:[
     {i:"Taxi",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
@@ -1177,7 +1179,7 @@ const DAYS=[
   eve:"Beach-Bar-Abend an der Ksamil-Strandpromenade: Musik, Drinks, Inseln-Silhouette im Abendlicht",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"eltern-pool",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
+{id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"picknick-fam",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
     {i:"Strand",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
@@ -1202,7 +1204,7 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag Ypsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
   ],
   selfie:[{t:"Ypsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
-  photos:["kanoni","korfuAerial"],
+  photos:["kanoni","pontikonisi"],
   tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ypsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
   eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
   rests:[{n:"Taverna Stamatis Ypsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ypsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ypsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
@@ -1231,7 +1233,7 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
   ],
   selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
-  photos:["korfuAerial","paleokastritsa"],
+  photos:["agiosGordios","paleokastritsa"],
   tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
   rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
@@ -1251,7 +1253,7 @@ const DAYS=[
   eve:"Abendessen am Liston mit dem ganzen Flair der venezianischen Altstadt — schöner Abschluss-Abend",
   rests:[{n:"Venetian Well Restaurant",d:"Romantisches Restaurant im Innenhof, toll für besondere Abende",tags:["Mediterran","€€€","Romantisch"]},{n:"Ninos Corfu Town",d:"Lokale Liebling, griechisch-traditionell, gutes Preis-Leistungs-Verhältnis",tags:["Griechisch","€€","Lokal"]}],alerts:[]},
 
-{id:"T16",date:"02.08",wd:"So",et:"e3",avt:"eltern-strand",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
+{id:"T16",date:"02.08",wd:"So",et:"e3",avt:"aqualand",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
   center:[39.684,19.872,12],marks:["ypsosBeach","yannis"],
   acts:[
     {i:"Quad",t:"Quad-/Buggy-Tour oder Aqualand (optional)",d:"Morgen-Abenteuer: 2–3h Quad-/Buggy-Tour durch Olivenhaine & Berge · ODER Aqualand Corfu (35 Min Fahrt, Griechenlands größter Wasserpark)"},
@@ -1401,25 +1403,24 @@ const TAB_DAYS = {
 const ETAPPE_COLOR = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)', tv:'var(--tv)' };
 const AVT_IMG = {
   // Transfer
-  airport:          'av-airport.png',
-  ferry:            'av-faehre.png',
-  // Ganze Familie
-  'family-casual':  'av-family-casual.png',
-  'family-ksamil':  'av-ksamil-strand.png',
-  'family-water':   'av-aqualand.png',
+  airport:           'av-airport.png',
+  ferry:             'av-faehre.png',
+  // Ganze Familie — Aktivitäts-Szenen
+  'strand-fam':      'av-strand.png',
+  'sport-fam':       'av-sport.png',
+  'taverna-fam':     'av-taverna.png',
+  'abend-fam':       'av-abend.png',
+  'picknick-fam':    'av-picknick.png',
+  'aqualand':        'av-aqualand.png',
+  'family-ksamil':   'av-ksamil-strand.png',
   // Kids (Leah + Maxi)
-  'kids-strand':    'av-kids-strand.png',
-  'kids-sport':     'av-kids-sport.png',
-  'kids-swim':      'av-kids-swim.png',
-  'kids-abend':     'av-kids-abend.png',
-  'kids-city':      'av-kids-city.png',
+  'kids-sport':      'av-kids-sport.png',
+  'kids-swim':       'av-kids-swim.png',
   // Eltern (Michael + Nina)
-  'eltern-cafe':    'av-eltern-cafe.png',
-  'eltern-taverna': 'av-eltern-taverna.png',
-  'eltern-strand':  'av-eltern-strand.png',
-  'eltern-swim':    'av-eltern-swim.png',
-  'eltern-jetski':  'av-eltern-jetski.png',
-  'eltern-pool':    'av-eltern-pool.png',
+  'eltern-cafe':     'av-eltern-cafe.png',
+  'eltern-taverna':  'av-eltern-taverna.png',
+  'eltern-swim':     'av-eltern-swim.png',
+  'eltern-jetski':   'av-eltern-jetski.png',
 };
 
 // Globaler Tages-Index 0–16 (ersetzt activeTab + activeDayInTab)
@@ -1479,7 +1480,7 @@ function renderCards() {
 
     const etCol   = `var(--${day.et})`;
     const wcEdge  = WC_EDGES[day.et] || WC_EDGES.tv;
-    const avtFile = AVT_IMG[day.avt] || 'av-family-casual.png';
+    const avtFile = AVT_IMG[day.avt] || 'av-strand.png';
 
     // Countdown: erste Karte (T1) in pre-Phase
     const isCountdown = phase === 'pre' && dayIdx === 0;
