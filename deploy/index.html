@@ -654,7 +654,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   line-height: 1.4;
   margin-bottom: 7px;
 }
-.rest-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.rest-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
 .rest-tag {
   font-family: var(--font-mono);
   font-size: 0.55rem;
@@ -665,6 +665,23 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   border-radius: 20px;
   padding: 2px 8px;
 }
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1a73e8;
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1.5px solid rgba(26,115,232,0.35);
+  border-radius: 20px;
+  background: rgba(26,115,232,0.06);
+  transition: background 0.15s;
+}
+.map-link:active { background: rgba(26,115,232,0.15); }
+.map-link svg { width: 12px; height: 12px; flex-shrink: 0; }
 
 /* Tips */
 .tips-list { display: flex; flex-direction: column; gap: 10px; }
@@ -1567,6 +1584,21 @@ function updateTrackPosition(animate = true) {
   if (!animate) requestAnimationFrame(() => { track.style.transition = ''; });
 }
 
+// Erstellt Google-Maps-Such-URL aus Name + Tagesstandort
+function mapsUrl(name, dayId) {
+  const locs = {
+    T1:'Korfu Greece',T2:'Agios Gordios Corfu',T3:'Agios Gordios Corfu',
+    T4:'Corfu Town Greece',T5:'Ksamil Albania',T6:'Ksamil Albania',
+    T7:'Ksamil Albania',T8:'Ksamil Albania',T9:'Saranda Albania',
+    T10:'Ksamil Albania',T11:'Ksamil Albania',T12:'Ypsos Corfu Greece',
+    T13:'Paleokastritsa Corfu',T14:'Ypsos Corfu Greece',T15:'Corfu Town Greece',
+    T16:'Ypsos Corfu Greece',T17:'Corfu Greece'
+  };
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ' ' + (locs[dayId] || 'Corfu'));
+}
+
+const MAP_PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+
 // Task 5: Karten-Inhalte aufbauen — vollständige Content Zone
 function buildCardContent(day, etCol, avtFile) {
   // Highlights (erste 3 Aktivitäten)
@@ -1592,6 +1624,7 @@ function buildCardContent(day, etCol, avtFile) {
     <div class="selfie-item">
       <div class="selfie-title">${s.t}</div>
       <div class="selfie-tip">${s.tip}</div>
+      <a class="map-link" href="${mapsUrl(s.t, day.id)}" target="_blank" rel="noopener">${MAP_PIN_SVG} In Maps zeigen</a>
     </div>`).join('');
 
   // Restaurants
@@ -1600,6 +1633,7 @@ function buildCardContent(day, etCol, avtFile) {
       <div class="rest-name">${r.n}</div>
       <div class="rest-desc">${r.d}</div>
       <div class="rest-tags">${(r.tags || []).map(t => `<span class="rest-tag">${t}</span>`).join('')}</div>
+      <a class="map-link" href="${mapsUrl(r.n, day.id)}" target="_blank" rel="noopener">${MAP_PIN_SVG} Google Maps öffnen</a>
     </div>`).join('');
 
   // Tips
