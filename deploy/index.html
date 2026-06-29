@@ -981,32 +981,38 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 const IMG = {
   // Korfu — Agios Gordios
   agiosGordios:   "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=800",
-  // Korfu — Stadt & Sehenswürdigkeiten (gesicherte URLs)
+  agiosGordios2:  "https://commons.wikimedia.org/wiki/Special:FilePath/Agios_Gordios_Corfu.jpg?width=800",
+  // Korfu — Stadt & Sehenswürdigkeiten
   alteFestung:    "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=800",
   oldFortress:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=800",
-  korfuAerial:    "https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Corfu%20town%20aerial%2002.jpg?width=800",
   kanoni:         "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=800",
   pontikonisi:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=800",
   achilleion:     "https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=800",
-  // Korfu — Westküste
+  // Korfu — Westküste & Norden
   paleokastritsa: "https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=800",
   paleokastritsa2:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=800",
+  ypsosBeach:     "https://commons.wikimedia.org/wiki/Special:FilePath/Ipsos_beach_Corfu.jpg?width=800",
+  korfuNorth:     "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu_north_coast.jpg?width=800",
   // Albanien — Ksamil
   ksamil:         "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=800",
   ksamilRiviera:  "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=800",
+  ksamilIslands:  "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil_Islands.jpg?width=800",
+  ksamilCoast:    "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%2C_Albania.jpg?width=800",
   // Albanien — Sehenswürdigkeiten
   butrint:        "https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=800",
   blueEye:        "https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=800",
 };
 
 const IMG_CAPS = {
-  agiosGordios:'Agios Gordios Beach', korfuAerial:'Korfu-Stadt Panorama',
+  agiosGordios:'Agios Gordios Beach', agiosGordios2:'Agios Gordios Panorama',
   alteFestung:'Alte Festung & Altstadt', paleokastritsa:'Paleokastritsa Panorama',
   paleokastritsa2:'Paleokastritsa Bucht', achilleion:'Achilleion Palast',
   pontikonisi:'Pontikonisi Mauseinsel', kanoni:'Kanoni Aussicht',
-  oldFortress:'Alte Festung Korfu', ksamil:'Ksamil Beach',
-  ksamilRiviera:'Ksamil Albanian Riviera', butrint:'Butrint UNESCO',
-  blueEye:'Blaues Auge · Syri i Kaltër',
+  oldFortress:'Alte Festung Korfu', ypsosBeach:'Ypsos Beach',
+  korfuNorth:'Nordküste Korfu',
+  ksamil:'Ksamil Beach', ksamilRiviera:'Ksamil Albanian Riviera',
+  ksamilIslands:'Ksamil Inseln', ksamilCoast:'Ksamil Küste',
+  butrint:'Butrint UNESCO', blueEye:'Blaues Auge · Syri i Kaltër',
 };
 
 const LOCS={
@@ -1033,7 +1039,7 @@ const LOCS={
 };
 
 const DAYS=[
-{id:"T1",date:"18.07",wd:"Sa",et:"tv",avt:"airport",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
+{id:"T1",date:"18.07",wd:"Sa",et:"tv",avt:"abend-fam",title:"Anreise",sub:"Plankenwarth → Graz → Wien → Korfu",
   center:[39.6015,19.9117,10],marks:["airport","poseidon"],
   acts:[
     {i:"Auto",t:"Abfahrt Plankenwarth",d:"Fahrt zum Grazer Hauptbahnhof, ca. 20 Min"},
@@ -1042,7 +1048,7 @@ const DAYS=[
     {i:"Taxi",t:"Transfer Flughafen → Poseidon Suites",d:"Agios Gordios · ca. 30 Min · Taxi vorab buchen (ca. 25 €)"},
     {i:"Hotel",t:"Check-in Poseidon Suites by CorfuEscapes",d:"Agios Gordios · Ankunft ca. 22:00 Uhr"},
   ],
-  selfie:[],photos:["agiosGordios"],
+  selfie:[],photos:["kanoni"],
   tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
   eve:null,rests:[],alerts:[{t:"info",text:"Tag 1 ist reiner Anreisetag — keine Aktivitäten geplant. Ankunft abends, einrichten, Nachtschlaf genießen."}]},
 
@@ -1060,7 +1066,7 @@ const DAYS=[
   eve:"Spaziergang durch das Dorf Agios Gordios, Eis & lokale Taverne",
   rests:[{n:"Panorama Restaurant",d:"Griechische Küche mit fantastischem Meerblick, direkt am Strand",tags:["Meerblick","Griechisch","€€"]},{n:"Pink Panther Beach Bar",d:"Locker-lässige Strandbar, beliebt bei Teens & jungen Familien, gute Burger",tags:["Strandbar","Burger","€"]}],alerts:[]},
 
-{id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"sport-fam",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
+{id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"kids-sport",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
   center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
   acts:[
     {i:"Boot",t:"Jetski & Banana Boat",d:"Direkt am Agios Gordios Strand buchbar · Jetski ab ca. 30 €/15 Min"},
@@ -1069,12 +1075,12 @@ const DAYS=[
     {i:"Segelboot",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
   ],
   selfie:[{t:"Jetski-Actionfoto",tip:"Jemanden ans Ufer stellen zum Fotografieren — beste Hintergrundbucht!"}],
-  photos:["pontikonisi","agiosGordios"],
+  photos:["agiosGordios2"],
   tips:["Früh am Strand (9 Uhr), bevor Warteschlangen entstehen","Wassersport-Preise sind verhandelbar — mehrere Aktivitäten als Paket fragen","Ausreichend Wasser trinken — Wassersport kostet Energie!"],
   eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
   rests:[{n:"The Rock Bar",d:"Iconic Felsbar am Strand, Cocktails & Snacks, Sonnenuntergang-Pflichtprogramm",tags:["Strandbar","Cocktails","€€"]},{n:"Agios Gordios Taverna",d:"Frischer Fisch, Souvlaki, Moussaka — authentisch griechisch",tags:["Griechisch","Fisch","€€"]}],alerts:[]},
 
-{id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"eltern-cafe",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
+{id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"city-fam",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
   center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
   acts:[
     {i:"Auto",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
@@ -1084,7 +1090,7 @@ const DAYS=[
     {i:"Einkauf",t:"Shopping in der Altstadt",d:"Olivenöl, Kumquat-Likör, griechische Keramik — tolle Souvenirs"},
   ],
   selfie:[{t:"Alte Festung Panorama",tip:"Aussichtsplattform oben — Meerblick und Stadtpanorama. Beste Fotos am Nachmittag (Licht)."},{t:"Liston Arkaden",tip:"Venezianische Bogengänge — wunderbar fotogen, besonders abends mit Beleuchtung."}],
-  photos:["alteFestung","oldFortress"],
+  photos:["alteFestung"],
   tips:["Hochsaison: Festung morgens früh besuchen (kühler, weniger voll)","Altstadt-Gassen sind eng & verschachtelt — absichtlich verirren!","Kumquat-Likör ist Korfu-Spezialität — als Souvenir perfekt"],
   eve:"Liston-Promenade abends: Cafés unter den venezianischen Bögen, Gelato, Flanieren",
   rests:[{n:"La Famiglia",d:"Authentische Pizzeria in der Altstadt, günstig & lecker, Teenagers mögen's",tags:["Pizza","€","Altstadt"]},{n:"Liston Restaurant",d:"Direkt an der Promenade, griechische Küche, tolle Atmosphäre abends",tags:["Griechisch","Liston","€€"]},{n:"Gelateria Paradiso",d:"Handgemachtes Gelato, Liston-Nähe, Abend-Pflichtprogramm",tags:["Gelato","€","Dessert"]}],alerts:[]},
@@ -1101,7 +1107,7 @@ const DAYS=[
     {i:"Strand",t:"Erster Ksamil-Strand",d:"Nachmittags: Eingewöhnen, erstes Bad im türkisen albanischen Wasser"},
   ],
   selfie:[{t:"Ksamil Strandblick",tip:"Blick von der Strandbar auf die vorgelagerten Inseln — Nachmittag mit tief stehender Sonne ideal"}],
-  photos:["kanoni","pontikonisi"],
+  photos:["pontikonisi"],
   tips:["REISEPASS nicht vergessen — Albanien ist KEIN EU/Schengen-Land!","Roaming in Albanien: KEIN EU-Roaming-Schutz → Datenvolumen prüfen!","Albanische Lek am ATM in Saranda abheben (Euro wird auch akzeptiert, aber Lek besser)","Fähre: Tickets idealerweise 1–2 Tage vorher online buchen"],
   eve:"Erster albanischer Sonnenuntergang am Ksamil-Strand — sehr fotogen",
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails, perfekt zum Ankommen",tags:["Strandbar","€€","Inseln-Blick"]}],
@@ -1145,12 +1151,12 @@ const DAYS=[
     {i:"Auge",t:"Blaues Auge (Syri i Kaltër)",d:"ca. 23 km von Saranda · mystischer Quellsee mit glasklarem, tiefblauem Wasser — WOW-Faktor!"},
   ],
   selfie:[{t:"Butrint Amphitheater",tip:"Antikes griechisches Theater — Stufen als Fotokulisse. Früh morgens kaum Touristen."},{t:"Blaues Auge von oben",tip:"Aussichtsplattform am Rande des Quells — bestes Foto von oben. Tiefblau garantiert!"}],
-  photos:["butrint","blueEye"],
+  photos:["butrint"],
   tips:["Butrint: Morgens starten (Hitze & Menschenmassen nachmittags schlimmer)","Gutes Schuhwerk für Butrint — unebene Ausgrabungswege","Blaues Auge: Das Wasser hat ca. 10°C — Schwimmen möglich aber kalt! Maxi wird es wagen...","Rückfahrt: ca. 20 Min von Blaues Auge → Ksamil"],
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
   rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
 
-{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"abend-fam",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
+{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"kids-abend",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
   acts:[
     {i:"Taxi",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
@@ -1160,7 +1166,7 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag zurück in Ksamil",d:"Ruhiger Nachmittag am Strand nach dem Ausflug"},
   ],
   selfie:[{t:"Lëkurësi-Burg Panorama",tip:"360°-Blick auf Saranda, den Kanal und Korfu im Hintergrund — ein absolutes Highlight!"},{t:"Saranda Hafen",tip:"Abendstimmung am Hafen mit Blick nach Korfu — malerisch und einzigartig"}],
-  photos:["ksamil","ksamilRiviera"],
+  photos:["blueEye"],
   tips:["Lëkurësi Taxi: Direkt zum Festungseingang fahren lassen (~5 € extra)","Beste Aussicht kurz vor Sonnenuntergang — dann leuchtet Korfu golden","Euro wird in Saranda akzeptiert, Lek ist aber günstiger","Rückfahrt Ksamil: Minibus oder Taxi, ca. 8–10 €"],
   eve:"Entspannter Abend in Ksamil nach dem Ausflug — Lieblingsrestaurant revisit",
   rests:[{n:"Limani Restaurant Saranda",d:"Direkt am Hafen, frischer Fisch & Meeresfrüchte, toller Meerblick",tags:["Fisch","Hafen","€€"]},{n:"Era Restaurant Ksamil",d:"Abends in Ksamil: lokale albanische Küche, authentisch & günstig",tags:["Albanisch","€","Abend"]}],alerts:[]},
@@ -1174,12 +1180,12 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Stehpaddeln in ruhigem Wasser, perfekte Abendstimmung"},
   ],
   selfie:[{t:"Jetski Action",tip:"Jemanden ans Ufer stellen zum Fotografieren — Wasserreflexion + Geschwindigkeit = perfektes Foto!"}],
-  photos:["ksamil"],
+  photos:["ksamilIslands"],
   tips:["Wassersport-Preise verhandelbar — mehrere Aktivitäten als Paket anfragen","Früh buchen (9–10 Uhr) bevor Warteschlangen entstehen","Ausreichend Wasser trinken — Wassersport im Hochsommer kostet Energie","Sonnencreme auch im Wasser erneuern"],
   eve:"Beach-Bar-Abend an der Ksamil-Strandpromenade: Musik, Drinks, Inseln-Silhouette im Abendlicht",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"picknick-fam",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
+{id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"eltern-pool",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
   acts:[
     {i:"Strand",t:"Freier Strandtag Ksamil",d:"Liegeplatz am Lieblingsstrand, kein Plan — einfach genießen"},
@@ -1188,12 +1194,12 @@ const DAYS=[
     {i:"Eis",t:"Eis & Desserts erkunden",d:"Ksamil-Dorf erkunden, lokale Gelaterie, albanische Süßigkeiten probieren"},
   ],
   selfie:[{t:"Strandbar mit Inseln-Blick",tip:"Letzter Ksamil-Sonnenuntergang — wer schöne Bilder will, kommt 30 Min vor Sonnenuntergang"}],
-  photos:["ksamilRiviera"],
+  photos:["ksamilCoast"],
   tips:["Albanische Lek ausgeben (Bargeld wieder zurücktauschen schwierig)","Albanische Souvenirs: Raki, Honig, Handarbeiten aus dem Dorf","Check-out morgen früh — Koffer heute Abend vorbereiten","Fähre Saranda → Korfu VORAB buchen!"],
   eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
   rests:[{n:"Era Restaurant (Abschlussabend)",d:"Albanische Spezialitäten zum Abschied: Tave Kosi (Joghurt-Lamm) probieren!",tags:["Albanisch","Lokal","€"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
 
-{id:"T12",date:"29.07",wd:"Mi",et:"tv",avt:"ferry",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
+{id:"T12",date:"29.07",wd:"Mi",et:"tv",avt:"bar-fam",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
   center:[39.685,19.873,12],marks:["saranda","korfuPort","yannis","ypsosBeach"],
   acts:[
     {i:"Hotel",t:"Check-out Muze Hotel Ksamil",d:"Koffer fertig, Frühstück, Abschied von Ksamil"},
@@ -1204,12 +1210,12 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag Ypsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
   ],
   selfie:[{t:"Ypsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
-  photos:["kanoni","pontikonisi"],
+  photos:["oldFortress"],
   tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ypsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
   eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
   rests:[{n:"Taverna Stamatis Ypsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ypsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ypsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
 
-{id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-sport",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
+{id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-strand",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
   center:[39.668,19.705,13],marks:["paleo"],
   acts:[
     {i:"Auto",t:"Fahrt nach Paleokastritsa",d:"ca. 50 Min von Ypsos · spektakuläre Küstenstraße über den Norden Korfus"},
@@ -1219,7 +1225,7 @@ const DAYS=[
     {i:"Bar",t:"Café La Grotta",d:"Legendäre Bar direkt in den Felsen gebaut — Cocktails über dem Meer!"},
   ],
   selfie:[{t:"Paleokastritsa Klippen",tip:"Von der Bella Vista Aussicht — beste Sicht auf die türkisen Buchten. Früh hingehen!"},{t:"Café La Grotta",tip:"Einzigartige Felsbar-Perspektive — TikTok & Instagram Pflicht. Mittags weniger voll."}],
-  photos:["paleokastritsa","paleokastritsa2"],
+  photos:["paleokastritsa"],
   tips:["Hochsaison: VOR 10 Uhr ankommen — nachmittags brechend voll","Gutes Schuhwerk für Klippen und Kloster-Weg","Bootstouren: Direkt am Hauptstrand buchen, ca. 10 €/Person","La Grotta: Freischwimmen von den Felsen möglich!"],
   eve:"Sonnenuntergang von der Bella Vista Terrasse über Paleokastritsa — eines der schönsten Abendpanoramen Korfus",
   rests:[{n:"Café La Grotta",d:"Felsbar über dem Meer, Cocktails & Snacks, absolutes Highlight für Teens",tags:["Felsbar","Cocktails","€€","Selfie-Spot"]},{n:"Taverne Paleokastritsa",d:"Frischer Fisch direkt am Hauptstrand, mittelpreisig",tags:["Fisch","Griechisch","€€"]}],alerts:[]},
@@ -1233,7 +1239,7 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
   ],
   selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
-  photos:["agiosGordios","paleokastritsa"],
+  photos:["ypsosBeach"],
   tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
   rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
@@ -1248,7 +1254,7 @@ const DAYS=[
     {i:"Burg",t:"Alte Festung im Abendlicht",d:"Das goldene Abendlicht macht Fotos unvergesslich — Pflichtbesuch!"},
   ],
   selfie:[{t:"Kanoni mit Flugzeug",tip:"Flugzeuge landen über der Lagune — ca. 10–20 Min Wartezeit. Abends traumhaftes Licht!"},{t:"Alte Festung im Abendgold",tip:"18–19 Uhr: Goldstunde am Meerblick der Alten Festung — absolut fantastisch!"},{t:"Liston Abendatmosphäre",tip:"Venezianische Bögen beleuchtet, Abendtrubel — tolle Stimmungsfotos"}],
-  photos:["achilleion","pontikonisi","oldFortress"],
+  photos:["achilleion"],
   tips:["Achilleion morgens früh besuchen (kühler & weniger voll)","Kanoni: Flugzeug-Timing per Korfu Airport-Webcam prüfen","Pontikonisi Fähre fährt regelmäßig","Abendlicht (17–19 Uhr) macht Festungsfotos dramatisch besser","Liston: Sitzplatz unter den Bögen reservieren oder früh ankommen"],
   eve:"Abendessen am Liston mit dem ganzen Flair der venezianischen Altstadt — schöner Abschluss-Abend",
   rests:[{n:"Venetian Well Restaurant",d:"Romantisches Restaurant im Innenhof, toll für besondere Abende",tags:["Mediterran","€€€","Romantisch"]},{n:"Ninos Corfu Town",d:"Lokale Liebling, griechisch-traditionell, gutes Preis-Leistungs-Verhältnis",tags:["Griechisch","€€","Lokal"]}],alerts:[]},
@@ -1263,12 +1269,12 @@ const DAYS=[
     {i:"Glas",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
   ],
   selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ypsos-Strand — diesen Moment einfrieren!"}],
-  photos:["paleokastritsa2"],
+  photos:["korfuNorth"],
   tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ypsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
   eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
   rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
 
-{id:"T17",date:"03.08",wd:"Mo",et:"tv",avt:"airport",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
+{id:"T17",date:"03.08",wd:"Mo",et:"tv",avt:"eltern-strand",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
   center:[39.6015,19.9117,10],marks:["airport","yannis"],
   acts:[
     {i:"Wecker",t:"Frühzeitig aufstehen & Check-out",d:"Frühstück nur wenn zeitlich möglich · Hotel Yannis Corfu"},
@@ -1278,7 +1284,7 @@ const DAYS=[
     {i:"Flug",t:"Flug OS117 · 15:00 Uhr Wien (VIE)",d:"→ Graz (GRZ) · Ankunft 15:35 Uhr · ca. 35 Min Flug"},
     {i:"Auto",t:"Abholung Flughafen Graz",d:"Heimfahrt Plankenwarth 228, 8113 St. Oswald · ca. 20 Min"},
   ],
-  selfie:[],photos:["kanoni"],
+  selfie:[],photos:["paleokastritsa2"],
   tips:["Online Check-in OS862 vorab erledigen","Gepäck zügig aufgeben — Warteschlangen Hochsaison","Wien Transfer: Gate-Info sofort prüfen (VIE ist groß!)","Zuhause: Koffer auspacken, Fotos sortieren, schon nach nächstem Urlaub suchen"],
   eve:null,rests:[],alerts:[{t:"info",text:"Letzter Tag! OS862 · 10:50 Korfu → Wien 12:35. Weiter OS117 · 15:00 Wien → Graz 15:35. Welcome home!"}]},
 ];
@@ -1402,25 +1408,28 @@ const TAB_DAYS = {
 };
 const ETAPPE_COLOR = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)', tv:'var(--tv)' };
 const AVT_IMG = {
-  // Transfer
-  airport:           'av-airport.png',
-  ferry:             'av-faehre.png',
+  // Transfer — je einmal
+  'airport':         'av-airport.png',        // IMG_9831 — Flughafen DEPARTURES (Splash)
+  'ferry':           'av-faehre.png',         // IMG_9832 — Familie auf Fähre (T5)
   // Ganze Familie — Aktivitäts-Szenen
-  'strand-fam':      'av-strand.png',
-  'sport-fam':       'av-sport.png',
-  'taverna-fam':     'av-taverna.png',
-  'abend-fam':       'av-abend.png',
-  'picknick-fam':    'av-picknick.png',
-  'aqualand':        'av-aqualand.png',
-  'family-ksamil':   'av-ksamil-strand.png',
+  'abend-fam':       'av-abend.png',          // IMG_9827 — Cocktails Sonnenuntergang (T1)
+  'strand-fam':      'av-strand.png',         // IMG_9826 — Strand Bademode (T2)
+  'taverna-fam':     'av-taverna.png',        // IMG_9830 — Griechische Taverne (T8)
+  'city-fam':        'av-city-fam.png',       // IMG_9870 — Altstadt-Gasse Sightseeing (T4)
+  'family-ksamil':   'av-ksamil-strand.png',  // IMG_9837 — Ksamil-Strand KSAMIL ALBANIA (T6)
+  'bar-fam':         'av-bar.png',            // IMG_9829 — Sunset Splash Bar (T12)
+  'aqualand':        'av-aqualand.png',       // IMG_9835 — Aqualand Wasserpark (T16)
   // Kids (Leah + Maxi)
-  'kids-sport':      'av-kids-sport.png',
-  'kids-swim':       'av-kids-swim.png',
+  'kids-sport':      'av-kids-sport.png',     // IMG_9839 — Wakeboard/Wasserski (T3)
+  'kids-swim':       'av-kids-swim.png',      // IMG_9842 — Schwimmen türkises Wasser (T7)
+  'kids-abend':      'av-kids-abend.png',     // IMG_9841 — KSAMIL Nacht-Selfie (T9)
+  'kids-strand':     'av-kids-strand.png',    // IMG_9838 — Agios Nikolaos GREECE (T13)
   // Eltern (Michael + Nina)
-  'eltern-cafe':     'av-eltern-cafe.png',
-  'eltern-taverna':  'av-eltern-taverna.png',
-  'eltern-swim':     'av-eltern-swim.png',
-  'eltern-jetski':   'av-eltern-jetski.png',
+  'eltern-jetski':   'av-eltern-jetski.png',  // IMG_9848 — Jetski (T10)
+  'eltern-pool':     'av-eltern-pool.png',    // IMG_9849 — Infinity-Pool (T11)
+  'eltern-swim':     'av-eltern-swim.png',    // IMG_9847 — Schwimmen Meer (T14)
+  'eltern-taverna':  'av-eltern-taverna.png', // IMG_9844 — TAVERNA NIKOS (T15)
+  'eltern-strand':   'av-eltern-strand.png',  // IMG_9845 — Strandspaziergang Abschied (T17)
 };
 
 // Globaler Tages-Index 0–16 (ersetzt activeTab + activeDayInTab)
