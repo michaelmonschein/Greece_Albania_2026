@@ -35,7 +35,7 @@
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; background: var(--creme); }
+html, body { height: 100%; overflow: hidden; background: var(--tiefsee); }
 body { font-family: var(--font-body); color: var(--tinte); }
 img { display: block; max-width: 100%; }
 button { cursor: pointer; border: none; background: none; font: inherit; }
@@ -46,11 +46,17 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  /* Auf Desktop: als Phone-Screen zentriert darstellen */
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--creme);
+  position: relative;
+  box-shadow: 0 0 80px rgba(0,0,0,0.5);
 }
 
 /* ── Header ── */
 #app-header {
-  position: fixed;
+  position: absolute;  /* fixed → absolute, bleibt innerhalb des App-Containers */
   top: 0; left: 0; right: 0;
   height: var(--header-h);
   z-index: 100;
@@ -224,56 +230,95 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   background: linear-gradient(
     180deg,
     #f7f2eb 0%,
-    #d4eef8 30%,
-    #5ba3c9 60%,
+    #d4eef8 25%,
+    #5ba3c9 55%,
     #1a6b9a 80%,
     #0d3b5e 100%
   );
   z-index: 999;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   overflow: hidden;
+  cursor: pointer;
 }
 #splash.hidden {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.6s ease;
 }
-.sp-family {
-  width: min(80vw, 340px);
-  opacity: 0;
-  transform: translateY(24px);
-  animation: spFadeUp 0.8s var(--ease-smooth) 0.3s forwards;
-  mix-blend-mode: multiply;
-  filter: brightness(1.0);
+/* Zentriert Inhalt auf breiten Bildschirmen auf Phone-Breite */
+.sp-inner {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.sp-title {
+/* Titel-Bereich oben im hellen Gradient-Teil */
+.sp-header {
+  padding-top: max(56px, calc(env(safe-area-inset-top) + 44px));
+  padding-bottom: 4px;
   text-align: center;
-  margin-top: 24px;
+  flex-shrink: 0;
   opacity: 0;
-  transform: translateY(16px);
-  animation: spFadeUp 0.7s var(--ease-smooth) 0.9s forwards;
+  animation: spFadeDown 0.8s var(--ease-smooth) 0.15s forwards;
+  position: relative; z-index: 2;
 }
-.sp-title h1 {
+.sp-header h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-size: clamp(2.2rem, 9vw, 2.8rem);
   color: var(--tiefsee);
   font-weight: 700;
-  text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(255,255,255,0.7);
 }
-.sp-title p {
+.sp-header p {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--aegaeis);
-  letter-spacing: 0.12em;
+  color: var(--blaugrau);
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-top: 6px;
 }
+/* Familienbild füllt den gesamten Mittelteil */
+.sp-family {
+  flex: 1;
+  width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  min-height: 0;
+  animation: spFadeUp 1s var(--ease-smooth) 0.5s forwards;
+}
+/* Unterer Bereich: Route + Hinweis */
+.sp-bottom {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px calc(env(safe-area-inset-bottom) + 20px);
+}
+.sp-hint {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  opacity: 0;
+  animation: spFadeUp 0.6s ease 3.5s forwards;
+}
+/* Legacy-Klasse nicht mehr verwendet, aber sicherheitshalber leer lassen */
+.sp-title {
+  display: none;
+  margin-top: 6px;
+}
 .sp-route {
-  width: min(90vw, 380px);
-  margin-top: 32px;
+  width: min(90%, 360px);
+  margin-top: 0;
   opacity: 0;
   animation: spFadeUp 0.6s var(--ease-smooth) 1.8s forwards;
 }
@@ -313,6 +358,10 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .sp-skip:hover { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.4); }
 @keyframes spFadeUp {
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spFadeDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes drawPath {
   to { stroke-dashoffset: 0; }
@@ -830,13 +879,16 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 <!-- ═══ SPLASH ═══ -->
 <div id="splash">
   <button class="sp-skip" id="sp-skip">Überspringen</button>
-  <img src="av-family-casual.png" class="sp-family" alt="Familie Monschein">
-  <div class="sp-title">
-    <h1>Familie Monschein</h1>
-    <p>Korfu &amp; Ksamil · Juli 2026</p>
-  </div>
-  <div class="sp-route" id="sp-route">
-    <!-- SVG wird per JS eingefügt (Task 3) -->
+  <div class="sp-inner">
+    <div class="sp-header">
+      <h1>Familie Monschein</h1>
+      <p>Korfu &amp; Ksamil · Juli 2026</p>
+    </div>
+    <img src="av-airport.png" class="sp-family" alt="Familie Monschein — Abflug"
+    <div class="sp-bottom">
+      <div class="sp-route" id="sp-route"></div>
+      <p class="sp-hint">· Antippen zum Starten ·</p>
+    </div>
   </div>
 </div>
 
@@ -925,19 +977,24 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 ══════════════════════════════════════ */
 
 const IMG = {
-  agiosGordios:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=600",
-  korfuAerial:"https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Corfu%20town%20aerial%2002.jpg?width=600",
-  alteFestung:"https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=600",
-  paleokastritsa:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=600",
-  paleokastritsa2:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=600",
-  achilleion:"https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=600",
-  pontikonisi:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=600",
-  kanoni:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=600",
-  oldFortress:"https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=600",
-  ksamil:"https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=600",
-  ksamilRiviera:"https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=600",
-  butrint:"https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=600",
-  blueEye:"https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=600",
+  // Korfu — Agios Gordios
+  agiosGordios:   "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=800",
+  // Korfu — Stadt & Sehenswürdigkeiten (gesicherte URLs)
+  alteFestung:    "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=800",
+  oldFortress:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=800",
+  korfuAerial:    "https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Corfu%20town%20aerial%2002.jpg?width=800",
+  kanoni:         "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=800",
+  pontikonisi:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=800",
+  achilleion:     "https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=800",
+  // Korfu — Westküste
+  paleokastritsa: "https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=800",
+  paleokastritsa2:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=800",
+  // Albanien — Ksamil
+  ksamil:         "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=800",
+  ksamilRiviera:  "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=800",
+  // Albanien — Sehenswürdigkeiten
+  butrint:        "https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=800",
+  blueEye:        "https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=800",
 };
 
 const IMG_CAPS = {
@@ -983,7 +1040,7 @@ const DAYS=[
     {i:"Taxi",t:"Transfer Flughafen → Poseidon Suites",d:"Agios Gordios · ca. 30 Min · Taxi vorab buchen (ca. 25 €)"},
     {i:"Hotel",t:"Check-in Poseidon Suites by CorfuEscapes",d:"Agios Gordios · Ankunft ca. 22:00 Uhr"},
   ],
-  selfie:[],photos:[],
+  selfie:[],photos:["agiosGordios"],
   tips:["Online Check-in Austrian Airlines (AUA) rechtzeitig erledigen","Gepäcklimit Economy: 23 kg aufgegeben","30 Min vor Abfahrt am Grazer Hbf sein","Taxi Korfu Flughafen: Festpreis zum Schalter vereinbaren"],
   eve:null,rests:[],alerts:[{t:"info",text:"Tag 1 ist reiner Anreisetag — keine Aktivitäten geplant. Ankunft abends, einrichten, Nachtschlaf genießen."}]},
 
@@ -1010,12 +1067,12 @@ const DAYS=[
     {i:"Segelboot",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
   ],
   selfie:[{t:"Jetski-Actionfoto",tip:"Jemanden ans Ufer stellen zum Fotografieren — beste Hintergrundbucht!"}],
-  photos:["agiosGordios"],
+  photos:["pontikonisi","agiosGordios"],
   tips:["Früh am Strand (9 Uhr), bevor Warteschlangen entstehen","Wassersport-Preise sind verhandelbar — mehrere Aktivitäten als Paket fragen","Ausreichend Wasser trinken — Wassersport kostet Energie!"],
   eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
   rests:[{n:"The Rock Bar",d:"Iconic Felsbar am Strand, Cocktails & Snacks, Sonnenuntergang-Pflichtprogramm",tags:["Strandbar","Cocktails","€€"]},{n:"Agios Gordios Taverna",d:"Frischer Fisch, Souvlaki, Moussaka — authentisch griechisch",tags:["Griechisch","Fisch","€€"]}],alerts:[]},
 
-{id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"kids-city",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
+{id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"eltern-cafe",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
   center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
   acts:[
     {i:"Auto",t:"Fahrt nach Korfu-Stadt",d:"ca. 35 Min von Agios Gordios · Parkplatz am Hafen empfohlen"},
@@ -1025,7 +1082,7 @@ const DAYS=[
     {i:"Einkauf",t:"Shopping in der Altstadt",d:"Olivenöl, Kumquat-Likör, griechische Keramik — tolle Souvenirs"},
   ],
   selfie:[{t:"Alte Festung Panorama",tip:"Aussichtsplattform oben — Meerblick und Stadtpanorama. Beste Fotos am Nachmittag (Licht)."},{t:"Liston Arkaden",tip:"Venezianische Bogengänge — wunderbar fotogen, besonders abends mit Beleuchtung."}],
-  photos:["alteFestung","korfuAerial"],
+  photos:["alteFestung","oldFortress"],
   tips:["Hochsaison: Festung morgens früh besuchen (kühler, weniger voll)","Altstadt-Gassen sind eng & verschachtelt — absichtlich verirren!","Kumquat-Likör ist Korfu-Spezialität — als Souvenir perfekt"],
   eve:"Liston-Promenade abends: Cafés unter den venezianischen Bögen, Gelato, Flanieren",
   rests:[{n:"La Famiglia",d:"Authentische Pizzeria in der Altstadt, günstig & lecker, Teenagers mögen's",tags:["Pizza","€","Altstadt"]},{n:"Liston Restaurant",d:"Direkt an der Promenade, griechische Küche, tolle Atmosphäre abends",tags:["Griechisch","Liston","€€"]},{n:"Gelateria Paradiso",d:"Handgemachtes Gelato, Liston-Nähe, Abend-Pflichtprogramm",tags:["Gelato","€","Dessert"]}],alerts:[]},
@@ -1042,7 +1099,7 @@ const DAYS=[
     {i:"Strand",t:"Erster Ksamil-Strand",d:"Nachmittags: Eingewöhnen, erstes Bad im türkisen albanischen Wasser"},
   ],
   selfie:[{t:"Ksamil Strandblick",tip:"Blick von der Strandbar auf die vorgelagerten Inseln — Nachmittag mit tief stehender Sonne ideal"}],
-  photos:["ksamil"],
+  photos:["kanoni","pontikonisi"],
   tips:["REISEPASS nicht vergessen — Albanien ist KEIN EU/Schengen-Land!","Roaming in Albanien: KEIN EU-Roaming-Schutz → Datenvolumen prüfen!","Albanische Lek am ATM in Saranda abheben (Euro wird auch akzeptiert, aber Lek besser)","Fähre: Tickets idealerweise 1–2 Tage vorher online buchen"],
   eve:"Erster albanischer Sonnenuntergang am Ksamil-Strand — sehr fotogen",
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails, perfekt zum Ankommen",tags:["Strandbar","€€","Inseln-Blick"]}],
@@ -1058,7 +1115,7 @@ const DAYS=[
     {i:"Dorf",t:"Ksamil Village erkunden",d:"Kleine Straßen, lokale Eisdielen, albanische Atmosphäre genießen"},
   ],
   selfie:[{t:"Strandpanorama mit Ksamil-Inseln",tip:"Aussicht vom Hauptstrand auf die 4 kleinen Inseln — perfektes Türkis-Panorama am frühen Nachmittag"}],
-  photos:["ksamil","ksamilRiviera"],
+  photos:["ksamil"],
   tips:["Früh am Strand (vor 9 Uhr) für besten Platz","Sonnencreme LSF 50+ — Wasser verstärkt Strahlung","Liegeplätze an der Strandbar oft kostenpflichtig (ca. 5–10 €) aber lohnt sich","Albanische Lek für kleine Ausgaben am Strand nutzen"],
   eve:"Sonnenuntergang am Ksamil-Hauptstrand — die Inseln im Abendlicht sind unvergesslich",
   rests:[{n:"Era Restaurant Ksamil",d:"Lokale albanische Küche, Meeresfrüchte, günstig und authentisch",tags:["Albanisch","Meeresfrüchte","€"]},{n:"Riviera Beach Bar Ksamil",d:"Strandbar mit Meerblick & Inseln-Panorama, Cocktails",tags:["Strandbar","€€","Inseln-Blick"]}],alerts:[]},
@@ -1072,12 +1129,12 @@ const DAYS=[
     {i:"Strand",t:"Strandbar-Nachmittag",d:"Liegen am Hauptstrand, kühle Drinks, Inseln-Panorama genießen"},
   ],
   selfie:[{t:"Ksamil-Inseln aus dem Boot",tip:"Drohnenperspektive-Look: Bootfahrer bitten kurz anzuhalten, türkises Wasser als Hintergrund"},{t:"Strandbar Inseln-Blick",tip:"Bekanntester Instagram-Spot Ksamils: Strandliege mit den kleinen Inseln dahinter"}],
-  photos:["ksamil","ksamilRiviera"],
+  photos:["ksamilRiviera"],
   tips:["Bootstour morgens früh (ruhiges Wasser, weniger voll)","Schwimmweste für Maxi auf offener See empfohlen","Die kleinen Inseln haben eigene Strandabschnitte — Picknick möglich","Wassertemperatur ca. 25–27°C — perfekt!"],
   eve:"Sonnenuntergang-Strandbar am Hauptstrand Ksamil — sehr romantisch, tolle Stimmung",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Silis Ksamil",d:"Beliebt bei Jugendlichen, gute Burger & Pizza, locker-lässig",tags:["Burger","Pizza","€"]}],alerts:[]},
 
-{id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"eltern-cafe",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
+{id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"kids-strand",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
   center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
   acts:[
     {i:"Museum",t:"Butrint UNESCO-Ausgrabungen",d:"Ca. 8 km von Ksamil · griechisches Theater, byzantinische Kirche, venezianische Festung · 2–3h"},
@@ -1091,7 +1148,7 @@ const DAYS=[
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
   rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
 
-{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"kids-abend",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
+{id:"T9",date:"26.07",wd:"So",et:"e2",avt:"family-casual",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
   acts:[
     {i:"Taxi",t:"Fahrt nach Saranda",d:"ca. 20 Min Taxi · albanische Hafenstadt mit Riviera-Flair"},
@@ -1101,7 +1158,7 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag zurück in Ksamil",d:"Ruhiger Nachmittag am Strand nach dem Ausflug"},
   ],
   selfie:[{t:"Lëkurësi-Burg Panorama",tip:"360°-Blick auf Saranda, den Kanal und Korfu im Hintergrund — ein absolutes Highlight!"},{t:"Saranda Hafen",tip:"Abendstimmung am Hafen mit Blick nach Korfu — malerisch und einzigartig"}],
-  photos:["ksamil"],
+  photos:["ksamil","ksamilRiviera"],
   tips:["Lëkurësi Taxi: Direkt zum Festungseingang fahren lassen (~5 € extra)","Beste Aussicht kurz vor Sonnenuntergang — dann leuchtet Korfu golden","Euro wird in Saranda akzeptiert, Lek ist aber günstiger","Rückfahrt Ksamil: Minibus oder Taxi, ca. 8–10 €"],
   eve:"Entspannter Abend in Ksamil nach dem Ausflug — Lieblingsrestaurant revisit",
   rests:[{n:"Limani Restaurant Saranda",d:"Direkt am Hafen, frischer Fisch & Meeresfrüchte, toller Meerblick",tags:["Fisch","Hafen","€€"]},{n:"Era Restaurant Ksamil",d:"Abends in Ksamil: lokale albanische Küche, authentisch & günstig",tags:["Albanisch","€","Abend"]}],alerts:[]},
@@ -1145,12 +1202,12 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag Ypsos Beach",d:"Ruhigerer Strand im Nordosten, andere Atmosphäre als Agios Gordios"},
   ],
   selfie:[{t:"Ypsos Strandpanorama",tip:"Blick nach Norden vom Strand — Berge & Meer, ruhig und schön"}],
-  photos:["korfuAerial"],
+  photos:["kanoni","korfuAerial"],
   tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ypsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
   eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
   rests:[{n:"Taverna Stamatis Ypsos",d:"Authentische Dorftaverne, sehr lokal, frischer Fisch, günstig",tags:["Griechisch","Fisch","€"]},{n:"Rex Corfu Ypsos",d:"Beliebt für Tintenfisch & Meeresfrüchte direkt am Ypsos-Strand",tags:["Meeresfrüchte","€€","Strandlage"]}],alerts:[]},
 
-{id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-strand",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
+{id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-sport",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
   center:[39.668,19.705,13],marks:["paleo"],
   acts:[
     {i:"Auto",t:"Fahrt nach Paleokastritsa",d:"ca. 50 Min von Ypsos · spektakuläre Küstenstraße über den Norden Korfus"},
@@ -1174,7 +1231,7 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
   ],
   selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
-  photos:["korfuAerial"],
+  photos:["korfuAerial","paleokastritsa"],
   tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
   rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
@@ -1204,7 +1261,7 @@ const DAYS=[
     {i:"Glas",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
   ],
   selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ypsos-Strand — diesen Moment einfrieren!"}],
-  photos:["korfuAerial"],
+  photos:["paleokastritsa2"],
   tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ypsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
   eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
   rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
@@ -1219,7 +1276,7 @@ const DAYS=[
     {i:"Flug",t:"Flug OS117 · 15:00 Uhr Wien (VIE)",d:"→ Graz (GRZ) · Ankunft 15:35 Uhr · ca. 35 Min Flug"},
     {i:"Auto",t:"Abholung Flughafen Graz",d:"Heimfahrt Plankenwarth 228, 8113 St. Oswald · ca. 20 Min"},
   ],
-  selfie:[],photos:[],
+  selfie:[],photos:["kanoni"],
   tips:["Online Check-in OS862 vorab erledigen","Gepäck zügig aufgeben — Warteschlangen Hochsaison","Wien Transfer: Gate-Info sofort prüfen (VIE ist groß!)","Zuhause: Koffer auspacken, Fotos sortieren, schon nach nächstem Urlaub suchen"],
   eve:null,rests:[],alerts:[{t:"info",text:"Letzter Tag! OS862 · 10:50 Korfu → Wien 12:35. Weiter OS117 · 15:00 Wien → Graz 15:35. Welcome home!"}]},
 ];
@@ -1365,8 +1422,18 @@ const AVT_IMG = {
   'eltern-pool':    'av-eltern-pool.png',
 };
 
-let activeTab = 'e1';
-let activeDayInTab = 0;
+// Globaler Tages-Index 0–16 (ersetzt activeTab + activeDayInTab)
+let activeDay = 0;
+
+// Etappe-Grenzen: e1 = T1-T5 (idx 0-4), e2 = T6-T11 (idx 5-10), e3 = T12-T17 (idx 11-16)
+const ETAPPE_RANGES = { e1:[0,4], e2:[5,10], e3:[11,16] };
+const ETAPPE_STARTS = { e1:0, e2:5, e3:11 };
+
+function getEtappeForDay(idx) {
+  if (idx <= 4)  return 'e1';
+  if (idx <= 10) return 'e2';
+  return 'e3';
+}
 
 /* ══════════════════════════════════════
    STUB FUNCTIONS — werden in späteren Tasks befüllt
@@ -1391,49 +1458,43 @@ const WC_EDGES = {
   </svg>`,
 };
 
-// Task 4: Karten rendern
+// Task 4: Alle Tages-Karten rendern (kontinuierlich, keine Tab-Trennung)
 function renderCards() {
-  const ids   = TAB_DAYS[activeTab];
   const track = document.getElementById('cards-track');
   if (!track) return;
   track.innerHTML = '';
-
   const phase = getPhase();
 
-  ids.forEach((dayId, idx) => {
-    const day    = DAYS.find(d => d.id === dayId);
-    if (!day) return;
-    const dayIdx = DAYS.indexOf(day);
-    const state  = getDayState(dayIdx);
+  DAYS.forEach((day, dayIdx) => {
+    const state = getDayState(dayIdx);
 
-    // Foto-URL: erstes Foto aus day.photos, sonst Fallback per Etappe
     const fallbackKey = day.et === 'e2' ? 'ksamil'
-                      : day.et === 'e3' ? 'korfuAerial'
+                      : day.et === 'e3' ? 'paleokastritsa'
                       : 'agiosGordios';
     const photoKey = (day.photos && day.photos[0]) || fallbackKey;
-    const photoUrl = IMG[photoKey]
-      ? IMG[photoKey].replace('width=600', 'width=800')
-      : '';
+    const photoUrl = IMG[photoKey] || '';
+    // onerror-Fallback auf bekannt-funktionierendes Foto
+    const fallbackUrl = IMG[fallbackKey] || IMG.agiosGordios;
+    const imgAttrs = `src="${photoUrl}" onerror="this.onerror=null;this.src='${fallbackUrl}'"`;
 
-    const etCol  = `var(--${day.et})`;
-    const wcEdge = WC_EDGES[day.et] || WC_EDGES.tv;
+    const etCol   = `var(--${day.et})`;
+    const wcEdge  = WC_EDGES[day.et] || WC_EDGES.tv;
     const avtFile = AVT_IMG[day.avt] || 'av-family-casual.png';
 
-    // Countdown (nur erste Karte in e1 bei pre-Phase — überschreibt locked)
-    const isCountdown = phase === 'pre' && idx === 0 && activeTab === 'e1';
+    // Countdown: erste Karte (T1) in pre-Phase
+    const isCountdown = phase === 'pre' && dayIdx === 0;
 
-    // Foto-Zone HTML — isCountdown hat Vorrang vor locked
     let photoZoneHtml;
     if (isCountdown) {
       photoZoneHtml = `
         <div class="card-photo-zone">
-          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="eager">
+          <img class="card-photo" ${imgAttrs} alt="${day.title}" loading="eager">
           ${buildCountdownOverlay()}
         </div>`;
     } else if (state === 'locked') {
       photoZoneHtml = `
         <div class="card-photo-zone locked">
-          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="lazy">
+          <img class="card-photo" ${imgAttrs} alt="${day.title}" loading="lazy">
           <div class="card-photo-overlay"></div>
           <div class="lock-overlay">
             <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1443,7 +1504,7 @@ function renderCards() {
     } else {
       photoZoneHtml = `
         <div class="card-photo-zone">
-          <img class="card-photo" src="${photoUrl}" alt="${day.title}" loading="${idx === 0 ? 'eager' : 'lazy'}">
+          <img class="card-photo" ${imgAttrs} alt="${day.title}" loading="${dayIdx <= 1 ? 'eager' : 'lazy'}">
           <div class="card-photo-overlay"></div>
           <div class="watercolor-edge">${wcEdge}</div>
         </div>`;
@@ -1451,14 +1512,13 @@ function renderCards() {
 
     const card = document.createElement('div');
     card.className = `day-card${state === 'past' ? ' past' : ''}`;
-    card.dataset.id  = dayId;
-    card.dataset.idx = idx;
+    card.dataset.id  = day.id;
+    card.dataset.idx = dayIdx;
     card.innerHTML   = photoZoneHtml
       + (state !== 'locked' || isCountdown ? buildCardContent(day, etCol, avtFile) : '');
 
-    // Heute-Badge
     const todayIdx = getTodayIndex();
-    if (phase === 'trip' && todayIdx >= 0 && DAYS[todayIdx].id === dayId) {
+    if (phase === 'trip' && todayIdx >= 0 && DAYS[todayIdx].id === day.id) {
       card.classList.add('today');
     }
 
@@ -1485,7 +1545,7 @@ function updateTrackPosition(animate = true) {
   const track = document.getElementById('cards-track');
   if (!track) return;
   if (!animate) track.style.transition = 'none';
-  track.style.transform = `translateX(-${activeDayInTab * 100}%)`;
+  track.style.transform = `translateX(-${activeDay * 100}%)`;
   if (!animate) requestAnimationFrame(() => { track.style.transition = ''; });
 }
 
@@ -1581,122 +1641,124 @@ function buildCardContent(day, etCol, avtFile) {
     </div>`;
 }
 
-// Task 6: Bottom-Nav rendern
+// Task 6: Bottom-Nav rendern — Klick springt zum Etappen-Anfang
 function renderBottomNav() {
   document.querySelectorAll('.nav-tab').forEach(btn => {
-    const tab = btn.dataset.tab;
-    btn.classList.toggle('active', tab === activeTab);
-    btn.addEventListener('click', () => switchTab(tab));
+    btn.addEventListener('click', () => jumpToEtappe(btn.dataset.tab));
   });
-  updateEtappeColor();
+  updateNavState();
 }
 
-// Task 6: Tab-Wechsel
-function switchTab(tabId) {
-  if (tabId === activeTab) return;
-  activeTab = tabId;
-  activeDayInTab = 0;
-  document.querySelectorAll('.nav-tab').forEach(b =>
-    b.classList.toggle('active', b.dataset.tab === activeTab));
-  updateEtappeColor();
-  renderCards();
-  renderDots();
-}
-
-// Task 6: Etappen-Farbe für Dots aktualisieren
-function updateEtappeColor() {
-  const colors = { e1: 'var(--e1)', e2: 'var(--e2)', e3: 'var(--e3)' };
-  const dots = document.getElementById('tab-dots');
-  if (dots) dots.style.setProperty('--active-etappe', colors[activeTab] || 'var(--tiefsee)');
-}
-
-// Task 6: Dots rendern
-function renderDots() {
-  const count = TAB_DAYS[activeTab].length;
-  const dotsEl = document.getElementById('tab-dots');
-  if (!dotsEl) return;
-  dotsEl.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    const d = document.createElement('button');
-    d.className = `tab-dot${i === activeDayInTab ? ' active' : ''}`;
-    d.setAttribute('aria-label', `Tag ${i + 1}`);
-    d.addEventListener('click', () => goToDay(i));
-    dotsEl.appendChild(d);
-  }
-}
-
-// Task 6: Zu Tag springen
-function goToDay(idx) {
-  activeDayInTab = idx;
+// Zum ersten Tag einer Etappe springen
+function jumpToEtappe(tabId) {
+  activeDay = ETAPPE_STARTS[tabId] ?? 0;
+  updateNavState();
   updateTrackPosition(true);
   renderDots();
   updateHeaderBg();
 }
 
-// Task 6: Header-Hintergrund aktualisieren (wird solid wenn gescrollt)
+// Nav-Highlight und Etappen-Farbe nach aktuellem Tag setzen
+function updateNavState() {
+  const etappe = getEtappeForDay(activeDay);
+  document.querySelectorAll('.nav-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === etappe);
+  });
+  const colors = { e1:'var(--e1)', e2:'var(--e2)', e3:'var(--e3)' };
+  const dotsEl = document.getElementById('tab-dots');
+  if (dotsEl) dotsEl.style.setProperty('--active-etappe', colors[etappe] || 'var(--tiefsee)');
+}
+
+// Dots zeigen Position innerhalb der aktuellen Etappe
+function renderDots() {
+  const etappe = getEtappeForDay(activeDay);
+  const [start, end] = ETAPPE_RANGES[etappe] ?? [0, 0];
+  const count  = end - start + 1;
+  const dotIdx = activeDay - start;
+  const dotsEl = document.getElementById('tab-dots');
+  if (!dotsEl) return;
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('button');
+    d.className = `tab-dot${i === dotIdx ? ' active' : ''}`;
+    d.setAttribute('aria-label', `Tag ${start + i + 1}`);
+    d.addEventListener('click', () => { activeDay = start + i; updateTrackPosition(true); updateNavState(); renderDots(); updateHeaderBg(); });
+    dotsEl.appendChild(d);
+  }
+}
+
+// Header-Hintergrund: solid wenn aktuelle Karte nach unten gescrollt
 function updateHeaderBg() {
   const cards = document.querySelectorAll('.day-card');
-  const activeCard = cards[activeDayInTab];
+  const activeCard = cards[activeDay];
   const solid = activeCard ? activeCard.scrollTop > 20 : false;
   const header = document.getElementById('app-header');
   if (header) header.classList.toggle('solid', solid);
 }
 
-// Task 7: Swipe-Navigation (Pointer Events API)
+// Task 7: Swipe-Navigation — kontinuierlich durch alle Tage, kurze Wischgeste reicht
 function initSwipe() {
   const viewport = document.getElementById('day-viewport');
   if (!viewport) return;
-  let startX = 0, startY = 0, isDragging = false, isHorizontal = null, currentX = 0;
+  let startX = 0, startY = 0, startTime = 0, locked = null, currentX = 0;
 
-  viewport.addEventListener('pointerdown', e => {
-    startX = e.clientX;
-    startY = e.clientY;
-    isDragging = true;
-    isHorizontal = null;
-    currentX = 0;
-    viewport.setPointerCapture(e.pointerId);
-  });
+  // Touch Events sind auf iOS zuverlässiger als Pointer Events für horizontales Swipen
+  viewport.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    startX    = t.clientX;
+    startY    = t.clientY;
+    startTime = Date.now();
+    locked    = null;
+    currentX  = 0;
+  }, { passive: true });
 
-  viewport.addEventListener('pointermove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+  viewport.addEventListener('touchmove', e => {
+    if (!e.touches.length) return;
+    const t  = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
 
-    if (isHorizontal === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
-      isHorizontal = Math.abs(dx) > Math.abs(dy);
+    // Erst nach 8px entscheiden ob horizontal oder vertikal
+    if (locked === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      locked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
     }
-    if (!isHorizontal) return;
+    if (locked !== 'h') return; // vertikal → natürliches Scrollen erlauben
 
-    e.preventDefault();
+    e.preventDefault(); // horizontales Wischen: Scroll blockieren
     currentX = dx;
     const track = document.getElementById('cards-track');
     if (track) {
       track.style.transition = 'none';
-      track.style.transform = `translateX(calc(-${activeDayInTab * 100}% + ${dx}px))`;
+      track.style.transform  = `translateX(calc(-${activeDay * 100}% + ${dx}px))`;
     }
-  });
+  }, { passive: false }); // passive:false nötig damit preventDefault() wirkt
 
-  viewport.addEventListener('pointerup', () => {
-    if (!isDragging || !isHorizontal) { isDragging = false; return; }
-    isDragging = false;
-    const threshold = (viewport.offsetWidth || 375) * 0.25;
-    const count = TAB_DAYS[activeTab].length;
+  viewport.addEventListener('touchend', e => {
+    if (locked !== 'h') { locked = null; return; }
 
-    if (currentX < -threshold && activeDayInTab < count - 1) {
-      activeDayInTab++;
-    } else if (currentX > threshold && activeDayInTab > 0) {
-      activeDayInTab--;
+    const elapsed   = Math.max(1, Date.now() - startTime);
+    const velocity  = Math.abs(currentX) / elapsed;
+    const isFlick   = velocity > 0.3 && Math.abs(currentX) > 20;
+    const threshold = (viewport.offsetWidth || 375) * 0.15;
+
+    if ((currentX < -threshold || (currentX < -15 && isFlick)) && activeDay < DAYS.length - 1) {
+      activeDay++;
+    } else if ((currentX > threshold || (currentX > 15 && isFlick)) && activeDay > 0) {
+      activeDay--;
     }
+    locked   = null;
     currentX = 0;
     updateTrackPosition(true);
+    updateNavState();
     renderDots();
-  });
+    updateHeaderBg();
+  }, { passive: true });
 
-  viewport.addEventListener('pointercancel', () => {
-    isDragging = false;
+  viewport.addEventListener('touchcancel', () => {
+    locked   = null;
     currentX = 0;
     updateTrackPosition(true);
-  });
+  }, { passive: true });
 }
 
 // Task 9: Modal öffnen / schließen
@@ -1879,10 +1941,11 @@ function initApp() {
     const banner = document.getElementById('preview-banner');
     if (banner) banner.hidden = false;
   }
-  setInitialTab();
+  setInitialDay();
   renderCards();
   renderBottomNav();
   renderDots();
+  updateNavState();
   initSplash();
   initModals();
   initMap();
@@ -1891,17 +1954,14 @@ function initApp() {
   if (track) track.addEventListener('scroll', updateHeaderBg, true);
 }
 
-function setInitialTab() {
+// Starttag bestimmen: pre/preview → Tag 0, trip → heutiger Tag
+function setInitialDay() {
   const phase = getPhase();
-  const todayIdx = getTodayIndex();
-  if (phase === 'pre' || phase === 'preview') { activeTab = 'e1'; activeDayInTab = 0; return; }
-  if (phase === 'post') { activeTab = 'e1'; activeDayInTab = 0; return; }
-  // trip: finde den heutigen Tag
-  const todayId = DAYS[todayIdx]?.id;
-  for (const [tab, ids] of Object.entries(TAB_DAYS)) {
-    const idx = ids.indexOf(todayId);
-    if (idx >= 0) { activeTab = tab; activeDayInTab = idx; return; }
+  if (phase === 'pre' || phase === 'preview' || phase === 'post') {
+    activeDay = 0; return;
   }
+  const todayIdx = getTodayIndex();
+  activeDay = todayIdx >= 0 ? todayIdx : 0;
 }
 
 /* ══════════════════════════════════════
@@ -1930,12 +1990,14 @@ function initSplash() {
       </svg>`;
   }
 
-  // Skip-Button
+  // Skip-Button und Tippen-zum-Starten
   const skipBtn = document.getElementById('sp-skip');
-  if (skipBtn) skipBtn.addEventListener('click', () => endSplash());
+  if (skipBtn) skipBtn.addEventListener('click', (e) => { e.stopPropagation(); endSplash(); });
+  const splashEl = document.getElementById('splash');
+  if (splashEl) splashEl.addEventListener('click', () => endSplash());
 
-  // Auto-Ende nach 4.5s
-  setTimeout(endSplash, 4500);
+  // Auto-Ende nach 5s
+  setTimeout(endSplash, 5000);
 }
 
 function endSplash(instant = false) {
@@ -1951,6 +2013,13 @@ function endSplash(instant = false) {
   splash.classList.add('hidden');
   app.hidden = false;
   setTimeout(() => { splash.style.display = 'none'; }, 700);
+  // Checkliste automatisch öffnen sobald noch vor der Reise
+  if (getPhase() === 'pre') {
+    setTimeout(() => {
+      buildTodoContent();
+      openModal('todo');
+    }, 900);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
