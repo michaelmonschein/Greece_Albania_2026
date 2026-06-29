@@ -1387,17 +1387,13 @@ function getTodayIndex() {
   return diff;
 }
 
-// Für einen DAYS-Eintrag: ist er vergangen / heute / zukünftig?
+// Für einen DAYS-Eintrag: alle Tage immer zugänglich
 function getDayState(dayIndex) {
-  if (IS_PREVIEW) return 'unlocked';
   const todayIdx = getTodayIndex();
-  const phase = getPhase();
-  if (phase === 'pre')  return 'locked';
-  if (phase === 'post') return 'unlocked';
-  // during trip:
+  if (todayIdx < 0) return 'unlocked';
   if (dayIndex < todayIdx)  return 'past';
   if (dayIndex === todayIdx) return 'today';
-  return 'locked';
+  return 'unlocked';
 }
 
 /* ══════════════════════════════════════
@@ -2002,14 +1998,11 @@ function initSplash() {
       </svg>`;
   }
 
-  // Skip-Button und Tippen-zum-Starten
+  // Tippen zum Starten — kein Auto-Weiterblättern
   const skipBtn = document.getElementById('sp-skip');
   if (skipBtn) skipBtn.addEventListener('click', (e) => { e.stopPropagation(); endSplash(); });
   const splashEl = document.getElementById('splash');
   if (splashEl) splashEl.addEventListener('click', () => endSplash());
-
-  // Auto-Ende nach 5s
-  setTimeout(endSplash, 5000);
 }
 
 function endSplash(instant = false) {
@@ -2025,13 +2018,11 @@ function endSplash(instant = false) {
   splash.classList.add('hidden');
   app.hidden = false;
   setTimeout(() => { splash.style.display = 'none'; }, 700);
-  // Checkliste automatisch öffnen sobald noch vor der Reise
-  if (getPhase() === 'pre') {
-    setTimeout(() => {
-      buildTodoContent();
-      openModal('todo');
-    }, 900);
-  }
+  // Checkliste immer nach dem Splash öffnen (Vorfreude!)
+  setTimeout(() => {
+    buildTodoContent();
+    openModal('todo');
+  }, 900);
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
