@@ -1962,14 +1962,10 @@ function initApp() {
   if (track) track.addEventListener('scroll', updateHeaderBg, true);
 }
 
-// Starttag bestimmen: pre/preview → Tag 0, trip → heutiger Tag
+// Starttag: während der Reise immer heutiger Tag, sonst Tag 0
 function setInitialDay() {
-  const phase = getPhase();
-  if (phase === 'pre' || phase === 'preview' || phase === 'post') {
-    activeDay = 0; return;
-  }
-  const todayIdx = getTodayIndex();
-  activeDay = todayIdx >= 0 ? todayIdx : 0;
+  const diff = Math.floor((new Date() - TRIP_START) / (1000 * 60 * 60 * 24));
+  activeDay = (diff >= 0 && diff < DAYS.length) ? diff : 0;
 }
 
 /* ══════════════════════════════════════
