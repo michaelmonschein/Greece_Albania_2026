@@ -979,40 +979,42 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 ══════════════════════════════════════ */
 
 const IMG = {
-  // Korfu — Agios Gordios
-  agiosGordios:   "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=800",
-  agiosGordios2:  "https://commons.wikimedia.org/wiki/Special:FilePath/Agios_Gordios_Corfu.jpg?width=800",
+  // Korfu — Agios Gordios (3 verschiedene Aufnahmen)
+  agiosGordios:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R04.jpg?width=800",
+  agiosGordiosR01: "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R01.jpg?width=800",
+  agiosGordiosR02: "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Agios%20Gordis%20R02.jpg?width=800",
   // Korfu — Stadt & Sehenswürdigkeiten
-  alteFestung:    "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=800",
-  oldFortress:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=800",
-  kanoni:         "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=800",
-  pontikonisi:    "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=800",
-  achilleion:     "https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=800",
-  // Korfu — Westküste & Norden
-  paleokastritsa: "https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=800",
-  paleokastritsa2:"https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=800",
-  ypsosBeach:     "https://commons.wikimedia.org/wiki/Special:FilePath/Ipsos_beach_Corfu.jpg?width=800",
-  korfuNorth:     "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu_north_coast.jpg?width=800",
-  // Albanien — Ksamil
-  ksamil:         "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=800",
-  ksamilRiviera:  "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=800",
-  ksamilIslands:  "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil_Islands.jpg?width=800",
-  ksamilCoast:    "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%2C_Albania.jpg?width=800",
-  // Albanien — Sehenswürdigkeiten
-  butrint:        "https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=800",
-  blueEye:        "https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=800",
+  alteFestung:     "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Old%20Fortress%20and%20the%20Old%20Town%20of%20Corfu%20-%20September%202017.jpg?width=800",
+  oldFortress:     "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Old%20Fortress%20R07.jpg?width=800",
+  kanoni:          "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2002.jpg?width=800",
+  kanoni2:         "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Kanoni%2003.jpg?width=800",
+  pontikonisi:     "https://commons.wikimedia.org/wiki/Special:FilePath/Corfu%20Pontikonisi%20-%20panoramio.jpg?width=800",
+  achilleion:      "https://commons.wikimedia.org/wiki/Special:FilePath/Korfu%20%28GR%29%2C%20Gastouri%2C%20Achilleion%20--%202018%20--%201324.jpg?width=800",
+  // Korfu — Westküste
+  paleokastritsa:  "https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa-panorama-from-BellaVista.jpg?width=800",
+  paleokastritsa2: "https://commons.wikimedia.org/wiki/Special:FilePath/Paleokastritsa.jpg?width=800",
+  // Albanien — Ksamil (3 verschiedene Aufnahmen)
+  ksamil:          "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Beach.jpg?width=800",
+  ksamilRiviera:   "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil%20Albania%20.%20Albanian%20Riviera.jpg?width=800",
+  ksamil2:         "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil2.jpg?width=800",
+  ksamilBeach:     "https://commons.wikimedia.org/wiki/Special:FilePath/Ksamil_beach.jpg?width=800",
+  // Albanien — Sehenswürdigkeiten & Saranda
+  butrint:         "https://commons.wikimedia.org/wiki/Special:FilePath/Butrint-111194.jpg?width=800",
+  blueEye:         "https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Eye%20%28Syri%20i%20kalte%CC%88r%29%2001.JPG?width=800",
+  saranda:         "https://commons.wikimedia.org/wiki/Special:FilePath/Saranda.jpg?width=800",
 };
 
 const IMG_CAPS = {
-  agiosGordios:'Agios Gordios Beach', agiosGordios2:'Agios Gordios Panorama',
+  agiosGordios:'Agios Gordios Beach', agiosGordiosR01:'Agios Gordios Bucht',
+  agiosGordiosR02:'Agios Gordios Panorama',
   alteFestung:'Alte Festung & Altstadt', paleokastritsa:'Paleokastritsa Panorama',
   paleokastritsa2:'Paleokastritsa Bucht', achilleion:'Achilleion Palast',
-  pontikonisi:'Pontikonisi Mauseinsel', kanoni:'Kanoni Aussicht',
-  oldFortress:'Alte Festung Korfu', ypsosBeach:'Ypsos Beach',
-  korfuNorth:'Nordküste Korfu',
+  pontikonisi:'Pontikonisi Mauseinsel', kanoni:'Kanoni Aussicht', kanoni2:'Kanoni Lagune',
+  oldFortress:'Alte Festung Korfu',
   ksamil:'Ksamil Beach', ksamilRiviera:'Ksamil Albanian Riviera',
-  ksamilIslands:'Ksamil Inseln', ksamilCoast:'Ksamil Küste',
+  ksamil2:'Ksamil Küste', ksamilBeach:'Ksamil Strand',
   butrint:'Butrint UNESCO', blueEye:'Blaues Auge · Syri i Kaltër',
+  saranda:'Saranda Hafen',
 };
 
 const LOCS={
@@ -1075,7 +1077,7 @@ const DAYS=[
     {i:"Segelboot",t:"Optionaler Bootsverleih",d:"Kleine Motorboote für die Bucht buchbar · ideal für die ganze Familie"},
   ],
   selfie:[{t:"Jetski-Actionfoto",tip:"Jemanden ans Ufer stellen zum Fotografieren — beste Hintergrundbucht!"}],
-  photos:["agiosGordios2"],
+  photos:["agiosGordiosR01"],
   tips:["Früh am Strand (9 Uhr), bevor Warteschlangen entstehen","Wassersport-Preise sind verhandelbar — mehrere Aktivitäten als Paket fragen","Ausreichend Wasser trinken — Wassersport kostet Energie!"],
   eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
   rests:[{n:"The Rock Bar",d:"Iconic Felsbar am Strand, Cocktails & Snacks, Sonnenuntergang-Pflichtprogramm",tags:["Strandbar","Cocktails","€€"]},{n:"Agios Gordios Taverna",d:"Frischer Fisch, Souvlaki, Moussaka — authentisch griechisch",tags:["Griechisch","Fisch","€€"]}],alerts:[]},
@@ -1151,7 +1153,7 @@ const DAYS=[
     {i:"Auge",t:"Blaues Auge (Syri i Kaltër)",d:"ca. 23 km von Saranda · mystischer Quellsee mit glasklarem, tiefblauem Wasser — WOW-Faktor!"},
   ],
   selfie:[{t:"Butrint Amphitheater",tip:"Antikes griechisches Theater — Stufen als Fotokulisse. Früh morgens kaum Touristen."},{t:"Blaues Auge von oben",tip:"Aussichtsplattform am Rande des Quells — bestes Foto von oben. Tiefblau garantiert!"}],
-  photos:["butrint"],
+  photos:["blueEye"],
   tips:["Butrint: Morgens starten (Hitze & Menschenmassen nachmittags schlimmer)","Gutes Schuhwerk für Butrint — unebene Ausgrabungswege","Blaues Auge: Das Wasser hat ca. 10°C — Schwimmen möglich aber kalt! Maxi wird es wagen...","Rückfahrt: ca. 20 Min von Blaues Auge → Ksamil"],
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
   rests:[{n:"Restaurant am Butrint-Eingang",d:"Lokale albanische Küche, günstig, nach dem Museumsbesuch perfekt",tags:["Albanisch","€","Butrint"]},{n:"Blaues Auge Café",d:"Kleines Café direkt am Naturspot, Erfrischungen nach dem Ausflug",tags:["Café","€","Natur"]}],alerts:[]},
@@ -1166,7 +1168,7 @@ const DAYS=[
     {i:"Strand",t:"Nachmittag zurück in Ksamil",d:"Ruhiger Nachmittag am Strand nach dem Ausflug"},
   ],
   selfie:[{t:"Lëkurësi-Burg Panorama",tip:"360°-Blick auf Saranda, den Kanal und Korfu im Hintergrund — ein absolutes Highlight!"},{t:"Saranda Hafen",tip:"Abendstimmung am Hafen mit Blick nach Korfu — malerisch und einzigartig"}],
-  photos:["blueEye"],
+  photos:["saranda"],
   tips:["Lëkurësi Taxi: Direkt zum Festungseingang fahren lassen (~5 € extra)","Beste Aussicht kurz vor Sonnenuntergang — dann leuchtet Korfu golden","Euro wird in Saranda akzeptiert, Lek ist aber günstiger","Rückfahrt Ksamil: Minibus oder Taxi, ca. 8–10 €"],
   eve:"Entspannter Abend in Ksamil nach dem Ausflug — Lieblingsrestaurant revisit",
   rests:[{n:"Limani Restaurant Saranda",d:"Direkt am Hafen, frischer Fisch & Meeresfrüchte, toller Meerblick",tags:["Fisch","Hafen","€€"]},{n:"Era Restaurant Ksamil",d:"Abends in Ksamil: lokale albanische Küche, authentisch & günstig",tags:["Albanisch","€","Abend"]}],alerts:[]},
@@ -1180,7 +1182,7 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Stehpaddeln in ruhigem Wasser, perfekte Abendstimmung"},
   ],
   selfie:[{t:"Jetski Action",tip:"Jemanden ans Ufer stellen zum Fotografieren — Wasserreflexion + Geschwindigkeit = perfektes Foto!"}],
-  photos:["ksamilIslands"],
+  photos:["ksamil2"],
   tips:["Wassersport-Preise verhandelbar — mehrere Aktivitäten als Paket anfragen","Früh buchen (9–10 Uhr) bevor Warteschlangen entstehen","Ausreichend Wasser trinken — Wassersport im Hochsommer kostet Energie","Sonnencreme auch im Wasser erneuern"],
   eve:"Beach-Bar-Abend an der Ksamil-Strandpromenade: Musik, Drinks, Inseln-Silhouette im Abendlicht",
   rests:[{n:"Aqua Restaurant Ksamil",d:"Direkt am Wasser, Meeresfrüchte & Pasta, schönes Ambiente",tags:["Meeresfrüchte","€€","Meerblick"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
@@ -1194,7 +1196,7 @@ const DAYS=[
     {i:"Eis",t:"Eis & Desserts erkunden",d:"Ksamil-Dorf erkunden, lokale Gelaterie, albanische Süßigkeiten probieren"},
   ],
   selfie:[{t:"Strandbar mit Inseln-Blick",tip:"Letzter Ksamil-Sonnenuntergang — wer schöne Bilder will, kommt 30 Min vor Sonnenuntergang"}],
-  photos:["ksamilCoast"],
+  photos:["ksamilBeach"],
   tips:["Albanische Lek ausgeben (Bargeld wieder zurücktauschen schwierig)","Albanische Souvenirs: Raki, Honig, Handarbeiten aus dem Dorf","Check-out morgen früh — Koffer heute Abend vorbereiten","Fähre Saranda → Korfu VORAB buchen!"],
   eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
   rests:[{n:"Era Restaurant (Abschlussabend)",d:"Albanische Spezialitäten zum Abschied: Tave Kosi (Joghurt-Lamm) probieren!",tags:["Albanisch","Lokal","€"]},{n:"Sunset Bar Ksamil",d:"Tolle Abendatmosphäre, Musik, beliebt bei Twentysomethings & Teens",tags:["Bar","Abend","€€"]}],alerts:[]},
@@ -1239,7 +1241,7 @@ const DAYS=[
     {i:"SUP",t:"SUP bei Sonnenuntergang",d:"Abends auf dem ruhigen Wasser paddeln — romantisch & ruhig"},
   ],
   selfie:[{t:"Parasailing Actionfoto",tip:"Vom Boot aus fotografieren lassen — Wasserreflexion + fliegender Parasail = Traumfoto!"}],
-  photos:["ypsosBeach"],
+  photos:["agiosGordiosR02"],
   tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
   rests:[{n:"Ypsos Beach Bar",d:"Cocktails & Snacks, direkt am Strand, Abend-Pflicht in Ypsos",tags:["Strandbar","€€","Abend"]},{n:"Barracuda Restaurant Ypsos",d:"Frischer Fisch und Meeresfrüchte, schöne Terrasse",tags:["Fisch","€€","Terrasse"]}],alerts:[]},
@@ -1269,7 +1271,7 @@ const DAYS=[
     {i:"Glas",t:"Abschluss-Toast",d:"Letzter Sonnenuntergang als Familie am Meer, auf schöne 2,5 Wochen anstoßen"},
   ],
   selfie:[{t:"Letztes Familien-Selfie am Meer",tip:"Golden Hour Sonnenuntergang am Ypsos-Strand — diesen Moment einfrieren!"}],
-  photos:["korfuNorth"],
+  photos:["kanoni2"],
   tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ypsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
   eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
   rests:[{n:"Rex Corfu (Abschlussabend)",d:"Nochmal der lokale Favorit — beim Abschied nochmal richtig schlemmen",tags:["Fisch","€€","Abschluss"]}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
@@ -1422,7 +1424,7 @@ const AVT_IMG = {
   // Kids (Leah + Maxi)
   'kids-sport':      'av-kids-sport.png',     // IMG_9839 — Wakeboard/Wasserski (T3)
   'kids-swim':       'av-kids-swim.png',      // IMG_9842 — Schwimmen türkises Wasser (T7)
-  'kids-abend':      'av-kids-abend.png',     // IMG_9841 — KSAMIL Nacht-Selfie (T9)
+  'kids-abend':      'av-kids-city.png',      // IMG_9841 — KSAMIL Nacht-Selfie angezogen (T9)
   'kids-strand':     'av-kids-strand.png',    // IMG_9838 — Agios Nikolaos GREECE (T13)
   // Eltern (Michael + Nina)
   'eltern-jetski':   'av-eltern-jetski.png',  // IMG_9848 — Jetski (T10)
