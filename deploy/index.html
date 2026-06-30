@@ -715,6 +715,18 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   border-radius: 0 8px 8px 0;
 }
 
+/* Supermarkt-Hinweis */
+.market-box {
+  background: rgba(92,122,62,0.08);
+  border: 1px solid rgba(92,122,62,0.28);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.79rem;
+  color: var(--tinte);
+  line-height: 1.48;
+}
+
 /* Alerts */
 .card-alert {
   margin-bottom: 20px;
@@ -1093,7 +1105,7 @@ const DAYS=[
   photos:["agiosGordios"],
   tips:["Mittagspause 13–16 Uhr! Bei 35°C+ kein Aufenthalt in voller Sonne","LSF 50+ für die ganze Familie, besonders Maxi & Leah","Klares, flaches Wasser — ideal für erste Schnorchelabenteuer"],
   eve:"Spaziergang durch das Dorf Agios Gordios, Eis & lokale Taverne",
-  rests:[{n:"Sebastian's Taverna",d:"Familientaverne seit 1977, Agios Gordios Hauptstraße, 5 Min Fußweg vom Strand — griechische Klassiker & Holzofengerichte, 4.7/5",tags:["Griechisch","Holzofen","€€"],map:"https://www.google.com/maps/search/?api=1&query=Sebastian%27s+Taverna+Agios+Gordios+Corfu"},{n:"Akrogiali Family Taverna",d:"Direkt am Strand, Familienrestaurant, frischer Fisch & Meeresfrüchte — einer der besten Spots in Agios Gordios, 4.9/5",tags:["Strandlage","Fisch","€€"],map:"https://www.google.com/maps/search/?api=1&query=Akrogiali+Family+Taverna+Agios+Gordios+Corfu"}],alerts:[]},
+  rests:[{n:"Sebastian's Taverna",d:"Familientaverne seit 1977, Agios Gordios Hauptstraße, 5 Min Fußweg vom Strand — griechische Klassiker & Holzofengerichte, 4.7/5",tags:["Griechisch","Holzofen","€€"],map:"https://www.google.com/maps/search/?api=1&query=Sebastian%27s+Taverna+Agios+Gordios+Corfu"},{n:"Akrogiali Family Taverna",meal:"m",d:"Direkt am Strand, Familienrestaurant, frischer Fisch & Meeresfrüchte — einer der besten Spots in Agios Gordios, 4.9/5",tags:["Strandlage","Fisch","€€"],map:"https://www.google.com/maps/search/?api=1&query=Akrogiali+Family+Taverna+Agios+Gordios+Corfu"}],bars:[{n:"The Lemon Tree Cocktail Bar",d:"Cocktailbar seit 2002 in Agios Gordios — einzigartige Signature-Cocktails mit Lemon-Twist, tolle Atmosphäre, beliebter Abend-Treffpunkt der Einheimischen",tags:["Cocktails","Abend","€€"],map:"https://www.google.com/maps/search/?api=1&query=Lemon+Tree+Cocktail+Bar+Agios+Gordios+Corfu"},{n:"Ark Beach Bar",d:"Direkt am Agios Gordios Strand — kühle Cocktails & Snacks mit fantastischem Meerblick, perfekte Sunset-Atmosphäre direkt am Wasser",tags:["Strandbar","Sunset","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ark+Beach+Bar+Agios+Gordios+Corfu"}],market:"Gee Bee's Supermarket (Tel: +30 2661 053035) & Super Market Spiros (seit 1981) — beide in Agios Gordios, Wasser, Getränke, Sonnencreme & lokale Produkte.",alerts:[]},
 
 {id:"T3",date:"20.07",wd:"Mo",et:"e1",avt:"kids-sport",title:"Agios Gordios · Wassersport",sub:"Jetski, Banana Boat, Schnorcheln",
   center:[39.552,19.867,13],marks:["agiosBeach","poseidon"],
@@ -1107,7 +1119,7 @@ const DAYS=[
   photos:["agiosGordiosR01"],
   tips:["Früh am Strand (9 Uhr), bevor Warteschlangen entstehen","Wassersport-Preise sind verhandelbar — mehrere Aktivitäten als Paket fragen","Ausreichend Wasser trinken — Wassersport kostet Energie!"],
   eve:"The Rock Bar: Sonnenuntergang mit Musik direkt am Fels — Teens-Favorit in Agios Gordios",
-  rests:[{n:"Thalassa Restaurant Wine Bar",d:"#2 in Agios Gordios, Holzofenküche seit 2000, traditionelle Korfiot-Gerichte, abends wunderbare Atmosphäre, 4.5/5",tags:["Holzofen","Wein","€€"],map:"https://www.google.com/maps/search/?api=1&query=Thalassa+Restaurant+Wine+Bar+Agios+Gordios+Corfu"},{n:"Sebastian's Taverna",d:"Familientaverne seit 1977, Agios Gordios Hauptstraße, 5 Min Fußweg vom Strand — griechische Klassiker & Meeresfrüchte, 4.7/5",tags:["Griechisch","Taverne","€€"],map:"https://www.google.com/maps/search/?api=1&query=Sebastian%27s+Taverna+Agios+Gordios+Corfu"}],alerts:[]},
+  rests:[{n:"Thalassa Restaurant Wine Bar",d:"#2 in Agios Gordios, Holzofenküche seit 2000, traditionelle Korfiot-Gerichte, abends wunderbare Atmosphäre, 4.5/5",tags:["Holzofen","Wein","€€"],map:"https://www.google.com/maps/search/?api=1&query=Thalassa+Restaurant+Wine+Bar+Agios+Gordios+Corfu"},{n:"Sebastian's Taverna",meal:"m",d:"Familientaverne seit 1977, Agios Gordios Hauptstraße, 5 Min Fußweg vom Strand — griechische Klassiker & Meeresfrüchte, 4.7/5",tags:["Griechisch","Taverne","€€"],map:"https://www.google.com/maps/search/?api=1&query=Sebastian%27s+Taverna+Agios+Gordios+Corfu"}],bars:[{n:"Sabbia Beach Bar",d:"Raffinierte Beach-Bar direkt am Agios Gordios Strand — mediterrane Küche & handgefertigte Cocktails, Meerblick, perfekt nach dem Wassersport-Tag",tags:["Cocktails","Meerblick","€€"],map:"https://www.google.com/maps/search/?api=1&query=Sabbia+Beach+Bar+Agios+Gordios+Corfu"},{n:"The Lemon Tree Cocktail Bar",d:"Cocktailbar seit 2002 — einzigartige Signature-Drinks, entspannte Atmosphäre, Abend-Treffpunkt in Agios Gordios",tags:["Cocktails","Abend","€€"],map:"https://www.google.com/maps/search/?api=1&query=Lemon+Tree+Cocktail+Bar+Agios+Gordios+Corfu"}],alerts:[]},
 
 {id:"T4",date:"21.07",wd:"Di",et:"e1",avt:"city-fam",title:"Korfu-Stadt",sub:"UNESCO-Altstadt, Festungen & Liston-Promenade",
   center:[39.624,19.921,13],marks:["korfuTown","alteFestung","liston"],
@@ -1122,7 +1134,7 @@ const DAYS=[
   photos:["alteFestung"],
   tips:["Hochsaison: Festung morgens früh besuchen (kühler, weniger voll)","Altstadt-Gassen sind eng & verschachtelt — absichtlich verirren!","Kumquat-Likör ist Korfu-Spezialität — als Souvenir perfekt"],
   eve:"Liston-Promenade abends: Cafés unter den venezianischen Bögen, Gelato, Flanieren",
-  rests:[{n:"La Famiglia",d:"Authentische Trattoria in einer Altstadtgasse, 4.5/5 (465 Bewertungen) — hervorragende Pasta, günstig, kein Kreditkarten-Zahlung (Bargeld!)",tags:["Pasta","Altstadt","€"],map:"https://www.google.com/maps/search/?api=1&query=La+Famiglia+Corfu+Town+Greece"},{n:"Rex Restaurant",d:"Korfu-Legende seit 1932, direkt neben dem Liston (66 Kapodistriou), 4.4/5 mit über 4200 Bewertungen — Korfiot-Küche vom Feinsten",tags:["Korfiot","Liston","€€"],map:"https://www.google.com/maps/search/?api=1&query=Rex+Restaurant+Corfu+Town+66+Kapodistriou"}],alerts:[]},
+  rests:[{n:"La Famiglia",meal:"m",d:"Authentische Trattoria in einer Altstadtgasse, 4.5/5 (465 Bewertungen) — hervorragende Pasta, günstig, kein Kreditkarten-Zahlung (Bargeld!)",tags:["Pasta","Altstadt","€"],map:"https://www.google.com/maps/search/?api=1&query=La+Famiglia+Corfu+Town+Greece"},{n:"Rex Restaurant",d:"Korfu-Legende seit 1932, direkt neben dem Liston (66 Kapodistriou), 4.4/5 mit über 4200 Bewertungen — Korfiot-Küche vom Feinsten",tags:["Korfiot","Liston","€€"],map:"https://www.google.com/maps/search/?api=1&query=Rex+Restaurant+Corfu+Town+66+Kapodistriou"}],bars:[{n:"Café Liston",d:"Ikone am Liston-Platz unter den venezianischen Bögen — Cocktails & Wein mit Ausblick auf die schönste Promenade Korfus, tolle Abendstimmung",tags:["Liston","Altstadt","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Cafe+Liston+Corfu+Town+Greece"},{n:"GREC Espresso & Cocktail Bar",d:"Kleines, beliebtes Cocktailbar hinter dem Liston — ausgezeichnete Drinks, venezianischer Altstadt-Charme, junges Publikum",tags:["Cocktails","Geheimtipp","€€"],map:"https://www.google.com/maps/search/?api=1&query=GREC+espresso+cocktail+bar+Corfu+Town"}],alerts:[]},
 
 {id:"T5",date:"22.07",wd:"Mi",et:"tv",avt:"ferry",title:"Transfer → Ksamil",sub:"Check-out Poseidon Suites · Fähre Korfu → Saranda · Check-in Muze Hotel",
   center:[39.770,20.003,12],marks:["korfuPort","saranda","muze"],
@@ -1139,7 +1151,7 @@ const DAYS=[
   photos:["pontikonisi"],
   tips:["REISEPASS nicht vergessen — Albanien ist KEIN EU/Schengen-Land!","Roaming in Albanien: KEIN EU-Roaming-Schutz → Datenvolumen prüfen!","Albanische Lek am ATM in Saranda abheben (Euro wird auch akzeptiert, aber Lek besser)","Fähre: Tickets idealerweise 1–2 Tage vorher online buchen"],
   eve:"Erster albanischer Sonnenuntergang am Ksamil-Strand — sehr fotogen",
-  rests:[{n:"Restaurant Grill & Pizza Palma",d:"#1 in Ksamil! 4.7/5 Google (fast 2000 Bewertungen) — frische Meeresfrüchte, authentische Pizza, familiäres Ambiente, zu Fuß erreichbar",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"},{n:"Bar Restorant Luna",d:"Schönste Sonnenuntergang-Terrasse in Ksamil, Blick auf die Inseln — perfekt zum Ankommen und Eingewöhnen",tags:["Strandbar","Sunset","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restorant+Luna+Ksamil+Albania"}],
+  rests:[{n:"Restaurant Grill & Pizza Palma",meal:"m",d:"#1 in Ksamil! 4.7/5 Google (fast 2000 Bewertungen) — frische Meeresfrüchte, authentische Pizza, familiäres Ambiente, zu Fuß erreichbar",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"},{n:"Bar Restorant Luna",d:"Schönste Sonnenuntergang-Terrasse in Ksamil, Blick auf die Inseln — perfekt zum Ankommen und Eingewöhnen",tags:["Strandbar","Sunset","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restorant+Luna+Ksamil+Albania"}],bars:[{n:"Pisko Beach Bar",d:"Lebhafte Strandbar direkt am Ksamil-Hauptstrand — Cocktails, DJ-Events, Inseln-Panorama. Erster albanischer Abend mit Stil!",tags:["DJ","Strandbar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Pisko+Beach+Bar+Ksamil+Albania"}],market:"Big Market Ksamil (tgl. 7–22 Uhr, 2 Etagen) & Planet Market — Wasser, Getränke, frische Produkte & Souvenirs. Albanische Lek für kleine Ausgaben günstiger als Euro.",
   alerts:[{t:"warn",text:"WICHTIG: Albanien ist kein EU-Mitglied. Reisepass für alle Familienmitglieder nötig. EU-Roaming gilt NICHT — Datenkosten prüfen!"}]},
 
 {id:"T6",date:"23.07",wd:"Do",et:"e2",avt:"family-ksamil",title:"Ksamil · Erste Strände",sub:"Eingewöhnen, türkises Wasser & Inseln-Panorama entdecken",
@@ -1155,7 +1167,7 @@ const DAYS=[
   photos:["ksamil"],
   tips:["Früh am Strand (vor 9 Uhr) für besten Platz","Sonnencreme LSF 50+ — Wasser verstärkt Strahlung","Liegeplätze an der Strandbar oft kostenpflichtig (ca. 5–10 €) aber lohnt sich","Albanische Lek für kleine Ausgaben am Strand nutzen"],
   eve:"Sonnenuntergang am Ksamil-Hauptstrand — die Inseln im Abendlicht sind unvergesslich",
-  rests:[{n:"Mëndra Traditional Albanian Restaurant",d:"Authentisch albanisch: Lakror, Tavë Kosi, Qofte, Muscheln — 4.7/5, auf Antoni Athanasi Street, fußläufig vom Strand",tags:["Albanisch","Traditional","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"},{n:"Abiori Bar Restaurant Pizzeria",d:"Locker-familiär, Pizza & Meeresfrüchte, 4.6/5 mit über 1200 Bewertungen — beliebt bei Familien und Einheimischen",tags:["Pizza","Seafood","€€"],map:"https://www.google.com/maps/search/?api=1&query=Abiori+Bar+Restaurant+Pizzeria+Ksamil+Albania"}],alerts:[]},
+  rests:[{n:"Mëndra Traditional Albanian Restaurant",meal:"m",d:"Authentisch albanisch: Lakror, Tavë Kosi, Qofte, Muscheln — 4.7/5, auf Antoni Athanasi Street, fußläufig vom Strand",tags:["Albanisch","Traditional","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"},{n:"Abiori Bar Restaurant Pizzeria",d:"Locker-familiär, Pizza & Meeresfrüchte, 4.6/5 mit über 1200 Bewertungen — beliebt bei Familien und Einheimischen",tags:["Pizza","Seafood","€€"],map:"https://www.google.com/maps/search/?api=1&query=Abiori+Bar+Restaurant+Pizzeria+Ksamil+Albania"}],bars:[{n:"Poda Lounge Bar",d:"Gehobene Strandbar im Poda Boutique Hotel — Sunset-Blick auf Ksamil-Strand, Abendunterhaltung mit Feuershow & Stelzenläufern",tags:["Upscale","Feuershow","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Poda+Beach+Bar+Ksamil+Albania"},{n:"Ohana Beach Bar",d:"Entspannte, romantische Bar direkt am Ksamil-Meer — eine der beliebtesten Adressen unter Einheimischen, ruhig & stimmungsvoll",tags:["Romantisch","Strand","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ohana+Beach+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T7",date:"24.07",wd:"Fr",et:"e2",avt:"kids-swim",title:"Ksamil · Inseln & Schnorcheln",sub:"Bootstour zu den 4 Ksamil-Inseln + Cliff Jumping",
   center:[39.765,19.998,13],marks:["ksamilBeach","ksamilIslands","muze"],
@@ -1169,7 +1181,7 @@ const DAYS=[
   photos:["ksamilRiviera"],
   tips:["Bootstour morgens früh (ruhiges Wasser, weniger voll)","Schwimmweste für Maxi auf offener See empfohlen","Die kleinen Inseln haben eigene Strandabschnitte — Picknick möglich","Wassertemperatur ca. 25–27°C — perfekt!"],
   eve:"Sonnenuntergang-Strandbar am Hauptstrand Ksamil — sehr romantisch, tolle Stimmung",
-  rests:[{n:"Restaurant Grill & Pizza Palma",d:"#1 in Ksamil! 4.7/5 Google — bestes Seafood der Stadt, perfekte Pizza, Reservierung empfohlen im Hochsommer",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"},{n:"Albanian Flavors Ksamil",d:"Authentisch albanisches Essen — Besucher nennen es 'bestes Essen der ganzen Albanien-Reise', günstig und lokal",tags:["Albanisch","Lokal","€"],map:"https://www.google.com/maps/search/?api=1&query=Albanian+Flavors+Ksamil+Albania"}],alerts:[]},
+  rests:[{n:"Albanian Flavors Ksamil",meal:"m",d:"Authentisch albanisches Essen — Besucher nennen es 'bestes Essen der ganzen Albanien-Reise', günstig und lokal",tags:["Albanisch","Lokal","€"],map:"https://www.google.com/maps/search/?api=1&query=Albanian+Flavors+Ksamil+Albania"},{n:"Restaurant Grill & Pizza Palma",d:"#1 in Ksamil! 4.7/5 Google — bestes Seafood der Stadt, perfekte Pizza, Reservierung empfohlen im Hochsommer",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"}],bars:[{n:"Ostro Beach Bar & Restaurant",d:"Stylishe Bar auf Rruga Gjiri Poda — preisgekrönter Service, Meeresfrüchte-Häppchen zum Drink, spektakuläre Sunset-Aussicht auf die Ksamil-Inseln",tags:["Award-winning","Sunset","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Ostro+Beach+Bar+Ksamil+Albania"},{n:"Pisko Beach Bar",d:"Direkt am Ksamil-Hauptstrand — Cocktails, DJ-Events, Inseln-Panorama, tolle Abendstimmung nach dem Boots-Tag",tags:["DJ","Strandbar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Pisko+Beach+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T8",date:"25.07",wd:"Sa",et:"e2",avt:"taverna-fam",title:"Butrint + Blaues Auge",sub:"UNESCO-Ausgrabungen & mystischer Naturspot",
   center:[39.830,20.130,10],marks:["butrint","blueEye","saranda"],
@@ -1183,7 +1195,7 @@ const DAYS=[
   photos:["blueEye"],
   tips:["Butrint: Morgens starten (Hitze & Menschenmassen nachmittags schlimmer)","Gutes Schuhwerk für Butrint — unebene Ausgrabungswege","Blaues Auge: Das Wasser hat ca. 10°C — Schwimmen möglich aber kalt! Maxi wird es wagen...","Rückfahrt: ca. 20 Min von Blaues Auge → Ksamil"],
   eve:"Abendessen in Ksamil — nach dem Kultur-Tag das beste albanische Restaurant suchen",
-  rests:[{n:"The Mussel House",d:"Direkt auf der Fahrt nach Butrint (km 10 Saranda–Butrint-Straße), am Butrint-See — frischeste Muscheln aus der Lagune, wunderschöne Terrasse, 4.6/5",tags:["Muscheln","Seafood","€€"],map:"https://www.google.com/maps/search/?api=1&query=The+Mussel+House+Restaurant+Ksamil+Albania"},{n:"Restaurant am Butrint-Eingang",d:"Kleines lokales Restaurant direkt vor dem Butrint-Parkeingang — einfache albanische Küche, praktisch vor/nach dem Museumsbesuch",tags:["Albanisch","€","Butrint"],map:"https://www.google.com/maps/search/?api=1&query=restaurant+near+Butrint+Archaeological+Park+Albania"}],alerts:[]},
+  rests:[{n:"The Mussel House",meal:"m",d:"Direkt auf der Fahrt nach Butrint (km 10 Saranda–Butrint-Straße), am Butrint-See — frischeste Muscheln aus der Lagune, wunderschöne Terrasse, 4.6/5",tags:["Muscheln","Seafood","€€"],map:"https://www.google.com/maps/search/?api=1&query=The+Mussel+House+Restaurant+Ksamil+Albania"},{n:"Restaurant am Butrint-Eingang",meal:"m",d:"Kleines lokales Restaurant direkt vor dem Butrint-Parkeingang — einfache albanische Küche, praktisch vor/nach dem Museumsbesuch",tags:["Albanisch","€","Butrint"],map:"https://www.google.com/maps/search/?api=1&query=restaurant+near+Butrint+Archaeological+Park+Albania"},{n:"Mëndra Traditional Albanian Restaurant",d:"Abendessen zurück in Ksamil — authentisch albanisch, Tave Kosi, Lakror, Muscheln, 4.7/5. Perfekter Abschluss nach dem langen Kulturtag",tags:["Albanisch","Traditional","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"}],bars:[{n:"Ohana Beach Bar",d:"Entspannte Atmosphäre am Meer nach dem langen Ausflugstag — romantisch & stimmungsvoll, bestes Abschalten in Ksamil",tags:["Entspannt","Strand","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ohana+Beach+Bar+Ksamil+Albania"},{n:"Poda Lounge Bar",d:"Gehobene Lounge mit Sunset-Panorama über Ksamil — schöner Abschluss nach einem erlebnisreichen Kulturtag",tags:["Upscale","Sunset","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Poda+Beach+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T9",date:"26.07",wd:"So",et:"e2",avt:"kids-abend",title:"Ksamil · Saranda & Lëkurësi",sub:"Hafen-Promenade, albanische Küche & Panorama-Burg",
   center:[39.875,20.003,12],marks:["saranda","muze"],
@@ -1198,7 +1210,7 @@ const DAYS=[
   photos:["saranda"],
   tips:["Lëkurësi Taxi: Direkt zum Festungseingang fahren lassen (~5 € extra)","Beste Aussicht kurz vor Sonnenuntergang — dann leuchtet Korfu golden","Euro wird in Saranda akzeptiert, Lek ist aber günstiger","Rückfahrt Ksamil: Minibus oder Taxi, ca. 8–10 €"],
   eve:"Entspannter Abend in Ksamil nach dem Ausflug — Lieblingsrestaurant revisit",
-  rests:[{n:"Bar Restaurant Limani",d:"Saranda-Legende seit 1998 — direkt an der Hafenpromenade, Meerblick auf Korfu, große Speisekarte, 4.3/5 Google. Kein Reservieren möglich, früh kommen!",tags:["Hafen","Meerblick","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restaurant+Limani+Saranda+Albania"},{n:"Mëndra Traditional Albanian Restaurant",d:"Für den Abend zurück in Ksamil: authentisch albanisch, Lakror, Muscheln, Tave Kosi — 4.7/5, fußläufig",tags:["Albanisch","Ksamil","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"}],alerts:[]},
+  rests:[{n:"Bar Restaurant Limani",meal:"m",d:"Saranda-Legende seit 1998 — direkt an der Hafenpromenade, Meerblick auf Korfu, große Speisekarte, 4.3/5 Google. Kein Reservieren möglich, früh kommen!",tags:["Hafen","Meerblick","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restaurant+Limani+Saranda+Albania"},{n:"Mëndra Traditional Albanian Restaurant",d:"Für den Abend zurück in Ksamil: authentisch albanisch, Lakror, Muscheln, Tave Kosi — 4.7/5, fußläufig",tags:["Albanisch","Ksamil","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"}],bars:[{n:"Ostro Beach Bar & Restaurant",d:"Zurück in Ksamil — stylishe Bar mit preisgekröntem Service, Sunset-Aussicht auf die Inseln, perfekter Ausklang nach dem Saranda-Ausflug",tags:["Award-winning","Sunset","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Ostro+Beach+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T10",date:"27.07",wd:"Mo",et:"e2",avt:"eltern-jetski",title:"Ksamil · Wassersport",sub:"Jetski, Wakeboard & Kajak im türkisen albanischen Wasser",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
@@ -1212,7 +1224,7 @@ const DAYS=[
   photos:["ksamil2"],
   tips:["Wassersport-Preise verhandelbar — mehrere Aktivitäten als Paket anfragen","Früh buchen (9–10 Uhr) bevor Warteschlangen entstehen","Ausreichend Wasser trinken — Wassersport im Hochsommer kostet Energie","Sonnencreme auch im Wasser erneuern"],
   eve:"Beach-Bar-Abend an der Ksamil-Strandpromenade: Musik, Drinks, Inseln-Silhouette im Abendlicht",
-  rests:[{n:"Restaurant Grill & Pizza Palma",d:"#1 in Ksamil! 4.7/5 Google (fast 2000 Bewertungen) — frische Meeresfrüchte, Pasta, Pizza. Nach dem Wassersport-Tag die beste Wahl",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"},{n:"Bar Restorant Luna",d:"Schönste Sunset-Terrasse in Ksamil — perfekt nach einem aktiven Tag am Wasser, Blick auf die Inseln im Abendlicht",tags:["Sunset","Bar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restorant+Luna+Ksamil+Albania"}],alerts:[]},
+  rests:[{n:"Restaurant Grill & Pizza Palma",meal:"m",d:"#1 in Ksamil! 4.7/5 Google (fast 2000 Bewertungen) — frische Meeresfrüchte, Pasta, Pizza. Nach dem Wassersport leichter Mittagsstopp",tags:["Seafood","Pizza","€€"],map:"https://www.google.com/maps/search/?api=1&query=Restaurant+Grill+Pizza+Palma+Ksamil+Albania"},{n:"Bar Restorant Luna",d:"Schönste Sunset-Terrasse in Ksamil — perfekt nach einem aktiven Tag am Wasser, Blick auf die Inseln im Abendlicht",tags:["Sunset","Bar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bar+Restorant+Luna+Ksamil+Albania"}],bars:[{n:"Pisko Beach Bar",d:"Direkt am Ksamil-Hauptstrand — Cocktails, DJ-Events, Inseln-Panorama. Nach dem Adrenalin-Tag am Wasser perfekt zum Entspannen",tags:["DJ","Strandbar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Pisko+Beach+Bar+Ksamil+Albania"},{n:"Lounge Bar BERMUDA",d:"Einzigartige Panorama-Aussicht über Ksamil und die vorgelagerten Inseln — Signature-Cocktails, unvergessliche Abendmomente",tags:["Panorama","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=Bermuda+Lounge+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T11",date:"28.07",wd:"Di",et:"e2",avt:"eltern-pool",title:"Ksamil · Freier Strandtag",sub:"Genuss, Wasser & letzter albanischer Abend",
   center:[39.768,20.001,13],marks:["ksamilBeach","muze"],
@@ -1226,7 +1238,7 @@ const DAYS=[
   photos:["ksamilBeach"],
   tips:["Albanische Lek ausgeben (Bargeld wieder zurücktauschen schwierig)","Albanische Souvenirs: Raki, Honig, Handarbeiten aus dem Dorf","Check-out morgen früh — Koffer heute Abend vorbereiten","Fähre Saranda → Korfu VORAB buchen!"],
   eve:"Letzter Abend in Albanien — Dinner am Meer, tolle Atmosphäre in Ksamil Village",
-  rests:[{n:"Mëndra Traditional Albanian Restaurant",d:"Perfekter Abschlussabend in Albanien! Tave Kosi (Joghurt-Lamm), Lakror, Muscheln — 4.7/5, echte albanische Gastfreundschaft",tags:["Albanisch","Traditional","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"},{n:"Abiori Bar Restaurant Pizzeria",d:"Locker und familiär zum letzten Albanien-Abend — 4.6/5, über 1200 Bewertungen, kurze Wartezeit in der Hochsaison",tags:["Pizza","Bar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Abiori+Bar+Restaurant+Pizzeria+Ksamil+Albania"}],alerts:[]},
+  rests:[{n:"Abiori Bar Restaurant Pizzeria",meal:"m",d:"Locker und familiär — 4.6/5, über 1200 Bewertungen, entspannter Mittagsstopp zum letzten Albanien-Tag",tags:["Pizza","Bar","€€"],map:"https://www.google.com/maps/search/?api=1&query=Abiori+Bar+Restaurant+Pizzeria+Ksamil+Albania"},{n:"Mëndra Traditional Albanian Restaurant",d:"Perfekter letzter Abend in Albanien! Tave Kosi (Joghurt-Lamm), Lakror, Muscheln — 4.7/5, echte albanische Gastfreundschaft",tags:["Albanisch","Traditional","€"],map:"https://www.google.com/maps/search/?api=1&query=Mendra+Traditional+Albanian+Restaurant+Ksamil+Albania"}],bars:[{n:"Ostro Beach Bar & Restaurant",d:"Letzter Ksamil-Abend: beste Sunset-Bar mit preisgekröntem Service — Albanien in Stil verabschieden!",tags:["Award-winning","Sunset","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Ostro+Beach+Bar+Ksamil+Albania"},{n:"Poda Lounge Bar",d:"Zum Abschied von Ksamil: gehobene Lounge mit Feuershow, Inseln-Silhouette im letzten albanischen Abendlicht",tags:["Upscale","Feuershow","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Poda+Beach+Bar+Ksamil+Albania"}],alerts:[]},
 
 {id:"T12",date:"29.07",wd:"Mi",et:"tv",avt:"bar-fam",title:"Transfer → Ypsos",sub:"Fähre zurück nach Korfu · Check-in Hotel Yannis · neue Etappe im Norden",
   center:[39.685,19.873,12],marks:["saranda","korfuPort","yannis","ypsosBeach"],
@@ -1242,7 +1254,7 @@ const DAYS=[
   photos:["oldFortress"],
   tips:["Fähre-Rückticket vorab buchen!","Albanischer Lek: restliche Scheine ausgeben oder am Hafen Saranda tauschen","Ypsos ist ruhiger als Agios Gordios — entspannter Wechsel","Hotel Yannis: Check-in-Zeit klären (ggf. Gepäck einlagern)"],
   eve:"Erster Abend in Ypsos: Strandpromenade entlang, lokale Tavernen erkunden",
-  rests:[{n:"Marea Seaside",d:"Direkt am Ipsos-Strand, frische Meeresfrüchte & Pasta — Seebarsch, Sardinen, Ceviche, 4.5/5, traumhafter Meerblick beim Ankommen",tags:["Seafood","Strandlage","€€"],map:"https://www.google.com/maps/search/?api=1&query=Marea+Seaside+Restaurant+Ipsos+Corfu"},{n:"Phevos",d:"Lokaler Ypsos-Favorit: frische Meeresfrüchte & Muscheln in Knoblauch, fußläufig vom Hotel Yannis, günstig & gemütlich",tags:["Griechisch","Meeresfrüchte","€"],map:"https://www.google.com/maps/search/?api=1&query=Phevos+Restaurant+Ipsos+Corfu"}],alerts:[]},
+  rests:[{n:"Phevos",meal:"m",d:"Lokaler Ypsos-Favorit: frische Meeresfrüchte & Muscheln in Knoblauch, fußläufig vom Hotel Yannis, günstig & gemütlich",tags:["Griechisch","Meeresfrüchte","€"],map:"https://www.google.com/maps/search/?api=1&query=Phevos+Restaurant+Ipsos+Corfu"},{n:"Marea Seaside",d:"Direkt am Ipsos-Strand, frische Meeresfrüchte & Pasta — Seebarsch, Sardinen, Ceviche, 4.5/5, traumhafter Meerblick beim Ankommen",tags:["Seafood","Strandlage","€€"],map:"https://www.google.com/maps/search/?api=1&query=Marea+Seaside+Restaurant+Ipsos+Corfu"}],bars:[{n:"Tiffany's Bar",d:"Top-bewertete Bar an der Ipsos-Strandpromenade — Cocktails, Musik, Sport-Events, Meerblick. Wenn der Mond über der Bucht aufgeht: unvergesslich!",tags:["Top-Rated","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=Tiffany%27s+Bar+Ipsos+Corfu+Greece"}],market:"AB Vassilopoulos Supermarkt (direkt in Ipsos, Tel: +30 26610 97959) & Spar Convenience Store — gut sortiert, frische Produkte, günstig.",alerts:[]},
 
 {id:"T13",date:"30.07",wd:"Do",et:"e3",avt:"kids-strand",title:"Ypsos · Paleokastritsa",sub:"Westküste Korfu: Meereshöhlen, türkise Buchten & Café La Grotta",
   center:[39.668,19.705,13],marks:["paleo"],
@@ -1257,7 +1269,7 @@ const DAYS=[
   photos:["paleokastritsa"],
   tips:["Hochsaison: VOR 10 Uhr ankommen — nachmittags brechend voll","Gutes Schuhwerk für Klippen und Kloster-Weg","Bootstouren: Direkt am Hauptstrand buchen, ca. 10 €/Person","La Grotta: Freischwimmen von den Felsen möglich!"],
   eve:"Sonnenuntergang von der Bella Vista Terrasse über Paleokastritsa — eines der schönsten Abendpanoramen Korfus",
-  rests:[{n:"La Grotta Beach Bar",d:"Kult-Felsbar in Paleokastritsa — 100+ Stufen hinunter zum Fels, Cocktails über dem Meer, Schwimmen von den Felsen möglich. Absolutes Must-do! Tel: +30 2663 041006",tags:["Felsbar","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=La+Grotta+Beach+Bar+Paleokastritsa+Corfu"},{n:"Yialos Beach Taverna",d:"Direkt am Hauptstrand Paleokastritsa, frischer Fisch & griechische Gerichte, mit Blick aufs türkise Wasser der Buchten",tags:["Fisch","Strandlage","€€"],map:"https://www.google.com/maps/search/?api=1&query=Yialos+Beach+Taverna+Paleokastritsa+Corfu"}],alerts:[]},
+  rests:[{n:"Yialos Beach Taverna",meal:"m",d:"Direkt am Hauptstrand Paleokastritsa, frischer Fisch & griechische Gerichte, mit Blick aufs türkise Wasser der Buchten",tags:["Fisch","Strandlage","€€"],map:"https://www.google.com/maps/search/?api=1&query=Yialos+Beach+Taverna+Paleokastritsa+Corfu"},{n:"La Grotta Beach Bar",d:"Kult-Felsbar in Paleokastritsa — 100+ Stufen hinunter zum Fels, Cocktails über dem Meer, Schwimmen von den Felsen möglich. Absolutes Must-do! Tel: +30 2663 041006",tags:["Felsbar","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=La+Grotta+Beach+Bar+Paleokastritsa+Corfu"}],bars:[{n:"Unlimit Cocktail Bar",d:"Ausgezeichnete Cocktails in Paleokastritsa — Mojito & Passion Fruit Daiquiri besonders empfohlen, freundlicher Service, tolle Abendatmosphäre",tags:["Cocktails","Paleokastritsa","€€"],map:"https://www.google.com/maps/search/?api=1&query=Unlimit+Cocktail+Bar+Paleokastritsa+Corfu"},{n:"Olea Cocktail Bar",d:"Für die Rückkehr nach Ypsos: gemütliche Cocktailbar mit ausgezeichneter Musik und Drinks, sehr freundliches Personal",tags:["Ypsos","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=Olea+Cocktail+Bar+Ipsos+Corfu"}],alerts:[]},
 
 {id:"T14",date:"31.07",wd:"Fr",et:"e3",avt:"eltern-swim",title:"Ypsos · Wassersport",sub:"Parasailing, Wakeboard & Sonnenuntergang auf dem Wasser",
   center:[39.684,19.872,13],marks:["ypsosBeach","yannis"],
@@ -1271,7 +1283,7 @@ const DAYS=[
   photos:["agiosGordiosR02"],
   tips:["Parasailing: 2er-Tandem buchbar, Leah & Maxi können zusammen fliegen!","Preise vorab am Strand verhandeln","Abendlicht ab 19 Uhr für SUP perfekt","Ypsos hat schöne, ruhige Abende — weniger touristisch als Süden"],
   eve:"Beach-Bar-Abend an der Ypsos-Strandpromenade: Musik, Drinks, entspannte Atmosphäre",
-  rests:[{n:"Ipsos Di Mare Restaurant",d:"4.6/5 mit über 200 Bewertungen, Seafood & Pasta, in Ipsos direkt am Strand — Reviewer nennen es 'bestes Abendessen unserer Griechenland-Reise'",tags:["Seafood","Pasta","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ipsos+Di+Mare+Restaurant+Corfu"},{n:"Phevos",d:"Lokaler Ypsos-Favorit, frische Meeresfrüchte & Muscheln in Knoblauch, fußläufig, günstig & entspannte Atmosphäre nach dem Aktivtag",tags:["Griechisch","Meeresfrüchte","€"],map:"https://www.google.com/maps/search/?api=1&query=Phevos+Restaurant+Ipsos+Corfu"}],alerts:[]},
+  rests:[{n:"Phevos",meal:"m",d:"Lokaler Ypsos-Favorit — frische Meeresfrüchte & Muscheln in Knoblauch, fußläufig, günstig & entspannte Atmosphäre nach dem Aktivtag",tags:["Griechisch","Meeresfrüchte","€"],map:"https://www.google.com/maps/search/?api=1&query=Phevos+Restaurant+Ipsos+Corfu"},{n:"Ipsos Di Mare Restaurant",d:"4.6/5 mit über 200 Bewertungen, Seafood & Pasta, in Ipsos direkt am Strand — Reviewer nennen es 'bestes Abendessen unserer Griechenland-Reise'",tags:["Seafood","Pasta","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ipsos+Di+Mare+Restaurant+Corfu"}],bars:[{n:"Tiffany's Bar",d:"Ypsos-Liebling nach dem Wassersport-Tag — Cocktails, Sport-Events, Musik & Meerblick, tolle Abendstimmung",tags:["Top-Rated","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=Tiffany%27s+Bar+Ipsos+Corfu+Greece"},{n:"Olea Cocktail Bar",d:"Gemütliche Bar in Ypsos — ausgezeichnete Musik, erstklassige Drinks, sehr freundliches Personal",tags:["Lokal","Cocktails","€€"],map:"https://www.google.com/maps/search/?api=1&query=Olea+Cocktail+Bar+Ipsos+Corfu"}],alerts:[]},
 
 {id:"T15",date:"01.08",wd:"Sa",et:"e3",avt:"eltern-taverna",title:"Achilleion + Korfu-Stadt",sub:"Kaiserin Sisis Palast, Pontikonisi & Liston-Abendessen",
   center:[39.603,19.921,11],marks:["achilleion","pontikonisi","kanoni","korfuTown","alteFestung","liston"],
@@ -1286,7 +1298,7 @@ const DAYS=[
   photos:["achilleion"],
   tips:["Achilleion morgens früh besuchen (kühler & weniger voll)","Kanoni: Flugzeug-Timing per Korfu Airport-Webcam prüfen","Pontikonisi Fähre fährt regelmäßig","Abendlicht (17–19 Uhr) macht Festungsfotos dramatisch besser","Liston: Sitzplatz unter den Bögen reservieren oder früh ankommen"],
   eve:"Abendessen am Liston mit dem ganzen Flair der venezianischen Altstadt — schöner Abschluss-Abend",
-  rests:[{n:"Venetian Well",d:"Korfu-Stadtrestaurant im romantischen Innenhof (Kremasti Square) — gehobene mediterrane Küche, Weinbegleitung, für besondere Abende. Für Google Maps 'L. Dessyla 1 Corfu Town' suchen.",tags:["Feinküche","Romantisch","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Venetian+Well+Restaurant+Kremasti+Square+Corfu+Town"},{n:"Ninos",d:"Echter lokaler Liebling in der Altstadt (Sevastian Street 44), #29 von 354 Restaurants in Korfu, 4.3/5 — Sofrito, Pastitsada, Gyros, kein Touristenfänger",tags:["Korfiot","Altstadt","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ninos+Restaurant+Sevastian+Street+Corfu+Town"}],alerts:[]},
+  rests:[{n:"Ninos",meal:"m",d:"Echter lokaler Liebling in der Altstadt (Sevastian Street 44), #29 von 354 Restaurants in Korfu, 4.3/5 — Sofrito, Pastitsada, Gyros, kein Touristenfänger",tags:["Korfiot","Altstadt","€€"],map:"https://www.google.com/maps/search/?api=1&query=Ninos+Restaurant+Sevastian+Street+Corfu+Town"},{n:"Venetian Well",d:"Korfu-Stadtrestaurant im romantischen Innenhof (Kremasti Square) — gehobene mediterrane Küche, Weinbegleitung, für besondere Abende. Für Google Maps 'L. Dessyla 1 Corfu Town' suchen.",tags:["Feinküche","Romantisch","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Venetian+Well+Restaurant+Kremasti+Square+Corfu+Town"}],bars:[{n:"Café Liston",d:"Das Liston-Abend-Erlebnis — Cocktails & Wein unter venezianischen Bögen, mit Blick auf die schönste Promenade Korfus. Unvergesslich!",tags:["Liston","Altstadt","€€€"],map:"https://www.google.com/maps/search/?api=1&query=Cafe+Liston+Corfu+Town+Greece"},{n:"GREC Espresso & Cocktail Bar",d:"Geheimtipp hinter dem Liston — exzellente Cocktails, Altstadt-Charme, junges Publikum, sehr empfohlen",tags:["Cocktails","Geheimtipp","€€"],map:"https://www.google.com/maps/search/?api=1&query=GREC+espresso+cocktail+bar+Corfu+Town"}],alerts:[]},
 
 {id:"T16",date:"02.08",wd:"So",et:"e3",avt:"aqualand",title:"Letzter freier Tag",sub:"Raus aus allem, Meer genießen — morgen geht's heim",
   center:[39.684,19.872,12],marks:["ypsosBeach","yannis"],
@@ -1301,7 +1313,7 @@ const DAYS=[
   photos:["kanoni2"],
   tips:["Wecker für morgen früh stellen! Flug 10:50 → Flughafen bis 8:30 Uhr","Koffer HEUTE Abend fertig packen, nicht morgen früh","Taxi zum Flughafen vorab buchen (ca. 25 Min von Ypsos, Fixpreis ~18 €)","Abrechnung & Tipps im Hotel heute Abend erledigen"],
   eve:"Abschluss-Abendessen mit dem besten Meerblick in Ypsos — Abschied vom ionischen Meer",
-  rests:[{n:"Marea Seaside",d:"Letzter Abend in Ypsos — direkt am Strand, frische Meeresfrüchte & Pasta, wunderbare Sonnenuntergangs-Atmosphäre als schöner Abschluss der Reise",tags:["Seafood","Sunset","€€"],map:"https://www.google.com/maps/search/?api=1&query=Marea+Seaside+Restaurant+Ipsos+Corfu"}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
+  rests:[{n:"Marea Seaside",d:"Letzter Abend in Ypsos — direkt am Strand, frische Meeresfrüchte & Pasta, wunderbare Sonnenuntergangs-Atmosphäre als schöner Abschluss der Reise",tags:["Seafood","Sunset","€€"],map:"https://www.google.com/maps/search/?api=1&query=Marea+Seaside+Restaurant+Ipsos+Corfu"}],bars:[{n:"Tartaya",d:"Tiki-inspirierte Bar in Ipsos mit hawaiianischer Atmosphäre — umfangreiche Cocktailkarte, DJ-Abende, bis spät geöffnet. Perfekter letzter Urlaubsabend!",tags:["Tiki","DJ","€€"],map:"https://www.google.com/maps/search/?api=1&query=Tartaya+Bar+Ipsos+Corfu"},{n:"Tiffany's Bar",d:"Abschluss-Abend in Ypsos — Cocktails mit Meerblick, gute Musik, schöner letzter Griechenland-Abend",tags:["Abschluss","Meerblick","€€"],map:"https://www.google.com/maps/search/?api=1&query=Tiffany%27s+Bar+Ipsos+Corfu+Greece"}],alerts:[{t:"warn",text:"FLUG MORGEN: OS862 ab 10:50 Uhr. Flughafen-Ankunft bis 08:30. Taxi vorab buchen!"}]},
 
 {id:"T17",date:"03.08",wd:"Mo",et:"tv",avt:"eltern-strand",title:"Rückreise",sub:"Korfu → Wien → Graz → Plankenwarth",
   center:[39.6015,19.9117,10],marks:["airport","yannis"],
@@ -1627,13 +1639,22 @@ function buildCardContent(day, etCol, avtFile) {
       <a class="map-link" href="${mapsUrl(s.t, day.id)}" target="_blank" rel="noopener">${MAP_PIN_SVG} In Maps zeigen</a>
     </div>`).join('');
 
-  // Restaurants
-  const restsHtml = (day.rests || []).map(r => `
-    <div class="rest-item">
+  // Restaurants — aufgeteilt in Mittagssnack (meal:"m") und Abendessen
+  function mkRestItem(r) {
+    return `<div class="rest-item">
       <div class="rest-name">${r.n}</div>
       <div class="rest-desc">${r.d}</div>
       <div class="rest-tags">${(r.tags || []).map(t => `<span class="rest-tag">${t}</span>`).join('')}</div>
       <a class="map-link" href="${r.map || mapsUrl(r.n, day.id)}" target="_blank" rel="noopener">${MAP_PIN_SVG} Google Maps öffnen</a>
+    </div>`;
+  }
+  const lunchHtml  = (day.rests || []).filter(r => r.meal === 'm').map(mkRestItem).join('');
+  const dinnerHtml = (day.rests || []).filter(r => r.meal !== 'm').map(mkRestItem).join('');
+  const barsHtml   = (day.bars  || []).map(b => `<div class="rest-item">
+      <div class="rest-name">${b.n}</div>
+      <div class="rest-desc">${b.d}</div>
+      <div class="rest-tags">${(b.tags || []).map(t => `<span class="rest-tag">${t}</span>`).join('')}</div>
+      <a class="map-link" href="${b.map}" target="_blank" rel="noopener">${MAP_PIN_SVG} Google Maps öffnen</a>
     </div>`).join('');
 
   // Tips
@@ -1679,12 +1700,27 @@ function buildCardContent(day, etCol, avtFile) {
         <div class="selfie-list">${selfieHtml}</div>
       </div>` : ''}
 
-      ${restsHtml ? `<div class="detail-section">
-        <div class="detail-section-label">Restaurants</div>
-        <div class="rest-list">${restsHtml}</div>
+      ${lunchHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Mittagssnack</div>
+        <div class="rest-list">${lunchHtml}</div>
+      </div>` : ''}
+
+      ${dinnerHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Abendessen</div>
+        <div class="rest-list">${dinnerHtml}</div>
       </div>` : ''}
 
       ${eveHtml}
+
+      ${barsHtml ? `<div class="detail-section">
+        <div class="detail-section-label">Bar & Drinks</div>
+        <div class="rest-list">${barsHtml}</div>
+      </div>` : ''}
+
+      ${day.market ? `<div class="detail-section">
+        <div class="detail-section-label">Supermarkt</div>
+        <div class="market-box">${day.market}</div>
+      </div>` : ''}
 
       ${tipsHtml ? `<div class="detail-section">
         <div class="detail-section-label">Tipps</div>
