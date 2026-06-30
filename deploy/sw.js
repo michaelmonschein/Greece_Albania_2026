@@ -1,4 +1,4 @@
-const CACHE = 'korfu2026-v3';
+const CACHE = 'korfu2026-v4';
 
 // Alle lokalen Dateien die offline verfügbar sein sollen
 const ASSETS = [
